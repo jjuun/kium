@@ -49717,3 +49717,2331 @@ INFO:     127.0.0.1:51674 - "GET /api/test HTTP/1.1" 200 OK
 INFO:     127.0.0.1:51674 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
 INFO:     127.0.0.1:51674 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
 INFO:     127.0.0.1:51673 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:49:57,344 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:52100 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:49:57,348 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:49:57,348 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:49:57,348 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:49:57,348 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:49:57,348 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:49:57,349 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:49:57,349 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:49:57,349 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:49:57,419 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:49:57,419 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:49:57,419 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:49:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:49:57,419 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:49:57,419 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:49:57,419 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:49:57,419 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:49:57,419 - TradingBot - INFO - status: None
+2025-07-09 10:49:57,419 - TradingBot - INFO - output 존재: False
+2025-07-09 10:49:57,419 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:49:57,419 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:49:57,420 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:49:57,420 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:49:57,420 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:49:57,420 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:49:57,420 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:52100 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52100 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52104 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:50:27,326 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:52516 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52517 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:50:27,332 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:50:27,332 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:50:27,332 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:50:27,332 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:50:27,333 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:50:27,333 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:50:27,333 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:50:27,333 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:50:27,391 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:50:27,391 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:50:27,391 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:50:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:50:27,391 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:50:27,391 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:50:27,391 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:50:27,391 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:50:27,391 - TradingBot - INFO - status: None
+2025-07-09 10:50:27,391 - TradingBot - INFO - output 존재: False
+2025-07-09 10:50:27,391 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:50:27,391 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:50:27,392 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:50:27,392 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:50:27,392 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:50:27,392 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:50:27,392 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:52517 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52517 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52516 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:50:57,279 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:53211 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:50:57,283 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:50:57,283 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:50:57,283 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:50:57,283 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:50:57,283 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:50:57,283 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:50:57,283 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:50:57,283 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:50:57,320 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:50:57,320 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:50:57,320 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:50:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:50:57,320 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:50:57,320 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:50:57,320 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:50:57,320 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:50:57,320 - TradingBot - INFO - status: None
+2025-07-09 10:50:57,320 - TradingBot - INFO - output 존재: False
+2025-07-09 10:50:57,320 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:50:57,320 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:50:57,321 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:50:57,321 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:50:57,321 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:50:57,321 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:50:57,321 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:53211 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53211 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53215 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:51:27,295 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:53604 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53606 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:51:27,299 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:51:27,299 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:51:27,299 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:51:27,300 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:51:27,300 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:51:27,300 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:51:27,300 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:51:27,300 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:51:27,332 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:51:27,332 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:51:27,332 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:51:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:51:27,332 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:51:27,332 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:51:27,332 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:51:27,332 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:51:27,332 - TradingBot - INFO - status: None
+2025-07-09 10:51:27,332 - TradingBot - INFO - output 존재: False
+2025-07-09 10:51:27,332 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:51:27,332 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:51:27,332 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:51:27,332 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:51:27,332 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:51:27,332 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:51:27,332 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:53606 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53606 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53604 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:51:57,299 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:54013 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:51:57,306 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:51:57,306 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:51:57,306 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:51:57,306 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:51:57,306 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:51:57,306 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:51:57,306 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:51:57,306 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:51:57,339 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:51:57,339 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:51:57,339 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:51:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:51:57,339 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:51:57,339 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:51:57,339 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:51:57,339 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:51:57,339 - TradingBot - INFO - status: None
+2025-07-09 10:51:57,339 - TradingBot - INFO - output 존재: False
+2025-07-09 10:51:57,339 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:51:57,339 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:51:57,339 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:51:57,339 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:51:57,340 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:51:57,340 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:51:57,340 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:54013 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54013 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54017 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:52:27,377 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:54406 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54407 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:52:27,393 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:52:27,393 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:52:27,393 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:52:27,395 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:52:27,395 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:52:27,395 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:52:27,395 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:52:27,395 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:52:27,552 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:52:27,552 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:52:27,552 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:52:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:52:27,552 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:52:27,552 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:52:27,552 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:52:27,552 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:52:27,552 - TradingBot - INFO - status: None
+2025-07-09 10:52:27,552 - TradingBot - INFO - output 존재: False
+2025-07-09 10:52:27,552 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:52:27,552 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:52:27,553 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:52:27,553 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:52:27,553 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:52:27,553 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:52:27,553 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:54407 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54407 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54406 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:52:57,279 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:54823 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:52:57,282 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:52:57,282 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:52:57,282 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:52:57,282 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:52:57,282 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:52:57,282 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:52:57,282 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:52:57,282 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:52:57,313 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:52:57,313 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:52:57,313 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:52:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:52:57,313 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:52:57,313 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:52:57,313 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:52:57,313 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:52:57,313 - TradingBot - INFO - status: None
+2025-07-09 10:52:57,313 - TradingBot - INFO - output 존재: False
+2025-07-09 10:52:57,313 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:52:57,314 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:52:57,314 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:52:57,314 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:52:57,314 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:52:57,314 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:52:57,314 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:54823 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54823 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54827 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:53:27,313 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:55207 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55209 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:53:27,317 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:53:27,317 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:53:27,317 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:53:27,317 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:53:27,317 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:53:27,317 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:53:27,317 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:53:27,317 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:53:27,381 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:53:27,381 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:53:27,381 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:53:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:53:27,381 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:53:27,381 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:53:27,381 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:53:27,381 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:53:27,381 - TradingBot - INFO - status: None
+2025-07-09 10:53:27,381 - TradingBot - INFO - output 존재: False
+2025-07-09 10:53:27,381 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:53:27,381 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:53:27,382 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:53:27,382 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:53:27,382 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:53:27,382 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:53:27,382 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:55209 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55209 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55207 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:53:57,347 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:55613 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:53:57,353 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:53:57,353 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:53:57,353 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:53:57,353 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:53:57,354 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:53:57,354 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:53:57,354 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:53:57,354 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:53:57,406 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:53:57,406 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:53:57,406 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:53:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:53:57,406 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:53:57,407 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:53:57,407 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:53:57,407 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:53:57,407 - TradingBot - INFO - status: None
+2025-07-09 10:53:57,407 - TradingBot - INFO - output 존재: False
+2025-07-09 10:53:57,407 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:53:57,407 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:53:57,407 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:53:57,407 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:53:57,407 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:53:57,407 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:53:57,407 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:55613 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55613 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55621 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:54:27,308 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:56052 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56053 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:54:27,324 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:54:27,324 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:54:27,324 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:54:27,325 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:54:27,325 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:54:27,325 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:54:27,325 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:54:27,325 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:54:27,367 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:54:27,367 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:54:27,367 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:54:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:54:27,367 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:54:27,367 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:54:27,367 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:54:27,367 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:54:27,367 - TradingBot - INFO - status: None
+2025-07-09 10:54:27,367 - TradingBot - INFO - output 존재: False
+2025-07-09 10:54:27,367 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:54:27,367 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:54:27,367 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:54:27,367 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:54:27,367 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:54:27,367 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:54:27,367 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:56053 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56053 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56052 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:54:57,299 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:56480 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:54:57,303 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:54:57,303 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:54:57,303 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:54:57,303 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:54:57,303 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:54:57,304 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:54:57,304 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:54:57,304 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:54:57,338 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:54:57,338 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:54:57,338 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:54:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:54:57,338 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:54:57,338 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:54:57,338 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:54:57,338 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:54:57,338 - TradingBot - INFO - status: None
+2025-07-09 10:54:57,338 - TradingBot - INFO - output 존재: False
+2025-07-09 10:54:57,338 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:54:57,339 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:54:57,340 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:54:57,340 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:54:57,340 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:54:57,340 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:54:57,340 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:56480 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56480 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56484 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:55:27,425 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:56883 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56885 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:55:27,431 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:55:27,432 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:55:27,432 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:55:27,432 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:55:27,432 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:55:27,432 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:55:27,432 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:55:27,432 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:55:27,521 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:55:27,521 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:55:27,521 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:55:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:55:27,521 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:55:27,521 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:55:27,521 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:55:27,521 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:55:27,521 - TradingBot - INFO - status: None
+2025-07-09 10:55:27,521 - TradingBot - INFO - output 존재: False
+2025-07-09 10:55:27,522 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:55:27,522 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:55:27,522 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:55:27,522 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:55:27,522 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:55:27,522 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:55:27,522 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:56885 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56885 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56883 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:55:57,325 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:57306 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:55:57,329 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:55:57,330 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:55:57,330 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:55:57,330 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:55:57,330 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:55:57,330 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:55:57,330 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:55:57,330 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:55:57,400 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:55:57,400 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:55:57,400 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:55:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:55:57,400 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:55:57,400 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:55:57,400 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:55:57,400 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:55:57,400 - TradingBot - INFO - status: None
+2025-07-09 10:55:57,400 - TradingBot - INFO - output 존재: False
+2025-07-09 10:55:57,400 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:55:57,400 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:55:57,400 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:55:57,400 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:55:57,400 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:55:57,400 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:55:57,400 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:57306 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57306 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57310 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:56:27,347 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:57738 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57740 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:56:27,350 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:56:27,351 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:56:27,351 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:56:27,351 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:56:27,351 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:56:27,351 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:56:27,351 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:56:27,351 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:56:27,428 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:56:27,428 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:56:27,428 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:56:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:56:27,428 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:56:27,428 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:56:27,428 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:56:27,428 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:56:27,428 - TradingBot - INFO - status: None
+2025-07-09 10:56:27,428 - TradingBot - INFO - output 존재: False
+2025-07-09 10:56:27,429 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:56:27,429 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:56:27,429 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:56:27,429 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:56:27,429 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:56:27,429 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:56:27,429 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:57740 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57740 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57738 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:56:57,342 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:58161 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:56:57,349 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:56:57,350 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:56:57,350 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:56:57,350 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:56:57,350 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:56:57,350 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:56:57,350 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:56:57,350 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:56:57,415 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:56:57,415 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:56:57,415 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:56:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:56:57,415 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:56:57,415 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:56:57,415 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:56:57,416 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:56:57,416 - TradingBot - INFO - status: None
+2025-07-09 10:56:57,416 - TradingBot - INFO - output 존재: False
+2025-07-09 10:56:57,416 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:56:57,417 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:56:57,418 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:56:57,418 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:56:57,418 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:56:57,418 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:56:57,418 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:58161 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58161 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58165 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:57:27,277 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:58570 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58572 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:57:27,288 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:57:27,288 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:57:27,288 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:57:27,288 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:57:27,288 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:57:27,289 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:57:27,289 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:57:27,289 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:57:27,343 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:57:27,343 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:57:27,343 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:57:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:57:27,344 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:57:27,344 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:57:27,344 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:57:27,344 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:57:27,344 - TradingBot - INFO - status: None
+2025-07-09 10:57:27,344 - TradingBot - INFO - output 존재: False
+2025-07-09 10:57:27,344 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:57:27,344 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:57:27,344 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:57:27,344 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:57:27,344 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:57:27,344 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:57:27,344 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:58572 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58572 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58570 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:57:57,320 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:58988 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:57:57,324 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:57:57,324 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:57:57,324 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:57:57,324 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:57:57,324 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:57:57,324 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:57:57,324 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:57:57,324 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:57:57,409 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:57:57,409 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:57:57,409 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:57:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:57:57,409 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:57:57,409 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:57:57,409 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:57:57,409 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:57:57,409 - TradingBot - INFO - status: None
+2025-07-09 10:57:57,409 - TradingBot - INFO - output 존재: False
+2025-07-09 10:57:57,409 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:57:57,409 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:57:57,410 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:57:57,410 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:57:57,410 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:57:57,410 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:57:57,410 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:58988 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58988 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58992 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:58:27,298 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:59380 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59381 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:58:27,300 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:58:27,300 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:58:27,300 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:58:27,300 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:58:27,300 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:58:27,300 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:58:27,300 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:58:27,300 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:58:27,370 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:58:27,370 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:58:27,370 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:58:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:58:27,370 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:58:27,370 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:58:27,370 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:58:27,370 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:58:27,370 - TradingBot - INFO - status: None
+2025-07-09 10:58:27,371 - TradingBot - INFO - output 존재: False
+2025-07-09 10:58:27,371 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:58:27,371 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:58:27,371 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:58:27,371 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:58:27,371 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:58:27,371 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:58:27,371 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:59381 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59381 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59380 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:58:57,284 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:59781 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:58:57,299 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:58:57,300 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:58:57,300 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:58:57,300 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:58:57,300 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:58:57,300 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:58:57,300 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:58:57,301 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:58:57,766 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:58:57,767 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:58:57,768 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:58:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:58:57,768 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:58:57,768 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:58:57,768 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:58:57,768 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:58:57,768 - TradingBot - INFO - status: None
+2025-07-09 10:58:57,769 - TradingBot - INFO - output 존재: False
+2025-07-09 10:58:57,769 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:58:57,771 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:58:57,772 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:58:57,772 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:58:57,772 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:58:57,772 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:58:57,772 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:59781 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59781 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59791 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:59:27,272 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:60220 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60222 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 10:59:27,275 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:59:27,275 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:59:27,276 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:59:27,276 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:59:27,276 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:59:27,276 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:59:27,276 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:59:27,276 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:59:27,312 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:59:27,312 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:59:27,312 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:59:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:59:27,312 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:59:27,312 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:59:27,312 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:59:27,312 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:59:27,312 - TradingBot - INFO - status: None
+2025-07-09 10:59:27,312 - TradingBot - INFO - output 존재: False
+2025-07-09 10:59:27,312 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:59:27,312 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:59:27,312 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:59:27,312 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:59:27,312 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:59:27,312 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:59:27,312 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:60222 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60222 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60220 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 10:59:57,381 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:60640 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 10:59:57,384 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 10:59:57,384 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 10:59:57,384 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 10:59:57,384 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 10:59:57,384 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 10:59:57,384 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 10:59:57,384 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 10:59:57,384 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 10:59:57,453 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 10:59:57,453 - TradingBot - INFO - Status Code: 200
+2025-07-09 10:59:57,453 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 01:59:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 10:59:57,453 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 10:59:57,453 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:59:57,453 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 10:59:57,453 - TradingBot - INFO - rt_cd: None
+2025-07-09 10:59:57,453 - TradingBot - INFO - status: None
+2025-07-09 10:59:57,454 - TradingBot - INFO - output 존재: False
+2025-07-09 10:59:57,454 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 10:59:57,454 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 10:59:57,454 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 10:59:57,454 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 10:59:57,454 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 10:59:57,454 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 10:59:57,454 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:60640 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60640 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60645 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:00:27,308 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:61050 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61052 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:00:27,314 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:00:27,314 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:00:27,315 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:00:27,315 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:00:27,315 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:00:27,315 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:00:27,315 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:00:27,315 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:00:27,387 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:00:27,387 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:00:27,387 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:00:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:00:27,387 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:00:27,388 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:00:27,388 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:00:27,388 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:00:27,388 - TradingBot - INFO - status: None
+2025-07-09 11:00:27,388 - TradingBot - INFO - output 존재: False
+2025-07-09 11:00:27,388 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:00:27,388 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:00:27,389 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:00:27,389 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:00:27,389 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:00:27,389 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:00:27,389 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:61052 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61052 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61050 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:00:57,307 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:61439 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:00:57,311 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:00:57,311 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:00:57,311 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:00:57,311 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:00:57,312 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:00:57,312 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:00:57,312 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:00:57,312 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:00:57,373 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:00:57,373 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:00:57,373 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:00:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:00:57,373 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:00:57,373 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:00:57,373 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:00:57,373 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:00:57,373 - TradingBot - INFO - status: None
+2025-07-09 11:00:57,373 - TradingBot - INFO - output 존재: False
+2025-07-09 11:00:57,373 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:00:57,374 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:00:57,374 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:00:57,374 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:00:57,374 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:00:57,374 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:00:57,374 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:61439 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61439 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61443 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:01:27,287 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:61831 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61833 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:01:27,294 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:01:27,294 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:01:27,295 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:01:27,295 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:01:27,295 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:01:27,295 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:01:27,295 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:01:27,296 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:01:27,333 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:01:27,333 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:01:27,333 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:01:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:01:27,333 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:01:27,333 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:01:27,333 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:01:27,334 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:01:27,334 - TradingBot - INFO - status: None
+2025-07-09 11:01:27,334 - TradingBot - INFO - output 존재: False
+2025-07-09 11:01:27,334 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:01:27,335 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:01:27,335 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:01:27,335 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:01:27,335 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:01:27,335 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:01:27,335 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:61831 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61831 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61833 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:01:57,672 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:62240 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:01:57,682 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:01:57,682 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:01:57,683 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:01:57,683 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:01:57,683 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:01:57,683 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:01:57,683 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:01:57,683 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:01:58,031 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:01:58,031 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:01:58,031 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:01:58 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:01:58,031 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:01:58,031 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:01:58,031 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:01:58,031 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:01:58,031 - TradingBot - INFO - status: None
+2025-07-09 11:01:58,031 - TradingBot - INFO - output 존재: False
+2025-07-09 11:01:58,031 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:01:58,031 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:01:58,031 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:01:58,031 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:01:58,031 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:01:58,031 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:01:58,031 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:62240 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62240 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62247 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:02:27,450 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:62638 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62640 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:02:27,456 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:02:27,456 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:02:27,456 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:02:27,456 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:02:27,456 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:02:27,456 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:02:27,456 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:02:27,456 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:02:27,500 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:02:27,500 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:02:27,500 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:02:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:02:27,500 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:02:27,500 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:02:27,500 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:02:27,500 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:02:27,500 - TradingBot - INFO - status: None
+2025-07-09 11:02:27,500 - TradingBot - INFO - output 존재: False
+2025-07-09 11:02:27,500 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:02:27,500 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:02:27,500 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:02:27,500 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:02:27,500 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:02:27,500 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:02:27,500 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:62640 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62640 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62638 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:02:57,316 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:63032 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:02:57,321 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:02:57,321 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:02:57,321 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:02:57,321 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:02:57,321 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:02:57,321 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:02:57,321 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:02:57,321 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:02:57,355 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:02:57,355 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:02:57,355 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:02:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:02:57,355 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:02:57,355 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:02:57,355 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:02:57,355 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:02:57,355 - TradingBot - INFO - status: None
+2025-07-09 11:02:57,355 - TradingBot - INFO - output 존재: False
+2025-07-09 11:02:57,355 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:02:57,356 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:02:57,356 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:02:57,356 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:02:57,356 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:02:57,356 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:02:57,356 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:63032 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63032 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63058 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:03:27,358 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:63438 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63439 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:03:27,363 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:03:27,363 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:03:27,363 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:03:27,363 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:03:27,363 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:03:27,363 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:03:27,363 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:03:27,363 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:03:27,446 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:03:27,446 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:03:27,446 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:03:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:03:27,446 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:03:27,446 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:03:27,446 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:03:27,446 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:03:27,446 - TradingBot - INFO - status: None
+2025-07-09 11:03:27,446 - TradingBot - INFO - output 존재: False
+2025-07-09 11:03:27,446 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:03:27,446 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:03:27,446 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:03:27,446 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:03:27,447 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:03:27,447 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:03:27,447 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:63439 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63439 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63438 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:03:57,319 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:63823 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:03:57,345 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:03:57,345 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:03:57,345 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:03:57,345 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:03:57,346 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:03:57,346 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:03:57,346 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:03:57,346 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:03:57,385 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:03:57,385 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:03:57,386 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:03:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:03:57,390 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:03:57,390 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:03:57,390 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:03:57,390 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:03:57,390 - TradingBot - INFO - status: None
+2025-07-09 11:03:57,390 - TradingBot - INFO - output 존재: False
+2025-07-09 11:03:57,393 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:03:57,394 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:03:57,395 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:03:57,395 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:03:57,395 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:03:57,395 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:03:57,395 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:63823 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63823 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63827 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:04:27,388 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:64234 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64235 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:04:27,391 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:04:27,391 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:04:27,391 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:04:27,391 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:04:27,391 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:04:27,391 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:04:27,391 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:04:27,391 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:04:27,479 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:04:27,479 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:04:27,479 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:04:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:04:27,479 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:04:27,479 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:04:27,479 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:04:27,479 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:04:27,479 - TradingBot - INFO - status: None
+2025-07-09 11:04:27,479 - TradingBot - INFO - output 존재: False
+2025-07-09 11:04:27,479 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:04:27,479 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:04:27,479 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:04:27,479 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:04:27,479 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:04:27,479 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:04:27,479 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:64235 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64235 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64234 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:04:57,335 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:64637 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:04:57,338 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:04:57,338 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:04:57,338 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:04:57,338 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:04:57,338 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:04:57,338 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:04:57,338 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:04:57,338 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:04:57,435 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:04:57,435 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:04:57,435 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:04:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:04:57,435 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:04:57,435 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:04:57,435 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:04:57,435 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:04:57,435 - TradingBot - INFO - status: None
+2025-07-09 11:04:57,435 - TradingBot - INFO - output 존재: False
+2025-07-09 11:04:57,435 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:04:57,436 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:04:57,436 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:04:57,436 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:04:57,436 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:04:57,436 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:04:57,436 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:64637 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64637 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64641 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:05:27,298 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:65043 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65045 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:05:27,302 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:05:27,302 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:05:27,302 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:05:27,302 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:05:27,302 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:05:27,302 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:05:27,302 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:05:27,302 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:05:27,337 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:05:27,338 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:05:27,338 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:05:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:05:27,338 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:05:27,338 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:05:27,338 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:05:27,338 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:05:27,338 - TradingBot - INFO - status: None
+2025-07-09 11:05:27,338 - TradingBot - INFO - output 존재: False
+2025-07-09 11:05:27,338 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:05:27,338 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:05:27,338 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:05:27,338 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:05:27,338 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:05:27,338 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:05:27,338 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:65045 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65045 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65043 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:05:57,361 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:49390 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:05:57,365 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:05:57,365 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:05:57,365 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:05:57,365 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:05:57,365 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:05:57,365 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:05:57,365 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:05:57,365 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:05:57,452 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:05:57,452 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:05:57,452 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:05:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:05:57,452 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:05:57,453 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:05:57,453 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:05:57,453 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:05:57,453 - TradingBot - INFO - status: None
+2025-07-09 11:05:57,453 - TradingBot - INFO - output 존재: False
+2025-07-09 11:05:57,453 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:05:57,453 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:05:57,453 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:05:57,453 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:05:57,453 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:05:57,453 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:05:57,453 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:49390 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49390 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49394 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:06:27,360 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:49785 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49786 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:06:27,379 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:06:27,379 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:06:27,379 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:06:27,379 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:06:27,379 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:06:27,379 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:06:27,380 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:06:27,380 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:06:27,442 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:06:27,443 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:06:27,443 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:06:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:06:27,443 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:06:27,443 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:06:27,443 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:06:27,443 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:06:27,443 - TradingBot - INFO - status: None
+2025-07-09 11:06:27,443 - TradingBot - INFO - output 존재: False
+2025-07-09 11:06:27,443 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:06:27,443 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:06:27,443 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:06:27,443 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:06:27,443 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:06:27,443 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:06:27,443 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:49786 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49786 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49785 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:06:57,337 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:50194 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:06:57,344 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:06:57,344 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:06:57,344 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:06:57,344 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:06:57,344 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:06:57,344 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:06:57,344 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:06:57,344 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:06:57,411 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:06:57,411 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:06:57,411 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:06:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:06:57,411 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:06:57,411 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:06:57,411 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:06:57,411 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:06:57,411 - TradingBot - INFO - status: None
+2025-07-09 11:06:57,411 - TradingBot - INFO - output 존재: False
+2025-07-09 11:06:57,411 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:06:57,412 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:06:57,412 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:06:57,412 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:06:57,412 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:06:57,412 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:06:57,412 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:50194 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50194 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50198 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:07:27,308 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:50580 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50581 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:07:27,311 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:07:27,311 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:07:27,311 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:07:27,311 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:07:27,311 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:07:27,311 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:07:27,311 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:07:27,311 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:07:27,343 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:07:27,343 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:07:27,343 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:07:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:07:27,343 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:07:27,343 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:07:27,343 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:07:27,343 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:07:27,343 - TradingBot - INFO - status: None
+2025-07-09 11:07:27,343 - TradingBot - INFO - output 존재: False
+2025-07-09 11:07:27,343 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:07:27,343 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:07:27,343 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:07:27,343 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:07:27,343 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:07:27,343 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:07:27,343 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:50581 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50581 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50580 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:07:57,345 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:50974 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:07:57,351 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:07:57,351 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:07:57,351 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:07:57,351 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:07:57,351 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:07:57,351 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:07:57,351 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:07:57,351 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:07:57,444 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:07:57,444 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:07:57,444 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:07:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:07:57,444 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:07:57,444 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:07:57,444 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:07:57,444 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:07:57,444 - TradingBot - INFO - status: None
+2025-07-09 11:07:57,444 - TradingBot - INFO - output 존재: False
+2025-07-09 11:07:57,444 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:07:57,444 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:07:57,445 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:07:57,445 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:07:57,445 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:07:57,445 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:07:57,445 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:50974 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50974 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50978 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:08:27,529 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:51398 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51399 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:08:27,532 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:08:27,532 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:08:27,532 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:08:27,532 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:08:27,532 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:08:27,532 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:08:27,532 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:08:27,532 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:08:27,597 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:08:27,597 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:08:27,597 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:08:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:08:27,597 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:08:27,598 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:08:27,598 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:08:27,598 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:08:27,598 - TradingBot - INFO - status: None
+2025-07-09 11:08:27,598 - TradingBot - INFO - output 존재: False
+2025-07-09 11:08:27,598 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:08:27,598 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:08:27,598 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:08:27,598 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:08:27,598 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:08:27,598 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:08:27,598 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:51399 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51399 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51398 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:08:57,525 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:51786 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:08:57,533 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:08:57,534 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:08:57,534 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:08:57,534 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:08:57,534 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:08:57,534 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:08:57,534 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:08:57,534 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:08:57,606 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:08:57,606 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:08:57,607 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:08:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:08:57,608 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:08:57,608 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:08:57,608 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:08:57,608 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:08:57,608 - TradingBot - INFO - status: None
+2025-07-09 11:08:57,609 - TradingBot - INFO - output 존재: False
+2025-07-09 11:08:57,609 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:08:57,612 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:08:57,613 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:08:57,613 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:08:57,613 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:08:57,613 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:08:57,613 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:51786 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51786 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51795 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:09:27,351 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:52180 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52182 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:09:27,357 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:09:27,357 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:09:27,357 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:09:27,357 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:09:27,357 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:09:27,357 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:09:27,357 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:09:27,357 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:09:27,433 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:09:27,434 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:09:27,434 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:09:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:09:27,434 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:09:27,434 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:09:27,434 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:09:27,434 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:09:27,434 - TradingBot - INFO - status: None
+2025-07-09 11:09:27,434 - TradingBot - INFO - output 존재: False
+2025-07-09 11:09:27,434 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:09:27,434 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:09:27,435 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:09:27,435 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:09:27,435 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:09:27,435 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:09:27,435 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:52182 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52182 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52180 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:09:57,338 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:52590 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:09:57,341 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:09:57,341 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:09:57,341 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:09:57,341 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:09:57,341 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:09:57,341 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:09:57,342 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:09:57,342 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:09:57,400 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:09:57,400 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:09:57,400 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:09:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:09:57,400 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:09:57,400 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:09:57,400 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:09:57,400 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:09:57,400 - TradingBot - INFO - status: None
+2025-07-09 11:09:57,400 - TradingBot - INFO - output 존재: False
+2025-07-09 11:09:57,400 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:09:57,400 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:09:57,400 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:09:57,400 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:09:57,400 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:09:57,400 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:09:57,400 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:52590 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52590 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52594 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:10:27,410 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:52980 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52982 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:10:27,416 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:10:27,416 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:10:27,416 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:10:27,416 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:10:27,416 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:10:27,416 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:10:27,417 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:10:27,417 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:10:27,458 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:10:27,458 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:10:27,458 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:10:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:10:27,458 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:10:27,458 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:10:27,458 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:10:27,458 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:10:27,458 - TradingBot - INFO - status: None
+2025-07-09 11:10:27,458 - TradingBot - INFO - output 존재: False
+2025-07-09 11:10:27,458 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:10:27,458 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:10:27,459 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:10:27,459 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:10:27,459 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:10:27,459 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:10:27,459 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:52982 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52982 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52980 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:10:57,337 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:53379 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:10:57,358 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:10:57,358 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:10:57,359 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:10:57,359 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:10:57,359 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:10:57,359 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:10:57,359 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:10:57,360 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:10:57,406 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:10:57,406 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:10:57,410 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:10:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:10:57,410 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:10:57,410 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:10:57,410 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:10:57,410 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:10:57,410 - TradingBot - INFO - status: None
+2025-07-09 11:10:57,410 - TradingBot - INFO - output 존재: False
+2025-07-09 11:10:57,410 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:10:57,453 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:10:57,455 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:10:57,455 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:10:57,458 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:10:57,458 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:10:57,460 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:53379 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53379 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53383 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:11:28,165 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:53804 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53806 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:11:28,173 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:11:28,173 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:11:28,173 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:11:28,173 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:11:28,173 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:11:28,174 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:11:28,174 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:11:28,174 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:11:28,303 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:11:28,304 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:11:28,304 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:11:28 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:11:28,304 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:11:28,304 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:11:28,304 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:11:28,304 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:11:28,304 - TradingBot - INFO - status: None
+2025-07-09 11:11:28,305 - TradingBot - INFO - output 존재: False
+2025-07-09 11:11:28,305 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:11:28,305 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:11:28,306 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:11:28,306 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:11:28,306 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:11:28,307 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:11:28,307 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:53806 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53806 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53804 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:11:57,356 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:54227 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:11:57,361 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:11:57,361 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:11:57,361 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:11:57,361 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:11:57,361 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:11:57,361 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:11:57,361 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:11:57,361 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:11:57,433 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:11:57,433 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:11:57,433 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:11:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:11:57,433 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:11:57,433 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:11:57,433 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:11:57,433 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:11:57,433 - TradingBot - INFO - status: None
+2025-07-09 11:11:57,433 - TradingBot - INFO - output 존재: False
+2025-07-09 11:11:57,433 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:11:57,433 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:11:57,433 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:11:57,433 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:11:57,433 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:11:57,433 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:11:57,433 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:54227 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54227 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54231 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:12:27,311 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:54670 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54672 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:12:27,314 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:12:27,314 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:12:27,314 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:12:27,314 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:12:27,314 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:12:27,314 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:12:27,314 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:12:27,314 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:12:27,346 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:12:27,346 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:12:27,346 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:12:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:12:27,346 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:12:27,346 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:12:27,346 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:12:27,346 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:12:27,346 - TradingBot - INFO - status: None
+2025-07-09 11:12:27,346 - TradingBot - INFO - output 존재: False
+2025-07-09 11:12:27,346 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:12:27,346 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:12:27,346 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:12:27,346 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:12:27,346 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:12:27,346 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:12:27,346 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:54672 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54672 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54670 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:12:57,312 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:55150 - "GET /api/account/balance HTTP/1.1" 200 OK
+2025-07-09 11:12:57,315 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:12:57,315 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:12:57,315 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:12:57,315 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:12:57,315 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:12:57,315 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:12:57,315 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:12:57,315 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:12:57,355 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:12:57,355 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:12:57,355 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:12:57 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:12:57,355 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:12:57,355 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:12:57,355 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:12:57,355 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:12:57,355 - TradingBot - INFO - status: None
+2025-07-09 11:12:57,355 - TradingBot - INFO - output 존재: False
+2025-07-09 11:12:57,356 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:12:57,358 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:12:57,359 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:12:57,359 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:12:57,359 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:12:57,359 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:12:57,359 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:55150 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55150 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55154 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
+2025-07-09 11:13:27,314 - TradingBot - INFO - 계좌평가잔고내역 조회 성공
+INFO:     127.0.0.1:55577 - "GET /api/account/balance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55579 - "GET /api/test HTTP/1.1" 200 OK
+2025-07-09 11:13:27,319 - TradingBot - INFO - === 미체결 주문 조회 시작 ===
+2025-07-09 11:13:27,319 - TradingBot - INFO - 현재 대기 주문 수: 0
+2025-07-09 11:13:27,319 - TradingBot - INFO - 대기 주문 ID 목록: []
+2025-07-09 11:13:27,319 - TradingBot - INFO - 키움 API에서 실제 미체결 주문 조회 시작 (ka10075)
+2025-07-09 11:13:27,319 - TradingBot - INFO - === 미체결 주문 조회 요청 (ka10075) ===
+2025-07-09 11:13:27,319 - TradingBot - INFO - URL: https://api.kiwoom.com/api/dostk/acnt
+2025-07-09 11:13:27,319 - TradingBot - INFO - Headers: {
+  "Content-Type": "application/json;charset=UTF-8",
+  "authorization": "Bearer 6A25ufi1Lbzemzea4vgIHCLqxoDh_52ngAVSQ8w7JcPP7qD0o5a2f1rGiJnUaGaDN7YH8afgrvA01mscoFxQug",
+  "cont-yn": "N",
+  "next-key": "",
+  "api-id": "ka10075"
+}
+2025-07-09 11:13:27,319 - TradingBot - INFO - Request Data: {
+  "all_stk_tp": "0",
+  "trde_tp": "0",
+  "stk_cd": "",
+  "stex_tp": "0"
+}
+2025-07-09 11:13:27,351 - TradingBot - INFO - === 미체결 주문 조회 응답 (ka10075) ===
+2025-07-09 11:13:27,351 - TradingBot - INFO - Status Code: 200
+2025-07-09 11:13:27,351 - TradingBot - INFO - Response Headers: {'Date': 'Wed, 09 Jul 2025 02:13:27 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'next-key': '', 'Access-Control-Expose-Headers': 'api-id,cont-yn,next-key,resp-cnt,user-data', 'resp-cnt': '0', 'Access-Control-Allow-Origin': '*', 'cont-yn': 'N', 'user-data': '', 'Vary': 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers', 'api-id': 'ka10075'}
+2025-07-09 11:13:27,351 - TradingBot - INFO - Response Body: {"oso":[],"return_code":0,"return_msg":" 조회가 완료되었습니다."}
+2025-07-09 11:13:27,351 - TradingBot - INFO - Parsed Response: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:13:27,351 - TradingBot - INFO - === 응답 구조 분석 ===
+2025-07-09 11:13:27,351 - TradingBot - INFO - rt_cd: None
+2025-07-09 11:13:27,352 - TradingBot - INFO - status: None
+2025-07-09 11:13:27,352 - TradingBot - INFO - output 존재: False
+2025-07-09 11:13:27,352 - TradingBot - ERROR - ❌ 키움 API 미체결 주문 조회 실패 (ka10075): 알 수 없는 오류
+2025-07-09 11:13:27,352 - TradingBot - ERROR - 실패 응답: {
+  "oso": [],
+  "return_code": 0,
+  "return_msg": " 조회가 완료되었습니다."
+}
+2025-07-09 11:13:27,352 - TradingBot - WARNING - 키움 API 미체결 주문 조회 실패: {'oso': [], 'return_code': 0, 'return_msg': ' 조회가 완료되었습니다.'}
+2025-07-09 11:13:27,352 - TradingBot - INFO - ✅ 미체결 주문 조회 완료: 총 0건
+2025-07-09 11:13:27,352 - TradingBot - INFO -   - 로컬 주문: 0건
+2025-07-09 11:13:27,352 - TradingBot - INFO -   - 키움 API 주문: 0건
+2025-07-09 11:13:27,352 - TradingBot - INFO - 반환할 주문 목록: []
+INFO:     127.0.0.1:55579 - "GET /api/trading/orders/pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55579 - "GET /api/auto-trading/signals/statistics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55577 - "GET /api/auto-trading/signals/recent?limit=10 HTTP/1.1" 200 OK
