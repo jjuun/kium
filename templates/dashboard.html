@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-ki Trading Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>A-ki Trading Dashboard</h1>
+            <div class="status-indicator">
+                <span id="connection-status">🔄 서버 연결 확인 중...</span>
+                <div class="controls">
+                    <button id="refresh-toggle" class="btn btn-danger">자동 새로고침 끄기</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- 계좌 정보 -->
+            <div class="card">
+                <h3>계좌 정보</h3>
+                <div id="balance-content" class="loading">로딩 중...</div>
+                <div id="portfolio-content" class="loading"></div>
+                <div id="holdings-content" class="loading"></div>
+            </div>
+
+            <!-- 주문 실행 -->
+            <div class="card">
+                <h3>주문 실행</h3>
+                <form id="order-form">
+                    <div class="form-group">
+                        <label for="order-symbol">종목코드:</label>
+                        <input type="text" id="order-symbol" placeholder="종목코드" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-action">매매구분:</label>
+                        <select id="order-action" required>
+                            <option value="buy">매수</option>
+                            <option value="sell">매도</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-quantity">수량:</label>
+                        <input type="number" id="order-quantity" placeholder="수량" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-price">가격:</label>
+                        <input type="number" id="order-price" placeholder="가격" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-price-type">호가구분:</label>
+                        <select id="order-price-type" required>
+                            <option value="00">지정가</option>
+                            <option value="03">시장가</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">주문 실행</button>
+                </form>
+            </div>
+
+            <!-- 미체결 주문 -->
+            <div class="card">
+                <h3>미체결 주문</h3>
+                <div id="pending-orders-content" class="loading">로딩 중...</div>
+            </div>
+
+
+        </div>
+
+        <!-- 자동매매 제어 섹션 -->
+        <div class="card" id="auto-trading-section" style="margin-top: 32px;">
+            <h3>자동매매 제어</h3>
+            <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 16px;">
+                <div id="auto-trading-status" style="padding: 8px 16px; border-radius: 4px; background: #f8f9fa;">
+                    상태: 확인 중...
+                </div>
+                <!-- 매매 수량 입력 필드 추가 -->
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <label for="trade-quantity" style="margin: 0; font-size: 0.9em;">매매 수량:</label>
+                    <input type="number" id="trade-quantity" min="1" value="1"
+                        style="width: 80px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <button id="start-auto-trading" class="btn btn-success" onclick="startAutoTrading()">자동매매 시작</button>
+                <button id="stop-auto-trading" class="btn btn-danger" onclick="stopAutoTrading()"
+                    style="display: none;">자동매매 중지</button>
+            </div>
+
+            <!-- 자동매매 통계 정보 -->
+            <div id="auto-trading-stats" style="margin-bottom: 16px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                    <!-- 일일 주문 통계 -->
+                    <div
+                        style="padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #007bff;">
+                        <div style="font-weight: bold; color: #007bff; margin-bottom: 4px;">📊 일일 주문</div>
+                        <div id="daily-orders" style="font-size: 1.1em;">0/10</div>
+                        <div style="font-size: 0.8em; color: #666; margin-top: 4px;">오늘 실행된 주문 수 / 최대 허용 수</div>
+                    </div>
+
+                    <!-- 감시 종목 통계 -->
+                    <div id="watchlist-summary"
+                        style="padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #28a745; cursor: pointer;"
+                        onclick="showWatchlistDetails()">
+                        <div style="font-weight: bold; color: #28a745; margin-bottom: 4px;">👀 감시 종목</div>
+                        <div id="watchlist-count" style="font-size: 1.1em;">1개</div>
+                        <div style="font-size: 0.8em; color: #666; margin-top: 4px;">클릭하여 상세 보기</div>
+                    </div>
+
+                    <!-- 활성 조건 통계 -->
+                    <div id="active-conditions-summary"
+                        style="padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #ffc107; cursor: pointer;"
+                        onclick="showActiveConditionsDetails()">
+                        <div style="font-weight: bold; color: #ffc107; margin-bottom: 4px;">⚙️ 활성 조건</div>
+                        <div id="active-conditions-count" style="font-size: 1.1em;">5개</div>
+                        <div style="font-size: 0.8em; color: #666; margin-top: 4px;">클릭하여 상세 보기</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 상세 정보 모달: body 바로 아래로 이동 -->
+            <div id="details-modal" class="modal" style="display: none;">
+                <div class="modal-content" style="max-width: 800px;">
+                    <div class="modal-header">
+                        <h4 id="details-modal-title">상세 정보</h4>
+                        <span class="close" onclick="closeDetailsModal()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div id="details-content">
+                            <!-- 동적으로 내용이 채워집니다 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="auto-trading-message" style="margin-top: 8px; color: #c00; font-size: 0.95em;"></div>
+        </div>
+
+        <!-- 신호 모니터링 섹션 -->
+        <div class="card" id="signal-monitoring-section" style="margin-top: 32px;">
+            <h3>신호 모니터링</h3>
+            <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                <div id="signal-stats"
+                    style="padding: 8px 16px; border-radius: 4px; background: #f8f9fa; font-size: 0.9em;">
+                    통계 로딩 중...
+                </div>
+                <button class="btn btn-secondary" onclick="refreshSignalMonitoring()">새로고침</button>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <h5>최근 신호</h5>
+                <table id="recent-signals-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>시간</th>
+                            <th>종목</th>
+                            <th>타입</th>
+                            <th>조건</th>
+                            <th>현재가</th>
+                            <th>상태</th>
+                            <th>수익/손실</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- JS로 동적 렌더링 -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="signal-message" style="margin-top: 8px; color: #c00; font-size: 0.95em;"></div>
+        </div>
+
+        <!-- 감시 종목 관리 섹션 -->
+        <div class="card" id="watchlist-section" style="margin-top: 32px;">
+            <h3>감시 종목 관리</h3>
+            <form id="watchlist-add-form" style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <input type="text" id="watchlist-symbol" placeholder="종목코드" required style="width: 120px;">
+                <input type="text" id="watchlist-symbol-name" placeholder="종목명 (자동 입력)" style="width: 180px;" readonly>
+                <button type="submit" class="btn btn-primary">추가</button>
+            </form>
+            <div id="symbol-validation-message" style="margin-bottom: 8px; font-size: 0.9em;"></div>
+            <div id="watchlist-stats" style="margin-bottom: 8px; font-size: 0.95em; color: #666;"></div>
+            <table id="watchlist-table" class="table">
+                <thead>
+                    <tr>
+                        <th>종목코드</th>
+                        <th>종목명</th>
+                        <th>상태</th>
+                        <th>등록일</th>
+                        <th>수정일</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS로 동적 렌더링 -->
+                </tbody>
+            </table>
+            <div id="watchlist-message" style="margin-top: 8px; color: #c00; font-size: 0.95em;"></div>
+        </div>
+
+        <!-- 조건 관리 모달 -->
+        <div id="condition-modal" class="modal" style="display: none;">
+            <div class="modal-content" style="max-height: 90vh; width: 95%; max-width: 1200px;">
+                <div class="modal-header">
+                    <h4 id="condition-modal-title">조건 관리</h4>
+                    <span class="close" onclick="closeConditionModal()">&times;</span>
+                </div>
+                <div class="modal-body" style="max-height: calc(90vh - 120px); overflow-y: auto;">
+                    <div style="margin-bottom: 16px;">
+                        <h5>새 조건 추가</h5>
+                        <form id="condition-add-form" style="display: flex; gap: 8px; align-items: end;">
+                            <select id="condition-type" required style="width: 80px;">
+                                <option value="buy">매수</option>
+                                <option value="sell">매도</option>
+                            </select>
+                            <select id="condition-category" required style="width: 120px;">
+                                <option value="">조건 타입</option>
+                                <option value="price">가격 조건</option>
+                                <option value="rsi">RSI 조건</option>
+                                <option value="ma">이동평균 조건</option>
+                                <option value="volume">거래량 조건</option>
+                                <option value="volatility">변동성 조건</option>
+                                <option value="custom">사용자 정의</option>
+                            </select>
+                            <input type="text" id="condition-value" placeholder="조건 값 (예: > 50000)" required
+                                style="width: 150px;">
+                            <input type="text" id="condition-description" placeholder="설명 (선택)" style="width: 180px;">
+                            <button type="submit" class="btn btn-primary">추가</button>
+                        </form>
+                        <div style="margin-top: 8px;">
+                            <small class="text-muted">💡 추천 조건:
+                                <a href="#" onclick="setConditionTemplate('rsi_oversold')">RSI 과매도 매수</a> |
+                                <a href="#" onclick="setConditionTemplate('rsi_overbought')">RSI 과매수 매도</a> |
+                                <a href="#" onclick="setConditionTemplate('ma_golden')">이동평균 골든크로스</a> |
+                                <a href="#" onclick="setConditionTemplate('volume_surge')">거래량 급증</a>
+                            </small>
+                        </div>
+
+                        <!-- 조건 그룹 관리 -->
+                        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h6>📋 조건 그룹 관리</h6>
+                            <div style="display: flex; gap: 10px; align-items: end; margin-bottom: 10px;">
+                                <input type="text" id="group-name" placeholder="그룹명 (예: RSI 전략)" style="width: 200px;">
+                                <select id="group-logic" style="width: 100px;">
+                                    <option value="AND">AND (모두 만족)</option>
+                                    <option value="OR">OR (하나라도 만족)</option>
+                                </select>
+                                <input type="number" id="group-priority" placeholder="우선순위 (1-10)" min="1" max="10"
+                                    value="5" style="width: 120px;">
+                                <button onclick="createConditionGroup()" class="btn btn-success btn-sm">그룹 생성</button>
+                                <button onclick="openAdvancedBuilder()" class="btn btn-info btn-sm">고급 빌더</button>
+                            </div>
+                            <!-- 그룹 생성 안내문구를 버튼 아래로 이동 -->
+                            <div id="group-create-guide" style="margin-bottom: 10px; color: #888; font-size: 0.95em;">
+                                그룹을 생성하면 여러 조건을 묶어 우선순위와 논리(AND/OR)로 자동매매 전략을 만들 수 있습니다.
+                            </div>
+                            <div id="condition-groups" style="margin-top: 10px;">
+                                <!-- 조건 그룹 목록이 여기에 표시됩니다 -->
+                            </div>
+                        </div>
+
+                        <!-- 성과 분석 대시보드 -->
+                        <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 8px;">
+                            <h6>📊 성과 분석</h6>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 10px;">
+                                <div class="performance-card"
+                                    style="background: white; padding: 15px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 1.5em; font-weight: bold; color: #28a745;"
+                                        id="avg-success-rate">-</div>
+                                    <div style="font-size: 0.9em; color: #666;">평균 성공률</div>
+                                </div>
+                                <div class="performance-card"
+                                    style="background: white; padding: 15px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 1.5em; font-weight: bold; color: #007bff;"
+                                        id="total-signals">-</div>
+                                    <div style="font-size: 0.9em; color: #666;">총 신호 수</div>
+                                </div>
+                                <div class="performance-card"
+                                    style="background: white; padding: 15px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 1.5em; font-weight: bold; color: #ffc107;" id="avg-profit">-
+                                    </div>
+                                    <div style="font-size: 0.9em; color: #666;">평균 수익률</div>
+                                </div>
+                                <div class="performance-card"
+                                    style="background: white; padding: 15px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 1.5em; font-weight: bold; color: #dc3545;"
+                                        id="best-condition">-</div>
+                                    <div style="font-size: 0.9em; color: #666;">최고 성과 조건</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <button onclick="refreshPerformanceAnalysis()" class="btn btn-outline-primary btn-sm">성과
+                                    분석 새로고침</button>
+                                <button onclick="exportPerformanceReport()" class="btn btn-outline-success btn-sm">성과
+                                    보고서 내보내기</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h5>등록된 조건</h5>
+                        <table id="condition-table" class="table">
+                            <thead>
+                                <tr>
+                                    <th>타입</th>
+                                    <th>카테고리</th>
+                                    <th>조건 값</th>
+                                    <th>설명</th>
+                                    <th>성공률</th>
+                                    <th>상태</th>
+                                    <th>등록일</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- JS로 동적 렌더링 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="condition-message" style="margin-top: 8px; color: #c00; font-size: 0.95em;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 고급 조건 빌더 모달 -->
+    <div class="modal fade" id="advancedBuilderModal" tabindex="-1">
+        <div class="modal-dialog modal-lg" style="max-width: 110%; height: 70vh;">
+            <div class="modal-content" style="height: 100%;">
+                <div class="modal-header">
+                    <h5 class="modal-title">🔧 고급 조건 빌더</h5>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <label style="margin: 0; font-size: 0.9em;">종목:</label>
+                            <input type="text" id="advanced-builder-symbol" placeholder="종목코드"
+                                style="width: 100px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <input type="text" id="advanced-builder-symbol-name" placeholder="종목명"
+                                style="width: 120px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px;"
+                                readonly>
+                            <label style="margin: 0; font-size: 0.9em;">타입:</label>
+                            <select id="advanced-builder-condition-type"
+                                style="width: 80px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="buy">매수</option>
+                                <option value="sell">매도</option>
+                            </select>
+                        </div>
+                        <button onclick="testAdvancedCondition()" class="btn btn-warning btn-sm">백테스트 실행</button>
+                        <button onclick="saveAdvancedCondition()" class="btn btn-primary btn-sm">조건 저장</button>
+                        <button type="button" class="btn btn-secondary btn-sm"
+                            onclick="closeAdvancedBuilder()">닫기</button>
+                    </div>
+                </div>
+                <div class="modal-body" style="height: calc(100% - 120px); overflow: hidden;">
+                    <div class="row" style="height: 100%;">
+                        <div class="col-md-6" style="height: 100%; display: flex; flex-direction: column;">
+                            <h6>📝 조건 구성</h6>
+                            <div id="condition-builder"
+                                style="border: 1px solid #ddd; border-radius: 6px; padding: 15px; flex: 1; overflow-y: auto;">
+                                <div class="condition-block" style="margin-bottom: 10px;">
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <select class="condition-category" style="width: 120px;">
+                                            <option value="price">가격 조건</option>
+                                            <option value="rsi">RSI 조건</option>
+                                            <option value="ma">이동평균 조건</option>
+                                            <option value="volume">거래량 조건</option>
+                                            <option value="volatility">변동성 조건</option>
+                                        </select>
+                                        <select class="condition-operator" style="width: 80px;">
+                                            <option value=">">&gt;</option>
+                                            <option value="<">&lt;</option>
+                                            <option value=">=">&gt;=</option>
+                                            <option value="<=">&lt;=</option>
+                                            <option value="=">=</option>
+                                        </select>
+                                        <input type="text" class="condition-value" placeholder="값"
+                                            style="width: 100px;">
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="removeConditionBlock(this)">삭제</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <button onclick="addConditionBlock()" class="btn btn-outline-primary btn-sm">+ 조건
+                                    추가</button>
+                                <button onclick="addLogicBlock()" class="btn btn-outline-secondary btn-sm">+ AND/OR
+                                    블록</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="height: 100%; display: flex; flex-direction: column;">
+                            <h6>🎯 조건 미리보기</h6>
+                            <div id="condition-preview"
+                                style="background: #f8f9fa; padding: 15px; border-radius: 6px; flex: 1; overflow-y: auto;">
+                                <div class="text-muted">조건을 구성하면 여기에 미리보기가 표시됩니다.</div>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <h6>📊 백테스트 결과</h6>
+                                <div id="builder-backtest-result"
+                                    style="background: #e8f4fd; padding: 10px; border-radius: 6px; max-height: 150px; overflow-y: auto;">
+                                    <div class="text-muted">백테스트를 실행하면 결과가 표시됩니다.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+
+</html>
