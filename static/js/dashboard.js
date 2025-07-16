@@ -17,10 +17,86 @@ document.addEventListener('DOMContentLoaded', function () {
     startConnectionMonitoring();
 
     setupWatchlistHandlers();
+    setupConditionHandlers();
     refreshWatchlist();
     refreshAutoTradingStatus();
     refreshSignalMonitoring();
+    
+    // ESC 키 이벤트 리스너 추가
+    setupEscKeyHandler();
+    
+    // 모달들이 기본적으로 숨겨져 있는지 확인
+    ensureModalsHidden();
+    
+    // 쿨다운 설정 불러오기
+    loadCooldownSettings();
+    
+    // 조건 수정 폼 이벤트 핸들러 설정
+    setupEditConditionHandlers();
+    
+    // 에러 모니터링 시작
+    startErrorMonitoring();
 });
+
+// 모달들이 기본적으로 숨겨져 있는지 확인하는 함수
+function ensureModalsHidden() {
+    // 조건 관리 모달 숨기기
+    const conditionModal = document.getElementById('condition-modal');
+    if (conditionModal) {
+        conditionModal.style.display = 'none';
+        conditionModal.classList.remove('show');
+    }
+    
+    // 상세 정보 모달 숨기기
+    const detailsModal = document.getElementById('details-modal');
+    if (detailsModal) {
+        detailsModal.classList.remove('show');
+    }
+    
+    // 조건 수정 모달 숨기기
+    const editConditionModal = document.getElementById('edit-condition-modal');
+    if (editConditionModal) {
+        editConditionModal.style.display = 'none';
+        editConditionModal.classList.remove('show');
+    }
+    
+    // 모달 백드롭 제거
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+    
+    // body에서 modal-open 클래스 제거
+    document.body.classList.remove('modal-open');
+}
+
+// ESC 키 이벤트 핸들러 설정
+function setupEscKeyHandler() {
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            // 조건 수정 모달이 열려있으면 닫기
+            const editConditionModal = document.getElementById('edit-condition-modal');
+            if (editConditionModal && (editConditionModal.style.display === 'block' || editConditionModal.classList.contains('show'))) {
+                closeEditConditionModal();
+                return;
+            }
+            
+            // 조건 관리 모달이 열려있으면 닫기
+            const conditionModal = document.getElementById('condition-modal');
+            if (conditionModal && (conditionModal.style.display === 'block' || conditionModal.classList.contains('show'))) {
+                closeConditionModal();
+                return;
+            }
+            
+            // 상세 정보 모달이 열려있으면 닫기
+            const detailsModal = document.getElementById('details-modal');
+            if (detailsModal && detailsModal.classList.contains('show')) {
+                closeDetailsModal();
+                return;
+            }
+        }
+    });
+}
 
 // 자동 새로고침 토글 설정
 function setupAutoRefreshToggle() {
@@ -53,12 +129,10 @@ async function refreshAll() {
 // 계좌 데이터 통합 조회 (중복 제거)
 async function refreshAccountData() {
     const balanceContent = document.getElementById('balance-content');
-    const portfolioContent = document.getElementById('portfolio-content');
     const holdingsContent = document.getElementById('holdings-content');
     
     // 모든 컨텐츠에 로딩 상태 추가
     balanceContent.classList.add('loading');
-    portfolioContent.classList.add('loading');
     holdingsContent.classList.add('loading');
 
     try {
@@ -85,16 +159,9 @@ async function refreshAccountData() {
             </small>
         `;
 
-        // 포트폴리오 요약 업데이트
-        portfolioContent.innerHTML = `
-            <h4 class="mb-2 ${profitClass}">${profitSign}${formatCurrency(totalProfit)}</h4>
-            <small class="text-muted">
-                수익률: ${profitSign}${profitRate.toFixed(2)}%<br>
-                보유종목: ${totalPositions}개
-            </small>
-        `;
 
-        // 보유종목 업데이트
+
+        // 보유종목 업데이트 (수익과 수익률을 동일 선에 표시)
         if (data && data.acnt_evlt_remn_indv_tot && data.acnt_evlt_remn_indv_tot.length > 0) {
             let html = '<div class="list-group list-group-flush">';
             
@@ -127,8 +194,7 @@ async function refreshAccountData() {
                         </div>
                         <div class="text-end">
                             <div class="mb-1"><strong class="current-price">${currentPrice}</strong></div>
-                            <div class="${prftClass}">${prftSign}${formatCurrency(evltvPrft)}</div>
-                            <small class="${prftClass}">${prftSign}${prftRt.toFixed(2)}%</small>
+                            <div class="${prftClass}">${prftSign}${formatCurrency(evltvPrft)} (${prftSign}${prftRt.toFixed(2)}%)</div>
                         </div>
                     </div>
                 `;
@@ -138,15 +204,18 @@ async function refreshAccountData() {
         } else {
             holdingsContent.innerHTML = '<div class="text-center text-muted">보유종목 없음</div>';
         }
+        
+        // 보유종목 업데이트 완료 후 loading 클래스 제거
+        holdingsContent.classList.remove('loading');
 
     } catch (error) {
         balanceContent.innerHTML = '<div class="text-danger"><i class="fas fa-exclamation-triangle"></i> 조회 실패</div>';
-        portfolioContent.innerHTML = '<div class="text-danger"><i class="fas fa-exclamation-triangle"></i> 조회 실패</div>';
         holdingsContent.innerHTML = '<div class="text-danger"><i class="fas fa-exclamation-triangle"></i> 조회 실패</div>';
+        // 에러 발생 시에도 loading 클래스 제거
+        holdingsContent.classList.remove('loading');
     } finally {
         // 모든 컨텐츠에서 로딩 상태 제거
         balanceContent.classList.remove('loading');
-        portfolioContent.classList.remove('loading');
         holdingsContent.classList.remove('loading');
     }
 }
@@ -335,11 +404,16 @@ async function refreshPendingOrders() {
             let html = '<div class="list-group list-group-flush">';
             data.forEach(order => {
                 const statusClass = getOrderStatusClass(order.status);
+                // 종목명 표시 (symbol_name이 있으면 사용, 없으면 message 사용, 둘 다 없으면 symbol 사용)
+                const displayName = order.symbol_name || order.message || order.symbol;
+                // 매수/매도 구분 (order_type 사용)
+                const orderType = order.order_type || (order.action === 'buy' ? '매수' : '매도');
+                
                 html += `
                     <div class="list-group-item d-flex justify-content-between align-items-center py-2">
                         <div>
-                            <strong>${order.symbol}</strong><br>
-                            <small class="text-muted">${order.action === 'buy' ? '매수' : '매도'} ${order.quantity}주 @ ${formatCurrency(order.price)}</small>
+                            <strong>${displayName}</strong><br>
+                            <small class="text-muted">${orderType} ${order.quantity}주 @ ${formatCurrency(order.price)}</small>
                         </div>
                         <div class="text-end">
                             <div class="mb-1"><span class="badge ${statusClass}">${getOrderStatusText(order.status)}</span></div>
@@ -458,6 +532,12 @@ function startAutoRefresh() {
     }
     autoRefreshInterval = setInterval(refreshAll, 30000); // 30초마다 전체 갱신 (계좌정보 + 미체결주문)
     autoRefreshEnabled = true;
+    
+    // 신호 모니터링 현재가는 더 자주 업데이트 (15초마다)
+    setInterval(updateSignalTablePrices, 15000);
+    
+    // 토큰 상태는 1분마다 확인
+    setInterval(refreshTokenStatus, 60000);
 }
 
 // 자동 갱신 중지
@@ -717,33 +797,82 @@ let currentConditionSymbol = '';
 function openConditionModal(symbol = null) {
     closeDetailsModal();
     const modal = document.getElementById('condition-modal');
-    if (modal) {
+    if (modal && symbol) {
         modal.style.display = 'block';
-        if (symbol) {
-            const symbolInput = document.getElementById('condition-symbol');
-            if (symbolInput) {
-                symbolInput.value = symbol;
+        modal.classList.add('show');
+        document.body.classList.add('modal-open');
+        
+        // 현재 조건 종목 설정
+        currentConditionSymbol = symbol;
+        
+        // 종목 정보 표시
+        document.getElementById('condition-symbol-code').textContent = symbol;
+        
+        // 감시 종목 목록에서 해당 종목의 이름 가져오기
+        getSymbolNameFromWatchlist(symbol).then(symbolName => {
+            document.getElementById('condition-symbol-name').textContent = symbolName;
+        });
+        
+        // 모달 제목 업데이트
+        document.getElementById('condition-modal-title').textContent = `조건 관리 - ${symbol}`;
+        
+        // 모달이 열릴 때 해당 종목의 조건 목록 새로고침
+        refreshConditions(symbol);
+    }
+}
+
+// 감시 종목 목록에서 종목명 가져오기
+async function getSymbolNameFromWatchlist(symbol) {
+    try {
+        const res = await fetch('/api/auto-trading/watchlist');
+        const data = await res.json();
+        if (data.items) {
+            const item = data.items.find(item => item.symbol === symbol);
+            if (item && item.symbol_name) {
+                return item.symbol_name;
             }
         }
-        refreshConditions();
+    } catch (e) {
+        console.error('종목명 조회 실패:', e);
     }
+    
+    // 감시 종목에서 찾지 못한 경우 기본 매핑 사용
+    return getSymbolName(symbol);
 }
 
 // 조건 관리 모달 닫기
 function closeConditionModal() {
-    document.getElementById('condition-modal').style.display = 'none';
-    currentConditionSymbol = '';
+    const modal = document.getElementById('condition-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        document.body.classList.remove('modal-open');
+    }
+}
+
+// 종목코드로 종목명 가져오기 (간단한 매핑)
+function getSymbolName(symbol) {
+    const symbolMap = {
+        'A049470': 'SGA',
+        'A005935': '삼성전자우',
+        'A090435': '현대차',
+        'A005380': '현대모비스',
+        'A000660': 'SK하이닉스'
+    };
+    return symbolMap[symbol] || symbol;
 }
 
 // 조건 목록 조회 및 렌더링
-async function refreshConditions() {
+async function refreshConditions(symbol = null) {
     const tableBody = document.querySelector('#condition-table tbody');
     if (!tableBody) return;
     
-    tableBody.innerHTML = '<tr><td colspan="6">로딩 중...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="8">로딩 중...</td></tr>';
     
     try {
-        const res = await fetch(`/api/auto-trading/conditions?symbol=${encodeURIComponent(currentConditionSymbol)}`);
+        // symbol이 null이면 빈 문자열로 처리
+        const querySymbol = symbol || '';
+        const res = await fetch(`/api/auto-trading/conditions?symbol=${encodeURIComponent(querySymbol)}`);
         const data = await res.json();
         
         if (data.items && data.items.length > 0) {
@@ -757,21 +886,17 @@ async function refreshConditions() {
                     <td>${item.is_active ? '<span class="badge bg-success">활성</span>' : '<span class="badge bg-secondary">비활성</span>'}</td>
                     <td>${formatDate(item.created_at)}</td>
                     <td>
+                        <button class="btn btn-sm btn-warning" onclick="editCondition(${item.id})">수정</button>
                         <button class="btn btn-sm btn-danger" onclick="removeCondition(${item.id})">삭제</button>
                         <button class="btn btn-sm btn-secondary" onclick="toggleConditionActive(${item.id}, ${item.is_active})">${item.is_active ? '비활성' : '활성'}</button>
-                        <button class="btn btn-sm btn-warning" onclick="backtestCondition(${item.id})">백테스트</button>
                     </td>
                 </tr>
             `).join('');
         } else {
             tableBody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">등록된 조건 없음</td></tr>';
         }
-        
-        // 조건 그룹과 성과 분석도 함께 새로고침
-        refreshConditionGroups();
-        refreshPerformanceAnalysis();
     } catch (e) {
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-danger">조회 실패</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="8" class="text-danger">조회 실패</td></tr>';
         showConditionMessage('조건 목록 조회 실패', false);
     }
 }
@@ -799,9 +924,12 @@ function setupConditionHandlers() {
                 return;
             }
             
+            // 현재 모달에 표시된 종목코드 가져오기
+            const symbol = document.getElementById('condition-symbol-code').textContent;
+            
             try {
                 const res = await fetch('/api/auto-trading/conditions?' + new URLSearchParams({
-                    symbol: currentConditionSymbol,
+                    symbol: symbol,
                     condition_type: conditionType,
                     category: category,
                     value: value,
@@ -813,7 +941,7 @@ function setupConditionHandlers() {
                 showConditionMessage(data.message, data.success);
                 if (data.success) {
                     form.reset();
-                    refreshConditions();
+                    refreshConditions(symbol);
                 }
             } catch (e) {
                 showConditionMessage('조건 추가 실패', false);
@@ -1583,6 +1711,124 @@ async function refreshPerformanceAnalysis() {
     }
 }
 
+// =========================
+// 토큰 관리 기능
+// =========================
+
+// 토큰 상태 확인 및 표시
+async function refreshTokenStatus() {
+    try {
+        const response = await fetch('/api/auth/token/status');
+        const data = await response.json();
+        
+        if (data.success && data.token_status) {
+            const tokenDiv = document.getElementById('token-status');
+            const tokenIndicator = document.getElementById('token-indicator');
+            const status = data.token_status;
+            
+            let statusText = '';
+            let statusClass = '';
+            let borderColor = '#28a745';
+            
+            if (!status.has_token) {
+                statusText = '🔑 토큰 없음';
+                statusClass = 'token-error';
+                borderColor = '#dc3545';
+            } else if (status.status === 'expired') {
+                statusText = '🔑 토큰 만료';
+                statusClass = 'token-error';
+                borderColor = '#dc3545';
+            } else if (status.status === 'expires_soon') {
+                statusText = `🔑 토큰 ${status.expires_in_minutes}분 후 만료`;
+                statusClass = 'token-warning';
+                borderColor = '#ffc107';
+            } else if (status.status === 'valid') {
+                statusText = `🔑 토큰 정상 (${status.expires_in_minutes}분 남음)`;
+                statusClass = 'token-valid';
+                borderColor = '#28a745';
+            } else {
+                statusText = '🔑 토큰 상태 확인됨';
+                statusClass = 'token-valid';
+                borderColor = '#28a745';
+            }
+            
+            tokenIndicator.textContent = statusText;
+            tokenDiv.style.borderColor = borderColor;
+            tokenDiv.className = statusClass;
+            
+            // 토큰 만료 시 알림
+            if (status.status === 'expired' || status.status === 'expires_soon') {
+                showTokenAlert(status);
+            }
+        }
+    } catch (error) {
+        console.error('토큰 상태 조회 실패:', error);
+        document.getElementById('token-indicator').textContent = '🔑 토큰 상태 확인 실패';
+        document.getElementById('token-status').style.borderColor = '#dc3545';
+    }
+}
+
+// 토큰 알림 표시
+function showTokenAlert(tokenStatus) {
+    const alertMessage = tokenStatus.status === 'expired' 
+        ? '토큰이 만료되었습니다. 갱신이 필요합니다.' 
+        : `토큰이 ${tokenStatus.expires_in_minutes}분 후 만료됩니다.`;
+    
+    // 기존 알림 제거
+    const existingAlert = document.querySelector('.token-alert');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+    
+    // 알림 메시지를 화면에 표시
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-warning token-alert';
+    alertDiv.innerHTML = `
+        <strong>⚠️ 토큰 경고:</strong> ${alertMessage}
+        <button onclick="refreshTokenManually()" class="btn btn-sm btn-primary" style="margin-left: 10px;">토큰 갱신</button>
+        <button onclick="this.parentElement.remove()" class="btn btn-sm btn-secondary" style="margin-left: 5px;">닫기</button>
+    `;
+    
+    // 자동매매 섹션 위에 알림 표시
+    const autoTradingSection = document.getElementById('auto-trading-section');
+    autoTradingSection.insertBefore(alertDiv, autoTradingSection.firstChild);
+    
+    // 10초 후 자동 제거
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 10000);
+}
+
+// 토큰 수동 갱신
+async function refreshTokenManually() {
+    try {
+        const response = await fetch('/api/auth/token/refresh', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('토큰이 성공적으로 갱신되었습니다.');
+            await refreshTokenStatus();
+            // 기존 알림 제거
+            const existingAlert = document.querySelector('.token-alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+        } else {
+            alert('토큰 갱신에 실패했습니다: ' + data.error);
+        }
+    } catch (error) {
+        console.error('토큰 갱신 실패:', error);
+        alert('토큰 갱신 중 오류가 발생했습니다.');
+    }
+}
+
 async function exportPerformanceReport() {
     if (!currentConditionSymbol) {
         alert('종목을 선택해주세요.');
@@ -1617,7 +1863,10 @@ async function removeCondition(conditionId) {
         const res = await fetch(`/api/auto-trading/conditions/${conditionId}`, { method: 'DELETE' });
         const data = await res.json();
         showConditionMessage(data.message, data.success);
-        if (data.success) refreshConditions();
+        if (data.success) {
+            const symbol = document.getElementById('condition-symbol-code').textContent;
+            refreshConditions(symbol);
+        }
     } catch (e) {
         showConditionMessage('조건 삭제 실패', false);
     }
@@ -1629,9 +1878,146 @@ async function toggleConditionActive(conditionId, isActive) {
         const res = await fetch(`/api/auto-trading/conditions/${conditionId}?is_active=${!isActive}`, { method: 'PUT' });
         const data = await res.json();
         showConditionMessage(data.message, data.success);
-        if (data.success) refreshConditions();
+        if (data.success) {
+            const symbol = document.getElementById('condition-symbol-code').textContent;
+            refreshConditions(symbol);
+        }
     } catch (e) {
         showConditionMessage('상태 변경 실패', false);
+    }
+}
+
+// 조건 수정 모달 열기
+let currentEditConditionId = null;
+let editConditionData = null;
+
+async function editCondition(conditionId) {
+    try {
+        // 조건 목록에서 해당 조건 데이터 찾기
+        const symbol = document.getElementById('condition-symbol-code').textContent;
+        const res = await fetch(`/api/auto-trading/conditions?symbol=${encodeURIComponent(symbol)}`);
+        const data = await res.json();
+        
+        const condition = data.items.find(item => item.id === conditionId);
+        if (!condition) {
+            showConditionMessage('조건 정보를 찾을 수 없습니다.', false);
+            return;
+        }
+        
+        // 수정 모달 열기
+        currentEditConditionId = conditionId;
+        editConditionData = condition;
+        
+        const modal = document.getElementById('edit-condition-modal');
+        modal.style.display = 'block';
+        modal.classList.add('show');
+        document.body.classList.add('modal-open');
+        
+        // 폼 필드 채우기
+        document.getElementById('edit-condition-type').value = condition.condition_type;
+        document.getElementById('edit-condition-category').value = condition.category || 'custom';
+        document.getElementById('edit-condition-value').value = condition.value;
+        document.getElementById('edit-condition-description').value = condition.description || '';
+        document.getElementById('edit-condition-active').checked = condition.is_active;
+        
+        // 메시지 초기화
+        document.getElementById('edit-condition-message').textContent = '';
+        
+    } catch (e) {
+        showConditionMessage('조건 수정 모달 열기 실패', false);
+    }
+}
+
+// 조건 수정 모달 닫기
+function closeEditConditionModal() {
+    const modal = document.getElementById('edit-condition-modal');
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    document.body.classList.remove('modal-open');
+    
+    // 전역 변수 초기화
+    currentEditConditionId = null;
+    editConditionData = null;
+    
+    // 폼 리셋
+    document.getElementById('edit-condition-form').reset();
+    document.getElementById('edit-condition-message').textContent = '';
+}
+
+// 조건 수정 폼 이벤트 핸들러 설정
+function setupEditConditionHandlers() {
+    const editForm = document.getElementById('edit-condition-form');
+    if (editForm) {
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!currentEditConditionId) {
+                showEditConditionMessage('수정할 조건이 선택되지 않았습니다.', false);
+                return;
+            }
+            
+            const value = document.getElementById('edit-condition-value').value.trim();
+            const description = document.getElementById('edit-condition-description').value.trim();
+            const isActive = document.getElementById('edit-condition-active').checked;
+            
+            if (!value) {
+                showEditConditionMessage('조건 값을 입력해주세요.', false);
+                return;
+            }
+            
+            // 조건 값 검증
+            const category = document.getElementById('edit-condition-category').value;
+            const validation = validateConditionValue(category, value);
+            if (!validation.valid) {
+                showEditConditionMessage(validation.error, false);
+                return;
+            }
+            
+            try {
+                const params = new URLSearchParams({
+                    value: value,
+                    description: description,
+                    is_active: isActive
+                });
+                
+                const res = await fetch(`/api/auto-trading/conditions/${currentEditConditionId}?${params}`, {
+                    method: 'PUT'
+                });
+                
+                const data = await res.json();
+                showEditConditionMessage(data.message, data.success);
+                
+                if (data.success) {
+                    // 수정 성공 시 모달 닫기
+                    setTimeout(() => {
+                        closeEditConditionModal();
+                        
+                        // 조건 목록 새로고침
+                        const symbol = document.getElementById('condition-symbol-code').textContent;
+                        refreshConditions(symbol);
+                        
+                        // 원래 조건 관리 모달에 성공 메시지 표시
+                        showConditionMessage('조건이 성공적으로 수정되었습니다.', true);
+                    }, 1000);
+                }
+            } catch (e) {
+                showEditConditionMessage('조건 수정 실패', false);
+            }
+        });
+    }
+}
+
+// 조건 수정 메시지 표시
+function showEditConditionMessage(message, isSuccess) {
+    const messageDiv = document.getElementById('edit-condition-message');
+    messageDiv.textContent = message;
+    messageDiv.style.color = isSuccess ? '#28a745' : '#dc3545';
+    
+    // 성공 메시지는 3초 후 자동 삭제
+    if (isSuccess) {
+        setTimeout(() => {
+            messageDiv.textContent = '';
+        }, 3000);
     }
 }
 
@@ -1653,6 +2039,8 @@ async function refreshAutoTradingStatus() {
     const statusDiv = document.getElementById('auto-trading-status');
     const startBtn = document.getElementById('start-auto-trading');
     const stopBtn = document.getElementById('stop-auto-trading');
+    const modeIndicator = document.getElementById('mode-indicator');
+    const modeStatus = document.getElementById('trading-mode-status');
     
     try {
         const res = await fetch('/api/auto-trading/status');
@@ -1661,11 +2049,23 @@ async function refreshAutoTradingStatus() {
         if (data.status) {
             const status = data.status;
             const isRunning = status.is_running;
+            const isTestMode = status.test_mode;
             
             // 상태 표시
             statusDiv.textContent = `상태: ${isRunning ? '실행 중' : '중지됨'}`;
             statusDiv.style.background = isRunning ? '#d4edda' : '#f8f9fa';
             statusDiv.style.color = isRunning ? '#155724' : '#6c757d';
+            
+            // 매매 모드 표시
+            if (isTestMode) {
+                modeIndicator.textContent = '🧪 테스트 모드';
+                modeStatus.style.border = '2px solid #007bff';
+                modeStatus.style.background = '#e7f3ff';
+            } else {
+                modeIndicator.textContent = '💰 실제 매매';
+                modeStatus.style.border = '2px solid #dc3545';
+                modeStatus.style.background = '#ffeaea';
+            }
             
             // 버튼 표시/숨김
             startBtn.style.display = isRunning ? 'none' : 'inline-block';
@@ -1673,20 +2073,43 @@ async function refreshAutoTradingStatus() {
             
             // 통계 정보 업데이트
             updateAutoTradingStats(status);
+            
+            // 자동매매 실행 중일 때 에러 체크
+            if (status.is_running) {
+                checkSystemErrors();
+            }
+            
+            // 에러가 없으면 자동매매 에러 알림 숨기기
+            hideAutoTradingError();
+        } else {
+            console.error('자동매매 상태 조회 실패:', data.message);
+            showAutoTradingError('자동매매 상태 조회에 실패했습니다.');
         }
     } catch (e) {
         statusDiv.textContent = '상태: 조회 실패';
         statusDiv.style.background = '#f8d7da';
         statusDiv.style.color = '#721c24';
+        showAutoTradingError('자동매매 상태 갱신 중 오류가 발생했습니다.');
     }
+    
+    // 토큰 상태도 함께 업데이트
+    await refreshTokenStatus();
 }
 
 // 자동매매 통계 정보 업데이트
 async function updateAutoTradingStats(status) {
-    // 일일 주문 정보 업데이트
+    // 일일 주문 정보 업데이트 (테스트 모드와 실제 매매 분리)
     const dailyOrdersDiv = document.getElementById('daily-orders');
     if (dailyOrdersDiv) {
-        dailyOrdersDiv.textContent = `${status.daily_order_count || 0}/${status.max_daily_orders || 10}`;
+        const isTestMode = status.test_mode;
+        const currentCount = isTestMode ? (status.daily_order_count_test || 0) : (status.daily_order_count_real || 0);
+        const maxCount = isTestMode ? (status.max_daily_orders_test || 50) : (status.max_daily_orders_real || 10);
+        const modeText = isTestMode ? '테스트' : '실제';
+        
+        dailyOrdersDiv.innerHTML = `
+            <div>${currentCount}/${maxCount}</div>
+            <div style="font-size: 0.8em; color: #666; margin-top: 2px;">${modeText} 모드</div>
+        `;
     }
     
     // 감시 종목 정보 업데이트
@@ -1817,14 +2240,8 @@ async function showWatchlistDetails() {
         content.innerHTML = '<p class="text-danger text-center">감시 종목 정보를 불러오는데 실패했습니다.</p>';
     }
     
-    modal.style.display = 'block';
-    modal.style.zIndex = '99999';
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0,0,0,0.6)';
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
 }
 
 // 활성 조건 상세 정보 표시
@@ -1922,22 +2339,18 @@ async function showActiveConditionsDetails() {
         content.innerHTML = '<p class="text-danger text-center">조건 정보를 불러오는데 실패했습니다.</p>';
     }
     
-    modal.style.display = 'block';
-    modal.style.zIndex = '99999';
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0,0,0,0.6)';
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
 }
 
 // 상세 정보 모달 닫기
 function closeDetailsModal() {
     const modal = document.getElementById('details-modal');
     if (modal) {
-        modal.style.display = 'none';
+        modal.classList.remove('show');
     }
+    // body 스크롤 복구
+    document.body.style.overflow = 'auto';
 }
 
 // 감시 종목 섹션으로 이동
@@ -1949,21 +2362,7 @@ function openWatchlistSection() {
     }
 }
 
-// 조건 관리 모달 열기 (기존 함수 수정)
-function openConditionModal(symbol = null) {
-    closeDetailsModal();
-    const modal = document.getElementById('condition-modal');
-    if (modal) {
-        modal.style.display = 'block';
-        if (symbol) {
-            const symbolInput = document.getElementById('condition-symbol');
-            if (symbolInput) {
-                symbolInput.value = symbol;
-            }
-        }
-        refreshConditions();
-    }
-}
+// 조건 관리 모달 열기 (중복 정의 제거 - 위의 완전한 구현 사용)
 
 // 자동매매 시작
 async function startAutoTrading() {
@@ -2024,6 +2423,14 @@ async function refreshSignalMonitoring() {
     ]);
 }
 
+// 신호 테이블의 현재가만 업데이트
+async function updateSignalTablePrices() {
+    const priceCells = document.querySelectorAll('.real-time-price');
+    if (priceCells.length > 0) {
+        await updateRealTimePrices();
+    }
+}
+
 // 신호 통계 조회 및 표시
 async function refreshSignalStatistics() {
     const statsDiv = document.getElementById('signal-stats');
@@ -2066,7 +2473,7 @@ async function refreshRecentSignals() {
                     <td>${signal.symbol}</td>
                     <td><span class="badge ${signal.signal_type === 'buy' ? 'bg-success' : 'bg-danger'}">${signal.signal_type === 'buy' ? '매수' : '매도'}</span></td>
                     <td>${signal.condition_value}</td>
-                    <td>${formatCurrency(signal.current_price)}</td>
+                    <td>${signal.current_price ? formatCurrency(signal.current_price) : '-'}</td>
                     <td>${getSignalStatusBadge(signal.status)}</td>
                     <td class="${signal.profit_loss >= 0 ? 'profit' : 'loss'}">${signal.profit_loss ? formatCurrency(signal.profit_loss) : '-'}</td>
                 </tr>
@@ -2079,6 +2486,8 @@ async function refreshRecentSignals() {
         showSignalMessage('신호 목록 조회 실패', false);
     }
 }
+
+
 
 // 신호 상태 배지 생성
 function getSignalStatusBadge(status) {
@@ -2108,21 +2517,389 @@ function showDetailsModal() {
     if (modal.parentNode !== document.body) {
         document.body.appendChild(modal);
     }
-    modal.style.display = 'block';
-    modal.style.position = 'fixed';
-    modal.style.zIndex = '99999';
-    modal.style.left = '0';
-    modal.style.top = '0';
-    modal.style.width = '100vw';
-    modal.style.height = '100vh';
-    modal.style.backgroundColor = 'rgba(0,0,0,0.6)';
-    const content = modal.querySelector('.modal-content');
-    if (content) {
-        content.style.position = 'relative';
-        content.style.margin = '60px auto';
-        content.style.zIndex = '100000';
-        content.style.background = '#fff';
-        content.style.borderRadius = '8px';
-        content.style.maxWidth = '800px';
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+// 매매 모드 전환 (테스트/실제)
+async function toggleTradingMode() {
+    try {
+        // 현재 상태 확인
+        const statusRes = await fetch('/api/auto-trading/status');
+        const statusData = await statusRes.json();
+        
+        if (!statusData.status) {
+            showAutoTradingMessage('상태 조회 실패', false);
+            return;
+        }
+        
+        const currentTestMode = statusData.status.test_mode;
+        const newTestMode = !currentTestMode;
+        
+        // 확인 메시지
+        const modeText = newTestMode ? '테스트 모드' : '실제 매매';
+        const confirmMsg = `매매 모드를 ${modeText}로 변경하시겠습니까?`;
+        
+        if (!newTestMode) {
+            const realTradingWarning = '⚠️ 실제 매매 모드로 전환하면 실제 자금으로 거래가 실행됩니다.\n정말로 전환하시겠습니까?';
+            if (!confirm(realTradingWarning)) {
+                return;
+            }
+        } else if (!confirm(confirmMsg)) {
+            return;
+        }
+        
+        // 모드 변경 요청
+        const res = await fetch(`/api/auto-trading/mode?test_mode=${newTestMode}`, {
+            method: 'POST'
+        });
+        
+        const data = await res.json();
+        
+        if (data.success) {
+            showAutoTradingMessage(data.message, true);
+            // 상태 새로고침
+            setTimeout(refreshAutoTradingStatus, 500);
+        } else {
+            showAutoTradingMessage(data.message || '모드 변경 실패', false);
+        }
+    } catch (e) {
+        showAutoTradingMessage('모드 변경 중 오류 발생', false);
+        console.error('매매 모드 전환 오류:', e);
     }
 }
+
+// 실행된 주문 내역 표시
+async function showExecutedOrdersDetails() {
+    try {
+        const res = await fetch('/api/auto-trading/executed-orders?days=1');
+        const data = await res.json();
+        
+        const modal = document.getElementById('details-modal');
+        const title = document.getElementById('details-modal-title');
+        const content = document.getElementById('details-content');
+        
+        // DOM 요소 존재 확인
+        if (!modal || !title || !content) {
+            console.error('모달 요소를 찾을 수 없습니다');
+            showAutoTradingMessage('주문 내역 조회 실패', false);
+            return;
+        }
+        
+        title.textContent = '실행된 주문 내역 (오늘)';
+        
+        if (data.success && data.orders && data.orders.length > 0) {
+            let html = `
+                <div style="margin-bottom: 16px;">
+                    <strong>총 ${data.total_count}건의 주문이 실행되었습니다.</strong>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>시간</th>
+                                <th>종목</th>
+                                <th>구분</th>
+                                <th>조건</th>
+                                <th>RSI</th>
+                                <th>체결가</th>
+                                <th>수량</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            data.orders.forEach(order => {
+                const executedTime = order.executed_at ? 
+                    new Date(order.executed_at).toLocaleString('ko-KR') : '-';
+                const signalTypeText = order.signal_type === 'buy' ? '매수' : '매도';
+                const signalTypeClass = order.signal_type === 'buy' ? 'buy' : 'sell';
+                const rsiValue = (order.rsi_value !== undefined && order.rsi_value !== null) ? order.rsi_value.toFixed(2) : '-';
+                
+                html += `
+                    <tr>
+                        <td style="font-size: 0.85em;">${executedTime}</td>
+                        <td><strong>${order.symbol}</strong></td>
+                        <td><span class="signal-type ${signalTypeClass}">${signalTypeText}</span></td>
+                        <td style="font-size: 0.9em;">${order.condition_value}</td>
+                        <td style="text-align: right;">${rsiValue}</td>
+                        <td style="text-align: right;">${order.executed_price ? formatCurrency(order.executed_price) : '-'}</td>
+                        <td style="text-align: right;">${order.executed_quantity || '-'}</td>
+                        <td><span class="status-badge executed">실행됨</span></td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            content.innerHTML = html;
+        } else {
+            content.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <div style="font-size: 3em; margin-bottom: 16px;">📋</div>
+                    <div>오늘 실행된 주문이 없습니다.</div>
+                </div>
+            `;
+        }
+        
+        // 모달 표시
+        modal.classList.add('show');
+        
+        // body 스크롤 방지
+        document.body.style.overflow = 'hidden';
+        
+        // 모달 내용은 CSS에서 설정된 스타일 사용
+        
+    } catch (e) {
+        console.error('실행된 주문 내역 조회 오류:', e);
+        showAutoTradingMessage('주문 내역 조회 실패', false);
+    }
+}
+
+// 쿨다운 시간 업데이트 함수
+async function updateCooldown() {
+    const cooldownMinutes = parseInt(document.getElementById('cooldown-minutes').value);
+    
+    if (isNaN(cooldownMinutes) || cooldownMinutes < 0) {
+        showAutoTradingMessage('유효하지 않은 쿨다운 시간입니다. 0 이상의 숫자를 입력해주세요.', false);
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/auto-trading/cooldown?minutes=${cooldownMinutes}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showAutoTradingMessage(data.message, true);
+            // 상태 갱신
+            refreshAutoTradingStatus();
+        } else {
+            showAutoTradingMessage(data.message, false);
+        }
+    } catch (error) {
+        console.error('쿨다운 시간 설정 실패:', error);
+        showAutoTradingMessage('쿨다운 시간 설정에 실패했습니다.', false);
+    }
+}
+
+// 쿨다운 시간 조회 함수
+async function loadCooldownSettings() {
+    try {
+        const response = await fetch('/api/auto-trading/cooldown');
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('cooldown-minutes').value = data.cooldown_minutes;
+        } else {
+            console.error('쿨다운 설정 로드 실패:', data.message);
+        }
+    } catch (error) {
+        console.error('쿨다운 설정 로드 실패:', error);
+    }
+}
+
+// 일일 주문 제한 초기화 함수
+async function resetDailyOrderCount() {
+    try {
+        const response = await fetch('/api/auto-trading/reset-daily-count', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showAutoTradingMessage(data.message, true);
+            // 상태 갱신
+            refreshAutoTradingStatus();
+        } else {
+            showAutoTradingMessage(data.message, false);
+        }
+    } catch (error) {
+        console.error('일일 주문 제한 초기화 실패:', error);
+        showAutoTradingMessage('일일 주문 제한 초기화에 실패했습니다.', false);
+    }
+}
+
+// =========================
+// 에러 상황 모니터링 기능
+// =========================
+
+// 에러 상황 체크 및 표시
+async function checkSystemErrors() {
+    try {
+        const res = await fetch('/api/system/errors');
+        const data = await res.json();
+        
+        if (data.success && data.errors) {
+            // 모든 에러 알림 초기화
+            hideErrorAlert('token');
+            hideErrorAlert('market');
+            hideErrorAlert('general');
+            
+            // 각 에러 타입별 처리
+            data.errors.forEach(error => {
+                showErrorAlert(error.type, error.message, error.level);
+            });
+        } else if (data.success && data.error_count === 0) {
+            // 에러가 없으면 모든 알림 숨기기
+            hideErrorAlert('token');
+            hideErrorAlert('market');
+            hideErrorAlert('general');
+        }
+    } catch (error) {
+        console.error('시스템 에러 체크 실패:', error);
+    }
+}
+
+// 에러 알림 표시
+function showErrorAlert(type, message, level = 'error') {
+    const alertElement = document.getElementById(`${type}-error-alert`);
+    const messageElement = document.getElementById(`${type}-error-message`);
+    
+    if (alertElement && messageElement) {
+        messageElement.textContent = message;
+        alertElement.style.display = 'block';
+        
+        // 레벨에 따른 스타일 조정
+        if (level === 'warning') {
+            alertElement.className = 'alert alert-warning';
+            alertElement.style.border = '1px solid #ffc107';
+            alertElement.style.background = '#fff3cd';
+            alertElement.style.color = '#856404';
+        } else {
+            alertElement.className = 'alert alert-danger';
+            alertElement.style.border = '1px solid #dc3545';
+            alertElement.style.background = '#f8d7da';
+            alertElement.style.color = '#721c24';
+        }
+    }
+}
+
+// 자동매매 에러 표시 (특별 처리)
+function showAutoTradingError(message) {
+    showErrorAlert('auto-trading', message, 'error');
+}
+
+// 자동매매 에러 숨기기
+function hideAutoTradingError() {
+    hideErrorAlert('auto-trading');
+}
+
+// 에러 알림 숨기기
+function hideErrorAlert(type) {
+    const alertElement = document.getElementById(`${type}-error-alert`);
+    if (alertElement) {
+        alertElement.style.display = 'none';
+    }
+}
+
+// 시장 상태 체크
+async function checkMarketStatus() {
+    try {
+        const res = await fetch('/api/market/status');
+        const data = await res.json();
+        
+        if (data.success && data.market_status) {
+            const marketStatus = data.market_status;
+            
+            if (!marketStatus.is_open) {
+                showErrorAlert('market', marketStatus.status_message, 'warning');
+            } else {
+                // 시장이 열려 있으면 알림 숨기기
+                hideErrorAlert('market');
+            }
+            
+            return marketStatus;
+        }
+    } catch (error) {
+        console.error('시장 상태 확인 실패:', error);
+        showErrorAlert('market', '시장 상태 확인에 실패했습니다.', 'error');
+    }
+}
+
+// 토큰 상태 체크 (기존 함수 개선)
+async function checkTokenStatus() {
+    try {
+        const res = await fetch('/api/auth/token/status');
+        const data = await res.json();
+        
+        if (data.success && data.token_status) {
+            const tokenStatus = data.token_status;
+            
+            if (!tokenStatus.is_valid) {
+                showErrorAlert('token', '토큰이 유효하지 않습니다. 토큰을 갱신해주세요.', 'error');
+            } else {
+                hideErrorAlert('token');
+            }
+            
+            return tokenStatus;
+        }
+    } catch (error) {
+        console.error('토큰 상태 확인 실패:', error);
+        showErrorAlert('token', '토큰 상태 확인에 실패했습니다.', 'error');
+    }
+}
+
+// 전체 에러 상황 모니터링 시작
+let errorMonitoringInterval = null;
+
+function startErrorMonitoring() {
+    // 기존 인터벌 정리
+    if (errorMonitoringInterval) {
+        clearInterval(errorMonitoringInterval);
+    }
+    
+    // 즉시 한 번 실행
+    checkSystemErrors();
+    checkAutoTradingErrors();
+    
+    // 30초마다 주기적으로 체크
+    errorMonitoringInterval = setInterval(() => {
+        checkSystemErrors();
+        checkAutoTradingErrors();
+    }, 30000);
+}
+
+function stopErrorMonitoring() {
+    if (errorMonitoringInterval) {
+        clearInterval(errorMonitoringInterval);
+        errorMonitoringInterval = null;
+    }
+}
+
+// 자동매매 에러 체크
+async function checkAutoTradingErrors() {
+    try {
+        const response = await fetch('/api/auto-trading/errors');
+        const data = await response.json();
+        
+        if (data.success) {
+            if (data.has_error && data.error) {
+                const error = data.error;
+                const errorMessage = `${error.message} (${error.age_minutes}분 전)`;
+                showAutoTradingError(errorMessage);
+            } else {
+                hideAutoTradingError();
+            }
+        } else {
+            console.error('자동매매 에러 조회 실패:', data.message);
+        }
+    } catch (error) {
+        console.error('자동매매 에러 체크 실패:', error);
+    }
+}
+

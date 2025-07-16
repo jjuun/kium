@@ -34,6 +34,40 @@ condition_manager = ConditionManager()
 auto_trader = AutoTrader()
 signal_monitor = SignalMonitor()
 
+@app.on_event("startup")
+async def startup_event():
+    """서버 시작 시 자동매매 시작"""
+    try:
+        logger.info("=== 웹 서버 시작 ===")
+        
+        # 토큰 발급 시도
+        token = kiwoom_api.get_access_token()
+        if token:
+            logger.info("키움 API 토큰 발급 성공")
+        else:
+            logger.warning("키움 API 토큰 발급 실패")
+        
+        # 자동매매 시작 (기본 수량: 1주)
+        success = auto_trader.start(quantity=1)
+        if success:
+            logger.info("✅ 자동매매가 자동으로 시작되었습니다.")
+        else:
+            logger.warning("⚠️ 자동매매 시작에 실패했습니다.")
+            
+    except Exception as e:
+        logger.error(f"서버 시작 중 오류: {e}")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """서버 종료 시 자동매매 중지"""
+    try:
+        if auto_trader.is_running:
+            auto_trader.stop()
+            logger.info("✅ 자동매매가 중지되었습니다.")
+        logger.info("=== 웹 서버 종료 ===")
+    except Exception as e:
+        logger.error(f"서버 종료 중 오류: {e}")
+
 @app.get("/")
 async def home():
     return FileResponse("templates/dashboard.html")
@@ -45,6 +79,61 @@ async def favicon():
 @app.get("/api/test")
 async def test():
     return {"message": "서버 동작 중", "status": "success"}
+
+# 키움 API 토큰 발급
+@app.get("/api/kiwoom/token")
+async def get_kiwoom_token():
+    try:
+        token = kiwoom_api.get_access_token()
+        if token:
+            return {
+                "status": "success",
+                "message": "토큰 발급 성공",
+                "token": token[:20] + "..." if len(token) > 20 else token,
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            return {
+                "status": "error",
+                "message": "토큰 발급 실패",
+                "timestamp": datetime.now().isoformat()
+            }
+    except Exception as e:
+        logger.error(f"키움 API 토큰 발급 실패: {str(e)}")
+        return {
+            "status": "error",
+            "message": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
+
+# 키움 API 상태 확인
+@app.get("/api/kiwoom/status")
+async def get_kiwoom_status():
+    try:
+        # 토큰 발급 시도
+        token = kiwoom_api.get_access_token()
+        if token:
+            return {
+                "status": "connected",
+                "message": "키움 API 연결 성공",
+                "simulation": kiwoom_api.is_simulation,
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            return {
+                "status": "disconnected",
+                "message": "키움 API 연결 실패",
+                "simulation": kiwoom_api.is_simulation,
+                "timestamp": datetime.now().isoformat()
+            }
+    except Exception as e:
+        logger.error(f"키움 API 상태 확인 실패: {str(e)}")
+        return {
+            "status": "error",
+            "message": str(e),
+            "simulation": kiwoom_api.is_simulation,
+            "timestamp": datetime.now().isoformat()
+        }
 
 # 계좌 정보 API
 @app.get("/api/account/balance")
@@ -313,6 +402,48 @@ async def cancel_order(order_data: Dict[str, Any]):
         logger.error(f"주문 취소 실패: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# 실제 주문 테스트 API
+@app.post("/api/orders/test")
+async def test_real_order():
+    try:
+        # 테스트용 주문 데이터 (SGA 1주 시장가 매수)
+        symbol = "A049470"  # SGA
+        quantity = 1
+        price = 0  # 시장가
+        order_type = "01"  # 매수
+        price_type = "03"  # 시장가
+        
+        logger.info(f"실제 주문 테스트: {symbol} - {order_type} {quantity}주 @ 시장가")
+        
+        result = kiwoom_api.place_order(symbol, quantity, price, order_type, price_type)
+        
+        if result:
+            logger.info(f"실제 주문 테스트 성공: {symbol}")
+            return {
+                "status": "success",
+                "message": "실제 주문 테스트 성공",
+                "order_data": result,
+                "symbol": symbol,
+                "quantity": quantity,
+                "order_type": "매수",
+                "price_type": "시장가",
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            logger.error(f"실제 주문 테스트 실패: {symbol}")
+            return {
+                "status": "error",
+                "message": "실제 주문 테스트 실패",
+                "timestamp": datetime.now().isoformat()
+            }
+    except Exception as e:
+        logger.error(f"실제 주문 테스트 중 오류: {str(e)}")
+        return {
+            "status": "error",
+            "message": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
+
 # 미체결 주문 API
 @app.get("/api/trading/orders/pending")
 async def get_pending_orders():
@@ -349,6 +480,51 @@ async def get_realized_pnl(stk_cd: str = Query(..., description="종목코드"))
         logger.error(f"실현손익 조회 실패: {str(e)}")
         return {
             'output': [],
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }
+
+# 토큰 상태 API
+@app.get("/api/auth/token/status")
+async def get_token_status():
+    """토큰 상태 확인"""
+    try:
+        status = kiwoom_api.get_token_status()
+        return {
+            'success': True,
+            'token_status': status,
+            'timestamp': datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"토큰 상태 확인 실패: {str(e)}")
+        return {
+            'success': False,
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }
+
+@app.post("/api/auth/token/refresh")
+async def refresh_token():
+    """토큰 강제 갱신"""
+    try:
+        success = kiwoom_api.force_refresh_token()
+        if success:
+            return {
+                'success': True,
+                'message': '토큰 갱신 성공',
+                'token_status': kiwoom_api.get_token_status(),
+                'timestamp': datetime.now().isoformat()
+            }
+        else:
+            return {
+                'success': False,
+                'error': '토큰 갱신 실패',
+                'timestamp': datetime.now().isoformat()
+            }
+    except Exception as e:
+        logger.error(f"토큰 갱신 실패: {str(e)}")
+        return {
+            'success': False,
             'error': str(e),
             'timestamp': datetime.now().isoformat()
         }
@@ -875,8 +1051,13 @@ async def export_performance_report(symbol: str = Query(..., description="종목
 async def start_auto_trading(request: Request):
     """자동매매 시작"""
     try:
-        data = await request.json()
-        quantity = data.get('quantity', 1)
+        # 요청 본문이 비어있을 경우 기본값 사용
+        try:
+            data = await request.json()
+            quantity = data.get('quantity', 1)
+        except:
+            quantity = 1
+        
         success = auto_trader.start(quantity=quantity)
         if success:
             return {
@@ -1043,6 +1224,304 @@ async def validate_stock_code(symbol: str = Query(..., description="종목코드
                 'name': '',
                 'error': str(e)
             },
+            'timestamp': datetime.now().isoformat()
+        }
+
+# 매매 모드 설정 API
+@app.post("/api/auto-trading/mode")
+async def set_trading_mode(test_mode: bool = Query(..., description="테스트 모드 여부")):
+    """매매 모드 설정 (테스트/실제)"""
+    try:
+        auto_trader.set_test_mode(test_mode)
+        mode_text = "테스트 모드" if test_mode else "실제 매매"
+        
+        return {
+            "success": True,
+            "message": f"매매 모드가 {mode_text}로 변경되었습니다.",
+            "test_mode": test_mode,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"매매 모드 설정 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": f"매매 모드 설정 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat()
+        }
+
+# 실행된 주문 내역 조회 API
+@app.get("/api/auto-trading/executed-orders")
+async def get_executed_orders(days: int = Query(1, description="조회 일수")):
+    """실행된 주문 내역 조회"""
+    try:
+        # 실행된 신호들 조회
+        executed_signals = signal_monitor.get_executed_signals(days=days)
+        
+        # 주문 내역 포맷팅
+        orders = []
+        for signal in executed_signals:
+            orders.append({
+                "id": signal.id,
+                "symbol": signal.symbol,
+                "signal_type": signal.signal_type,
+                "condition_value": signal.condition_value,
+                "executed_price": signal.executed_price,
+                "executed_quantity": signal.executed_quantity,
+                "executed_at": signal.executed_at.isoformat() if signal.executed_at else None,
+                "profit_loss": signal.profit_loss,
+                "rsi_value": signal.rsi_value
+            })
+        
+        return {
+            "success": True,
+            "orders": orders,
+            "total_count": len(orders),
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"실행된 주문 내역 조회 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": f"주문 내역 조회 실패: {str(e)}",
+            "orders": [],
+            "total_count": 0,
+            "timestamp": datetime.now().isoformat()
+        }
+
+# 주문 쿨다운 설정 API
+@app.post("/api/auto-trading/cooldown")
+async def set_order_cooldown(minutes: int = Query(..., description="주문 쿨다운 시간 (분)")):
+    """주문 쿨다운 시간 설정"""
+    try:
+        result = auto_trader.set_order_cooldown(minutes)
+        return {
+            "success": True,
+            "message": f"주문 쿨다운 시간이 {result['old_cooldown_minutes']}분에서 {result['new_cooldown_minutes']}분으로 변경되었습니다.",
+            "old_cooldown_minutes": result['old_cooldown_minutes'],
+            "new_cooldown_minutes": result['new_cooldown_minutes'],
+            "new_cooldown_seconds": result['new_cooldown_seconds'],
+            "timestamp": datetime.now().isoformat()
+        }
+    except ValueError as e:
+        logger.error(f"주문 쿨다운 설정 실패: {e}")
+        return {
+            "success": False,
+            "message": f"주문 쿨다운 설정 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"주문 쿨다운 설정 실패: {e}")
+        return {
+            "success": False,
+            "message": f"주문 쿨다운 설정 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat()
+        }
+
+# 일일 주문 제한 초기화 API
+@app.post("/api/auto-trading/reset-daily-count")
+async def reset_daily_order_count():
+    """일일 주문 제한 카운터 초기화"""
+    try:
+        auto_trader._force_reset_daily_order_count()
+        return {
+            "success": True,
+            "message": "일일 주문 제한 카운터가 초기화되었습니다.",
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"일일 주문 제한 초기화 실패: {e}")
+        return {
+            "success": False,
+            "message": f"일일 주문 제한 초기화 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat()
+        }
+
+# 자동매매 에러 조회 API
+@app.get("/api/auto-trading/errors")
+async def get_auto_trading_errors():
+    """자동매매 에러 정보 조회"""
+    try:
+        last_error = auto_trader.get_last_error()
+        return {
+            "success": True,
+            "has_error": last_error is not None,
+            "error": last_error,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"자동매매 에러 조회 실패: {e}")
+        return {
+            "success": False,
+            "has_error": False,
+            "error": None,
+            "message": f"에러 조회 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat()
+        }
+
+# 자동매매 에러 초기화 API
+@app.post("/api/auto-trading/clear-error")
+async def clear_auto_trading_error():
+    """자동매매 에러 초기화"""
+    try:
+        auto_trader.clear_error()
+        return {
+            "success": True,
+            "message": "에러가 초기화되었습니다.",
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"자동매매 에러 초기화 실패: {e}")
+        return {
+            "success": False,
+            "message": f"에러 초기화 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat()
+        }
+
+@app.get("/api/auto-trading/cooldown")
+async def get_order_cooldown():
+    """주문 쿨다운 시간 조회"""
+    try:
+        minutes = auto_trader.get_order_cooldown_minutes()
+        return {
+            "success": True,
+            "cooldown_minutes": minutes,
+            "cooldown_seconds": auto_trader.order_cooldown,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"주문 쿨다운 조회 실패: {e}")
+        return {
+            "success": False,
+            "message": f"주문 쿨다운 조회 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat()
+        }
+
+# 장시간 체크 API
+@app.get("/api/market/status")
+async def get_market_status():
+    """시장 상태 확인"""
+    try:
+        from datetime import datetime, time
+        
+        # 현재 로컬 시간 사용 (시스템이 한국 시간으로 설정되어 있다고 가정)
+        now = datetime.now()
+        current_time = now.time()
+        
+        # 평일 체크 (월~금)
+        is_weekday = now.weekday() < 5
+        
+        # 시장 시간 (9:00 ~ 15:30)
+        market_open = time(9, 0)
+        market_close = time(15, 30)
+        
+        # 시장 상태 판단
+        is_market_open = is_weekday and market_open <= current_time <= market_close
+        
+        # 시장 상태 메시지
+        if not is_weekday:
+            status_message = "주말 또는 공휴일로 시장이 휴장입니다."
+        elif current_time < market_open:
+            status_message = f"시장 개장 전입니다. 개장 시간: {market_open.strftime('%H:%M')}"
+        elif current_time > market_close:
+            status_message = f"시장 종료되었습니다. 종료 시간: {market_close.strftime('%H:%M')}"
+        else:
+            status_message = "시장이 열려 있습니다."
+        
+        return {
+            'success': True,
+            'market_status': {
+                'is_open': is_market_open,
+                'is_weekday': is_weekday,
+                'current_time': current_time.strftime('%H:%M:%S'),
+                'market_open': market_open.strftime('%H:%M'),
+                'market_close': market_close.strftime('%H:%M'),
+                'status_message': status_message
+            },
+            'timestamp': datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"시장 상태 확인 실패: {str(e)}")
+        return {
+            'success': False,
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }
+
+# 에러 상황 체크 API
+@app.get("/api/system/errors")
+async def get_system_errors():
+    """시스템 에러 상황 체크"""
+    try:
+        errors = []
+        
+        # 1. 토큰 상태 체크 (실제 API 호출로 검증)
+        try:
+            # 실제 토큰 유효성 검증
+            if not kiwoom_api.is_token_valid():
+                errors.append({
+                    'type': 'token',
+                    'level': 'error',
+                    'message': '토큰이 유효하지 않습니다. 토큰을 갱신해주세요.',
+                    'action': 'refresh_token'
+                })
+        except Exception as e:
+            errors.append({
+                'type': 'token',
+                'level': 'error',
+                'message': f'토큰 상태 확인 실패: {str(e)}',
+                'action': 'refresh_token'
+            })
+        
+        # 2. 시장 상태 체크
+        try:
+            market_response = await get_market_status()
+            if market_response.get('success') and market_response.get('market_status'):
+                market_status = market_response['market_status']
+                if not market_status.get('is_open', False):
+                    errors.append({
+                        'type': 'market',
+                        'level': 'warning',
+                        'message': market_status.get('status_message', '시장이 열려 있지 않습니다.'),
+                        'action': 'check_market'
+                    })
+        except Exception as e:
+            errors.append({
+                'type': 'market',
+                'level': 'warning',
+                'message': f'시장 상태 확인 실패: {str(e)}',
+                'action': 'check_market'
+            })
+        
+        # 3. 자동매매 상태 체크
+        try:
+            if auto_trader.is_running:
+                # 자동매매가 실행 중인데 에러가 있는 경우
+                if not kiwoom_api.is_token_valid():
+                    errors.append({
+                        'type': 'general',
+                        'level': 'error',
+                        'message': '자동매매가 실행 중이지만 토큰이 유효하지 않습니다.',
+                        'action': 'stop_trading'
+                    })
+        except Exception as e:
+            errors.append({
+                'type': 'general',
+                'level': 'error',
+                'message': f'자동매매 상태 확인 실패: {str(e)}',
+                'action': 'check_system'
+            })
+        
+        return {
+            'success': True,
+            'errors': errors,
+            'error_count': len(errors),
+            'timestamp': datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"시스템 에러 체크 실패: {str(e)}")
+        return {
+            'success': False,
+            'error': str(e),
             'timestamp': datetime.now().isoformat()
         }
 
