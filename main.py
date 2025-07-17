@@ -12,6 +12,34 @@ from src.core.data_collector import DataCollector
 from src.trading.trading_strategy import TradingStrategy
 from src.trading.risk_manager import RiskManager
 from src.trading.trading_executor import TradingExecutor
+import os
+import sys
+import signal
+
+try:
+    import psutil
+except ImportError:
+    print("psutil 모듈이 필요합니다. 설치 후 다시 실행하세요: pip install psutil")
+    sys.exit(1)
+
+def kill_existing_main_py():
+    current_pid = os.getpid()
+    for proc in psutil.process_iter(['pid', 'cmdline']):
+        try:
+            cmdline = proc.info['cmdline']
+            pid = proc.info['pid']
+            if (
+                pid != current_pid and
+                cmdline and
+                'python' in cmdline[0] and
+                'main.py' in ' '.join(cmdline)
+            ):
+                print(f"기존 main.py 프로세스 종료: PID={pid}")
+                os.kill(pid, signal.SIGTERM)
+        except Exception:
+            continue
+
+kill_existing_main_py()
 
 class TradingBot:
     def __init__(self):
