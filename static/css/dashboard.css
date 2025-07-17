@@ -304,21 +304,47 @@ input[type="text"] {
     border: 1px solid #e9ecef;
 }
 
+.status-summary.single-line {
+    flex-wrap: nowrap;
+    gap: 32px;
+    justify-content: flex-start;
+}
+
+.status-summary.single-line .status-item {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-right: 24px;
+    padding: 0 8px;
+    background: none;
+    border: none;
+}
+
+.status-summary.single-line .status-item:last-child {
+    margin-right: 0;
+}
+
+.status-summary.single-line .btn.btn-warning {
+    margin-left: 8px;
+    vertical-align: middle;
+    padding: 4px 10px;
+    height: 28px;
+    font-size: 0.85rem;
+}
+
+.status-summary.single-line .status-text {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
 .status-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    cursor: pointer;
     padding: 6px 12px;
     border-radius: 6px;
-    transition: all 0.3s ease;
     font-size: 0.9rem;
     color: #495057;
-}
-
-.status-item:hover {
-    background: #e9ecef;
-    transform: translateY(-1px);
 }
 
 .status-icon {
@@ -332,6 +358,16 @@ input[type="text"] {
 .status-text strong {
     color: #2c3e50;
     font-weight: 600;
+}
+
+.status-item.clickable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.status-item.clickable:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
 }
 
 /* ===== LEGACY STATS GRID (for other sections) ===== */

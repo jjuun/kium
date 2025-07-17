@@ -45,18 +45,17 @@
                     </div>
                 </div>
 
-                <div class="status-summary">
-                    <div class="status-item" id="watchlist-summary" onclick="showWatchlistDetails()">
-                        <span class="status-icon">👁️</span>
-                        <span class="status-text">감시: <strong id="watchlist-count">0</strong></span>
-                    </div>
-                    <div class="status-item" id="active-conditions-summary" onclick="showActiveConditionsDetails()">
-                        <span class="status-icon">⚙️</span>
-                        <span class="status-text">조건: <strong id="active-conditions-count">0</strong></span>
-                    </div>
-                    <div class="status-item" onclick="showExecutedOrdersDetails()">
+                <!-- 기존 status-summary 제거 및 새로운 한 줄 상태 요약 추가 -->
+                <div class="status-summary single-line">
+                    <div class="status-item clickable" onclick="showExecutedOrdersDetails()">
                         <span class="status-icon">📊</span>
-                        <span class="status-text">주문: <strong id="daily-orders">0/10</strong></span>
+                        <span class="status-text">주문 현황: <strong id="daily-orders">0/10</strong></span>
+                        <button onclick="resetDailyOrderCount(); event.stopPropagation();"
+                            class="btn btn-sm btn-warning" style="margin-left:8px;">일일 제한 초기화</button>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-icon">🧪</span>
+                        <span class="status-text" id="mode-indicator-inline">테스트 모드</span>
                     </div>
                     <div class="status-item">
                         <span class="status-icon">🔑</span>
@@ -73,9 +72,6 @@
                         <label for="cooldown-minutes">쿨다운 (분):</label>
                         <input type="number" id="cooldown-minutes" value="5" min="0">
                         <button onclick="updateCooldown()" class="btn btn-sm btn-secondary">설정</button>
-                    </div>
-                    <div class="setting-item">
-                        <button onclick="resetDailyOrderCount()" class="btn btn-sm btn-warning">일일 제한 초기화</button>
                     </div>
                 </div>
             </div>
