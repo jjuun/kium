@@ -1740,23 +1740,23 @@ async function refreshTokenStatus() {
             let borderColor = '#28a745';
             
             if (!status.has_token) {
-                statusText = '🔑 토큰 없음';
+                statusText = '토큰 없음';
                 statusClass = 'token-error';
                 borderColor = '#dc3545';
             } else if (status.status === 'expired') {
-                statusText = '🔑 토큰 만료';
+                statusText = '토큰 만료';
                 statusClass = 'token-error';
                 borderColor = '#dc3545';
             } else if (status.status === 'expires_soon') {
-                statusText = `🔑 토큰 ${status.expires_in_minutes}분 후 만료`;
+                statusText = `토큰 ${status.expires_in_minutes}분 후 만료`;
                 statusClass = 'token-warning';
                 borderColor = '#ffc107';
             } else if (status.status === 'valid') {
-                statusText = `🔑 토큰 정상 (${status.expires_in_minutes}분 남음)`;
+                statusText = `토큰 정상 (${status.expires_in_minutes}분 남음)`;
                 statusClass = 'token-valid';
                 borderColor = '#28a745';
             } else {
-                statusText = '🔑 토큰 상태 확인됨';
+                statusText = '토큰 상태 확인됨';
                 statusClass = 'token-valid';
                 borderColor = '#28a745';
             }
@@ -1780,7 +1780,7 @@ async function refreshTokenStatus() {
         const tokenDiv = document.getElementById('token-status');
         
         if (tokenIndicator) {
-            tokenIndicator.textContent = '🔑 토큰 상태 확인 실패';
+            tokenIndicator.textContent = '토큰 상태 확인 실패';
         }
         if (tokenDiv) {
             tokenDiv.style.borderColor = '#dc3545';
