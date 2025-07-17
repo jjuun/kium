@@ -164,20 +164,27 @@ async function refreshAccountData() {
         const profitClass = totalProfit >= 0 ? 'profit' : 'loss';
         const profitSign = totalProfit >= 0 ? '+' : '';
 
-        // 계좌 잔고 업데이트
+        // 계좌 잔고 업데이트 - 보유액과 손익을 구분하여 표시
         balanceContent.innerHTML = `
-            <h4 class="mb-2">${formatCurrency(cash)}</h4>
-            <small class="text-muted">
-                총 평가금액: ${formatCurrency(totalValue)}<br>
-                평가손익: <span class="${profitClass}">${profitSign}${formatCurrency(totalProfit)} (${profitSign}${profitRate.toFixed(2)}%)</span>
-            </small>
+            <div class="account-summary">
+                <div class="cash-balance">
+                    <h4 class="mb-2">${formatCurrency(cash)}</h4>
+                    <small class="text-muted">보유 현금</small>
+                </div>
+                <div class="total-value">
+                    <h5 class="mb-1">${formatCurrency(totalValue)}</h5>
+                    <small class="text-muted">총 평가금액</small>
+                </div>
+                <div class="total-profit">
+                    <h5 class="mb-1 ${profitClass}">${profitSign}${formatCurrency(totalProfit)}</h5>
+                    <small class="${profitClass}">${profitSign}${profitRate.toFixed(2)}%</small>
+                </div>
+            </div>
         `;
 
-
-
-        // 보유종목 업데이트 (수익과 수익률을 동일 선에 표시)
+        // 보유종목 업데이트 - 두 줄로 표시
         if (data && data.acnt_evlt_remn_indv_tot && data.acnt_evlt_remn_indv_tot.length > 0) {
-            let html = '<div class="list-group list-group-flush">';
+            let html = '<div class="holdings-list">';
             
             // balance API에서 제공하는 현재가 정보 사용
             data.acnt_evlt_remn_indv_tot.forEach(holding => {
@@ -198,17 +205,16 @@ async function refreshAccountData() {
                 const prftSign = evltvPrft >= 0 ? '+' : '';
 
                 html += `
-                    <div class="list-group-item d-flex justify-content-between align-items-center py-2 holding-item" 
+                    <div class="holding-item" 
                          data-symbol="${stockCode}" 
                          data-quantity="${parseInt(holding.rmnd_qty || 0)}"
                          style="cursor: pointer;">
-                        <div>
-                            <strong>${holding.stk_nm || holding.stk_cd}</strong><br>
-                            <small class="text-muted">${holding.stk_cd} | ${parseInt(holding.rmnd_qty || 0).toLocaleString()}주</small>
-                        </div>
-                        <div class="text-end">
-                            <div class="mb-1"><strong class="current-price">${currentPrice}</strong></div>
-                            <div class="${prftClass}">${prftSign}${formatCurrency(evltvPrft)} (${prftSign}${prftRt.toFixed(2)}%)</div>
+                        <div class="holding-info">
+                            <div class="stock-name">${holding.stk_nm || holding.stk_cd} ${holding.stk_cd} | ${parseInt(holding.rmnd_qty || 0).toLocaleString()}주</div>
+                            <div class="stock-price">
+                                <span class="current-price">${currentPrice}</span>
+                                <span class="profit-info ${prftClass}">${prftSign}${formatCurrency(evltvPrft)} (${prftSign}${prftRt.toFixed(2)}%)</span>
+                            </div>
                         </div>
                     </div>
                 `;
