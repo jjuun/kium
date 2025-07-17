@@ -49,11 +49,9 @@
                 <div class="status-summary single-line">
                     <div class="status-item clickable" onclick="showExecutedOrdersDetails()">
                         <span class="status-icon">📊</span>
-                        <span class="status-text">주문 현황: <strong id="daily-orders">0/10</strong> [<button
-                                onclick="resetDailyOrderCount(); event.stopPropagation();"
-                                class="btn btn-sm btn-warning">일일제한 초기화</button>]</span>
-                    </div>
-                    <div class="status-item">
+                        <span class="status-text">주문 현황: <strong id="daily-orders">0/10</strong></span>
+                        <button onclick="resetDailyOrderCount(); event.stopPropagation();"
+                            class="btn btn-sm btn-warning">일일제한 초기화</button>
                         <span class="status-icon">🔑</span>
                         <span class="status-text" id="token-indicator">확인 중...</span>
                     </div>

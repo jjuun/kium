@@ -318,6 +318,8 @@ input[type="text"] {
     padding: 0 8px;
     background: none;
     border: none;
+    flex-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .status-summary.single-line .status-item:last-child {
