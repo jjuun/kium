@@ -28,7 +28,7 @@
         <div id="error-alerts" style="margin-bottom: 20px;"></div>
 
         <!-- 자동매매 제어 섹션 -->
-        <div class="card" id="auto-trading-section">
+        <div class="card">
             <h3><i class="fas fa-robot"></i> 자동매매 제어</h3>
             <div class="auto-trading-controls">
                 <div class="control-group">
@@ -69,11 +69,11 @@
                 <div class="settings-group">
                     <div class="setting-item">
                         <label for="trade-quantity">매매 수량:</label>
-                        <input type="number" id="trade-quantity" value="1" min="1" style="width: 80px;">
+                        <input type="number" id="trade-quantity" value="1" min="1">
                     </div>
                     <div class="setting-item">
                         <label for="cooldown-minutes">쿨다운 (분):</label>
-                        <input type="number" id="cooldown-minutes" value="5" min="0" style="width: 80px;">
+                        <input type="number" id="cooldown-minutes" value="5" min="0">
                         <button onclick="updateCooldown()" class="btn btn-sm btn-secondary">설정</button>
                     </div>
                     <div class="setting-item">
@@ -137,7 +137,7 @@
         </div>
 
         <!-- 감시 종목 관리 섹션 -->
-        <div class="card" id="watchlist-section">
+        <div class="card">
             <h3><i class="fas fa-eye"></i> 감시 종목 관리</h3>
             <div class="section-content">
                 <div class="add-form">
