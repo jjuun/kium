@@ -1,4 +1,4 @@
-// 전역 변수
+    // 전역 변수
 let currentSymbol = 'A005935';
 let autoRefreshEnabled = true; // 기본적으로 자동 갱신 활성화
 let autoRefreshInterval = null;
@@ -131,9 +131,8 @@ async function refreshAccountData() {
     const balanceContent = document.getElementById('balance-content');
     const holdingsContent = document.getElementById('holdings-content');
     
-    // 모든 컨텐츠에 로딩 상태 추가
-    balanceContent.classList.add('loading');
-    holdingsContent.classList.add('loading');
+    // balance-content에서만 로딩 상태 제거 (애니메이션 없이)
+    // holdingsContent.classList.add('loading');
 
     try {
         const response = await fetch('/api/account/balance');
@@ -205,18 +204,17 @@ async function refreshAccountData() {
             holdingsContent.innerHTML = '<div class="text-center text-muted">보유종목 없음</div>';
         }
         
-        // 보유종목 업데이트 완료 후 loading 클래스 제거
-        holdingsContent.classList.remove('loading');
+        // balance-content는 로딩 상태를 사용하지 않으므로 제거하지 않음
+        // holdingsContent.classList.remove('loading');
 
     } catch (error) {
         balanceContent.innerHTML = '<div class="text-danger"><i class="fas fa-exclamation-triangle"></i> 조회 실패</div>';
         holdingsContent.innerHTML = '<div class="text-danger"><i class="fas fa-exclamation-triangle"></i> 조회 실패</div>';
-        // 에러 발생 시에도 loading 클래스 제거
-        holdingsContent.classList.remove('loading');
+        // balance-content는 로딩 상태를 사용하지 않으므로 제거하지 않음
+        // holdingsContent.classList.remove('loading');
     } finally {
-        // 모든 컨텐츠에서 로딩 상태 제거
-        balanceContent.classList.remove('loading');
-        holdingsContent.classList.remove('loading');
+        // balance-content는 로딩 상태를 사용하지 않으므로 제거하지 않음
+        // holdingsContent.classList.remove('loading');
     }
 }
 
@@ -247,7 +245,6 @@ async function refreshStockChart(symbol = null) {
     if (!chartContent) return;
     
     const targetSymbol = symbol || currentSymbol;
-    chartContent.classList.add('loading');
 
     try {
         const response = await fetch(`/api/kiwoom/stock-chart?stk_cd=${targetSymbol}&tic_scope=1&upd_stkpc_tp=1`);
@@ -279,8 +276,6 @@ async function refreshStockChart(symbol = null) {
         }
     } catch (error) {
         chartContent.innerHTML = '<div class="text-danger">차트 조회 실패</div>';
-    } finally {
-        chartContent.classList.remove('loading');
     }
 }
 
@@ -290,7 +285,6 @@ async function refreshStockPrice(symbol = null) {
     if (!priceContent) return;
     
     const targetSymbol = symbol || currentSymbol;
-    priceContent.classList.add('loading');
 
     try {
         const response = await fetch(`/api/stock/price?symbol=${targetSymbol}`);
@@ -315,8 +309,6 @@ async function refreshStockPrice(symbol = null) {
         }
     } catch (error) {
         priceContent.innerHTML = '<div class="text-danger">가격 조회 실패</div>';
-    } finally {
-        priceContent.classList.remove('loading');
     }
 }
 
@@ -393,8 +385,6 @@ async function handleOrderSubmit(event) {
 async function refreshPendingOrders() {
     const content = document.getElementById('pending-orders-content');
     if (!content) return;
-    
-    content.classList.add('loading');
 
     try {
         const response = await fetch('/api/trading/orders/pending');
@@ -429,8 +419,6 @@ async function refreshPendingOrders() {
         }
     } catch (error) {
         content.innerHTML = '<div class="text-danger">조회 실패</div>';
-    } finally {
-        content.classList.remove('loading');
     }
 }
 

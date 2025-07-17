@@ -7,12 +7,13 @@
     <title>A-ki Trading Dashboard</title>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
         <header>
-            <h1>A-ki Trading Dashboard</h1>
+            <h1><i class="fas fa-chart-line"></i> A-ki Trading Dashboard</h1>
             <div class="status-indicator">
                 <span id="connection-status">연결 확인 중...</span>
                 <div class="controls">
@@ -23,10 +24,70 @@
             </div>
         </header>
 
+        <!-- 에러 알림 섹션 -->
+        <div id="error-alerts" style="margin-bottom: 20px;"></div>
+
+        <!-- 자동매매 제어 섹션 -->
+        <div class="card" id="auto-trading-section">
+            <h3><i class="fas fa-robot"></i> 자동매매 제어</h3>
+            <div class="auto-trading-controls">
+                <div class="control-group">
+                    <div class="status-display">
+                        <div id="auto-trading-status" class="status-badge">상태: 확인 중...</div>
+                        <div id="trading-mode-status" class="mode-indicator">
+                            <span id="mode-indicator">🧪 테스트 모드</span>
+                        </div>
+                    </div>
+                    <div class="control-buttons">
+                        <button id="start-auto-trading" class="btn btn-success">자동매매 시작</button>
+                        <button id="stop-auto-trading" class="btn btn-danger" style="display: none;">자동매매 중지</button>
+                        <button onclick="toggleTradingMode()" class="btn btn-warning">매매 모드 전환</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item" id="watchlist-summary" onclick="showWatchlistDetails()">
+                        <div class="stat-label">감시 종목</div>
+                        <div class="stat-value" id="watchlist-count">0개</div>
+                    </div>
+                    <div class="stat-item" id="active-conditions-summary" onclick="showActiveConditionsDetails()">
+                        <div class="stat-label">활성 조건</div>
+                        <div class="stat-value" id="active-conditions-count">0개</div>
+                    </div>
+                    <div class="stat-item" onclick="showExecutedOrdersDetails()">
+                        <div class="stat-label">일일 주문</div>
+                        <div class="stat-value" id="daily-orders">0/10</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">토큰 상태</div>
+                        <div class="stat-value" id="token-status">
+                            <span id="token-indicator">🔑 확인 중...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <label for="trade-quantity">매매 수량:</label>
+                        <input type="number" id="trade-quantity" value="1" min="1" style="width: 80px;">
+                    </div>
+                    <div class="setting-item">
+                        <label for="cooldown-minutes">쿨다운 (분):</label>
+                        <input type="number" id="cooldown-minutes" value="5" min="0" style="width: 80px;">
+                        <button onclick="updateCooldown()" class="btn btn-sm btn-secondary">설정</button>
+                    </div>
+                    <div class="setting-item">
+                        <button onclick="resetDailyOrderCount()" class="btn btn-sm btn-warning">일일 제한 초기화</button>
+                    </div>
+                </div>
+            </div>
+            <div id="auto-trading-message" class="message"></div>
+        </div>
+
         <div class="dashboard-grid">
             <!-- 계좌 정보 -->
             <div class="card">
-                <h3>계좌 정보</h3>
+                <h3><i class="fas fa-wallet"></i> 계좌 정보</h3>
                 <div id="balance-content" class="loading">로딩 중...</div>
                 <div id="portfolio-content" class="loading"></div>
                 <div id="holdings-content" class="loading"></div>
@@ -34,7 +95,7 @@
 
             <!-- 주문 실행 -->
             <div class="card">
-                <h3>주문 실행</h3>
+                <h3><i class="fas fa-exchange-alt"></i> 주문 실행</h3>
                 <form id="order-form">
                     <div class="form-group">
                         <label for="order-symbol">종목코드:</label>
@@ -68,21 +129,247 @@
 
             <!-- 미체결 주문 -->
             <div class="card">
-                <h3>미체결 주문</h3>
+                <h3><i class="fas fa-clock"></i> 미체결 주문</h3>
                 <div id="pending-orders-content" class="loading">로딩 중...</div>
             </div>
 
-            <!-- 체결잔고 -->
-            <div class="card">
-                <h3>체결잔고</h3>
-                <div class="input-group">
-                    <select id="execution-balance-exchange">
-                        <option value="KRX" selected>한국거래소</option>
-                        <option value="NXT">넥스트트레이드</option>
-                    </select>
-                    <button onclick="refreshExecutionBalance()" class="btn btn-secondary">조회</button>
+
+        </div>
+
+        <!-- 감시 종목 관리 섹션 -->
+        <div class="card" id="watchlist-section">
+            <h3><i class="fas fa-eye"></i> 감시 종목 관리</h3>
+            <div class="section-content">
+                <div class="add-form">
+                    <form id="watchlist-add-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="watchlist-symbol">종목코드:</label>
+                                <input type="text" id="watchlist-symbol" placeholder="종목코드 (예: A005935)" required>
+                                <div id="symbol-validation-message" class="validation-message"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="watchlist-symbol-name">종목명:</label>
+                                <input type="text" id="watchlist-symbol-name" placeholder="자동 입력" readonly>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">추가</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div id="execution-balance-content" class="loading">로딩 중...</div>
+
+                <div class="stats-display">
+                    <div id="watchlist-stats" class="stats-text"></div>
+                </div>
+
+                <div class="table-container">
+                    <table id="watchlist-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>종목코드</th>
+                                <th>종목명</th>
+                                <th>상태</th>
+                                <th>등록일</th>
+                                <th>수정일</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">로딩 중...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="watchlist-message" class="message"></div>
+        </div>
+
+        <!-- 신호 모니터링 섹션 -->
+        <div class="card">
+            <h3><i class="fas fa-signal"></i> 신호 모니터링</h3>
+            <div class="section-content">
+                <div class="stats-display">
+                    <div id="signal-stats" class="stats-text">통계 로딩 중...</div>
+                </div>
+
+                <div class="table-container">
+                    <table id="recent-signals-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>시간</th>
+                                <th>종목</th>
+                                <th>신호</th>
+                                <th>조건</th>
+                                <th>현재가</th>
+                                <th>상태</th>
+                                <th>수익/손실</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">로딩 중...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="signal-message" class="message"></div>
+        </div>
+    </div>
+
+    <!-- 조건 관리 모달 -->
+    <div id="condition-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="condition-modal-title">조건 관리</h3>
+                <span class="close" onclick="closeConditionModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="symbol-info">
+                    <strong>종목:</strong> <span id="condition-symbol-code"></span> - <span
+                        id="condition-symbol-name"></span>
+                </div>
+
+                <div class="condition-add-section">
+                    <h4>조건 추가</h4>
+                    <form id="condition-add-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="condition-type">매매구분:</label>
+                                <select id="condition-type" required>
+                                    <option value="buy">매수</option>
+                                    <option value="sell">매도</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="condition-category">조건 카테고리:</label>
+                                <select id="condition-category" required>
+                                    <option value="price">가격</option>
+                                    <option value="rsi">RSI</option>
+                                    <option value="ma">이동평균</option>
+                                    <option value="volume">거래량</option>
+                                    <option value="volatility">변동성</option>
+                                    <option value="custom">사용자정의</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="condition-value">조건 값:</label>
+                                <input type="text" id="condition-value" placeholder="예: > 50000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="condition-description">설명:</label>
+                                <input type="text" id="condition-description" placeholder="조건 설명">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">추가</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="template-buttons">
+                        <button onclick="setConditionTemplate('rsi_oversold')"
+                            class="btn btn-sm btn-outline-primary">RSI 과매도</button>
+                        <button onclick="setConditionTemplate('rsi_overbought')"
+                            class="btn btn-sm btn-outline-primary">RSI 과매수</button>
+                        <button onclick="setConditionTemplate('ma_golden')"
+                            class="btn btn-sm btn-outline-primary">골든크로스</button>
+                        <button onclick="setConditionTemplate('volume_surge')"
+                            class="btn btn-sm btn-outline-primary">거래량 급증</button>
+                    </div>
+                </div>
+
+                <div class="condition-list-section">
+                    <h4>등록된 조건</h4>
+                    <div class="table-container">
+                        <table id="condition-table" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>구분</th>
+                                    <th>카테고리</th>
+                                    <th>조건</th>
+                                    <th>설명</th>
+                                    <th>성공률</th>
+                                    <th>상태</th>
+                                    <th>등록일</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">로딩 중...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="condition-message" class="message"></div>
+        </div>
+    </div>
+
+    <!-- 조건 수정 모달 -->
+    <div id="edit-condition-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>조건 수정</h3>
+                <span class="close" onclick="closeEditConditionModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="edit-condition-form">
+                    <div class="form-group">
+                        <label for="edit-condition-type">매매구분:</label>
+                        <select id="edit-condition-type" required>
+                            <option value="buy">매수</option>
+                            <option value="sell">매도</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-condition-category">조건 카테고리:</label>
+                        <select id="edit-condition-category" required>
+                            <option value="price">가격</option>
+                            <option value="rsi">RSI</option>
+                            <option value="ma">이동평균</option>
+                            <option value="volume">거래량</option>
+                            <option value="volatility">변동성</option>
+                            <option value="custom">사용자정의</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-condition-value">조건 값:</label>
+                        <input type="text" id="edit-condition-value" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-condition-description">설명:</label>
+                        <input type="text" id="edit-condition-description">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="edit-condition-active"> 활성화
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">수정</button>
+                        <button type="button" onclick="closeEditConditionModal()" class="btn btn-secondary">취소</button>
+                    </div>
+                </form>
+            </div>
+            <div id="edit-condition-message" class="message"></div>
+        </div>
+    </div>
+
+    <!-- 상세 정보 모달 -->
+    <div id="details-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="details-modal-title">상세 정보</h3>
+                <span class="close" onclick="closeDetailsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="details-content">
+                    <!-- 동적으로 내용이 채워집니다 -->
+                </div>
             </div>
         </div>
     </div>
