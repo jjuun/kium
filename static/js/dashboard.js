@@ -2394,9 +2394,18 @@ async function stopAutoTrading() {
 function showAutoTradingMessage(msg, success) {
     const div = document.getElementById('auto-trading-message');
     if (!div) return;
-    div.textContent = msg;
-    div.style.color = success ? '#27ae60' : '#c00';
-    setTimeout(() => { div.textContent = ''; }, 3000);
+    
+    if (msg && msg.trim()) {
+        div.textContent = msg;
+        div.className = `message ${success ? 'success' : 'error'} show`;
+        setTimeout(() => { 
+            div.textContent = '';
+            div.className = 'message';
+        }, 3000);
+    } else {
+        div.textContent = '';
+        div.className = 'message';
+    }
 }
 
 // =========================

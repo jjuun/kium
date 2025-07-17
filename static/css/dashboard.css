@@ -550,6 +550,11 @@ input[type="text"] {
     padding: 10px 15px;
     border-radius: 6px;
     font-size: 0.9rem;
+    display: none;
+}
+
+.message.show {
+    display: block;
 }
 
 .message.error {
