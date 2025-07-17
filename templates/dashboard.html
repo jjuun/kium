@@ -84,33 +84,37 @@
             <div class="card">
                 <h3><i class="fas fa-exchange-alt"></i> 주문 실행</h3>
                 <form id="order-form">
-                    <div class="form-group">
-                        <label for="order-symbol">종목코드:</label>
-                        <input type="text" id="order-symbol" placeholder="종목코드" required>
+                    <div class="order-form-row">
+                        <div class="form-group">
+                            <label for="order-symbol">종목코드:</label>
+                            <input type="text" id="order-symbol" placeholder="종목코드" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="order-action">매매구분:</label>
+                            <select id="order-action" required>
+                                <option value="buy">매수</option>
+                                <option value="sell">매도</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="order-quantity">수량:</label>
+                            <input type="number" id="order-quantity" placeholder="수량" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="order-price">가격:</label>
+                            <input type="number" id="order-price" placeholder="가격" step="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="order-price-type">호가구분:</label>
+                            <select id="order-price-type" required>
+                                <option value="00">지정가</option>
+                                <option value="03">시장가</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">주문 실행</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="order-action">매매구분:</label>
-                        <select id="order-action" required>
-                            <option value="buy">매수</option>
-                            <option value="sell">매도</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="order-quantity">수량:</label>
-                        <input type="number" id="order-quantity" placeholder="수량" value="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="order-price">가격:</label>
-                        <input type="number" id="order-price" placeholder="가격" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="order-price-type">호가구분:</label>
-                        <select id="order-price-type" required>
-                            <option value="00">지정가</option>
-                            <option value="03">시장가</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">주문 실행</button>
                 </form>
             </div>
 

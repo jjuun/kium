@@ -453,6 +453,23 @@ input[type="text"] {
     align-items: end;
 }
 
+.order-form-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: end;
+    margin-bottom: 15px;
+}
+
+.order-form-row .form-group {
+    flex: 1;
+    min-width: 120px;
+}
+
+.order-form-row .form-group:last-child {
+    flex: 0 0 auto;
+}
+
 .form-actions {
     display: flex;
     gap: 10px;
@@ -797,6 +814,15 @@ input[type="text"] {
     
     .form-row {
         flex-direction: column;
+    }
+    
+    .order-form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .order-form-row .form-group {
+        min-width: auto;
     }
     
     .modal-content {
