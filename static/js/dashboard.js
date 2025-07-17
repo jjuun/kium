@@ -32,6 +32,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // 쿨다운 설정 불러오기
     loadCooldownSettings();
     
+    // 매매 수량 설정 불러오기
+    loadTradeQuantity();
+    
     // 조건 수정 폼 이벤트 핸들러 설정
     setupEditConditionHandlers();
     
@@ -2741,6 +2744,53 @@ async function loadCooldownSettings() {
         }
     } catch (error) {
         console.error('쿨다운 설정 로드 실패:', error);
+    }
+}
+
+// 매매 수량 저장 함수
+async function saveTradeQuantity() {
+    const quantityInput = document.getElementById('trade-quantity');
+    const quantity = quantityInput ? parseInt(quantityInput.value, 10) : 1;
+    
+    if (isNaN(quantity) || quantity < 1) {
+        showAutoTradingMessage('매매 수량을 1 이상으로 입력하세요.', false);
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/auto-trading/quantity?quantity=${quantity}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showAutoTradingMessage(data.message, true);
+        } else {
+            showAutoTradingMessage(data.message, false);
+        }
+    } catch (error) {
+        console.error('매매 수량 설정 실패:', error);
+        showAutoTradingMessage('매매 수량 설정에 실패했습니다.', false);
+    }
+}
+
+// 매매 수량 조회 함수
+async function loadTradeQuantity() {
+    try {
+        const response = await fetch('/api/auto-trading/quantity');
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('trade-quantity').value = data.quantity;
+        } else {
+            console.error('매매 수량 로드 실패:', data.message);
+        }
+    } catch (error) {
+        console.error('매매 수량 로드 실패:', error);
     }
 }
 

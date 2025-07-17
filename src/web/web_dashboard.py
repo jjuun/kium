@@ -1396,6 +1396,52 @@ async def get_order_cooldown():
             "timestamp": datetime.now().isoformat()
         }
 
+@app.post("/api/auto-trading/quantity")
+async def set_trade_quantity(quantity: int = Query(..., description="매매 수량")):
+    """매매 수량 설정"""
+    try:
+        if quantity < 1:
+            return {
+                'success': False,
+                'message': '매매 수량은 1 이상이어야 합니다.',
+                'timestamp': datetime.now().isoformat()
+            }
+        
+        auto_trader.trade_quantity = quantity
+        
+        return {
+            'success': True,
+            'message': f'매매 수량이 {quantity}주로 설정되었습니다.',
+            'quantity': quantity,
+            'timestamp': datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"매매 수량 설정 실패: {str(e)}")
+        return {
+            'success': False,
+            'message': f'매매 수량 설정 실패: {str(e)}',
+            'timestamp': datetime.now().isoformat()
+        }
+
+@app.get("/api/auto-trading/quantity")
+async def get_trade_quantity():
+    """매매 수량 조회"""
+    try:
+        quantity = auto_trader.trade_quantity
+        return {
+            'success': True,
+            'quantity': quantity,
+            'timestamp': datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"매매 수량 조회 실패: {str(e)}")
+        return {
+            'success': False,
+            'quantity': 1,  # 기본값
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }
+
 # 장시간 체크 API
 @app.get("/api/market/status")
 async def get_market_status():
