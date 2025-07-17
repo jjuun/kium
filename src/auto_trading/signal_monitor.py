@@ -25,6 +25,7 @@ class SignalRecord:
     condition_id: int
     condition_value: str
     current_price: float
+    rsi_value: Optional[float]
     status: SignalStatus
     executed_price: Optional[float]
     executed_quantity: Optional[int]
@@ -41,6 +42,7 @@ class SignalRecord:
             'condition_id': self.condition_id,
             'condition_value': self.condition_value,
             'current_price': self.current_price,
+            'rsi_value': self.rsi_value,
             'status': self.status.value,
             'executed_price': self.executed_price,
             'executed_quantity': self.executed_quantity,
@@ -78,6 +80,7 @@ class SignalMonitor:
                         condition_id INTEGER NOT NULL,
                         condition_value TEXT NOT NULL,
                         current_price REAL NOT NULL,
+                        rsi_value REAL,
                         status TEXT NOT NULL DEFAULT 'pending',
                         executed_price REAL,
                         executed_quantity INTEGER,
@@ -112,7 +115,7 @@ class SignalMonitor:
             raise
     
     def record_signal(self, symbol: str, signal_type: str, condition_id: int, 
-                     condition_value: str, current_price: float) -> int:
+                     condition_value: str, current_price: float, rsi_value: float = None) -> int:
         """
         신호 기록
         
@@ -122,6 +125,7 @@ class SignalMonitor:
             condition_id: 조건 ID
             condition_value: 조건 값
             current_price: 현재가
+            rsi_value: RSI 값
             
         Returns:
             int: 신호 ID
@@ -132,9 +136,9 @@ class SignalMonitor:
                 
                 cursor.execute("""
                     INSERT INTO signal_history 
-                    (symbol, signal_type, condition_id, condition_value, current_price, status, created_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, (symbol, signal_type, condition_id, condition_value, current_price, 
+                    (symbol, signal_type, condition_id, condition_value, current_price, rsi_value, status, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """, (symbol, signal_type, condition_id, condition_value, current_price, rsi_value,
                      SignalStatus.PENDING.value, datetime.now()))
                 
                 signal_id = cursor.lastrowid
@@ -237,7 +241,7 @@ class SignalMonitor:
                 
                 query = """
                     SELECT id, symbol, signal_type, condition_id, condition_value, 
-                           current_price, status, executed_price, executed_quantity, 
+                           current_price, rsi_value, status, executed_price, executed_quantity, 
                            profit_loss, created_at, executed_at, closed_at
                     FROM signal_history 
                     WHERE created_at >= datetime('now', '-{} days')
@@ -265,13 +269,14 @@ class SignalMonitor:
                         condition_id=row[3],
                         condition_value=row[4],
                         current_price=row[5],
-                        status=SignalStatus(row[6]),
-                        executed_price=row[7],
-                        executed_quantity=row[8],
-                        profit_loss=row[9],
-                        created_at=datetime.fromisoformat(row[10]) if row[10] else None,
-                        executed_at=datetime.fromisoformat(row[11]) if row[11] else None,
-                        closed_at=datetime.fromisoformat(row[12]) if row[12] else None
+                        rsi_value=row[6],
+                        status=SignalStatus(row[7]),
+                        executed_price=row[8],
+                        executed_quantity=row[9],
+                        profit_loss=row[10],
+                        created_at=datetime.fromisoformat(row[11]) if row[11] else None,
+                        executed_at=datetime.fromisoformat(row[12]) if row[12] else None,
+                        closed_at=datetime.fromisoformat(row[13]) if row[13] else None
                     ))
                 
                 return signals
@@ -371,7 +376,7 @@ class SignalMonitor:
                 
                 cursor.execute("""
                     SELECT id, symbol, signal_type, condition_id, condition_value, 
-                           current_price, status, executed_price, executed_quantity, 
+                           current_price, rsi_value, status, executed_price, executed_quantity, 
                            profit_loss, created_at, executed_at, closed_at
                     FROM signal_history 
                     ORDER BY created_at DESC LIMIT ?
@@ -386,13 +391,14 @@ class SignalMonitor:
                         condition_id=row[3],
                         condition_value=row[4],
                         current_price=row[5],
-                        status=SignalStatus(row[6]),
-                        executed_price=row[7],
-                        executed_quantity=row[8],
-                        profit_loss=row[9],
-                        created_at=datetime.fromisoformat(row[10]) if row[10] else None,
-                        executed_at=datetime.fromisoformat(row[11]) if row[11] else None,
-                        closed_at=datetime.fromisoformat(row[12]) if row[12] else None
+                        rsi_value=row[6],
+                        status=SignalStatus(row[7]),
+                        executed_price=row[8],
+                        executed_quantity=row[9],
+                        profit_loss=row[10],
+                        created_at=datetime.fromisoformat(row[11]) if row[11] else None,
+                        executed_at=datetime.fromisoformat(row[12]) if row[12] else None,
+                        closed_at=datetime.fromisoformat(row[13]) if row[13] else None
                     ))
                 
                 return signals
@@ -414,7 +420,7 @@ class SignalMonitor:
                 
                 cursor.execute("""
                     SELECT id, symbol, signal_type, condition_id, condition_value, 
-                           current_price, status, executed_price, executed_quantity, 
+                           current_price, rsi_value, status, executed_price, executed_quantity, 
                            profit_loss, created_at, executed_at, closed_at
                     FROM signal_history 
                     WHERE status = ? ORDER BY created_at DESC
@@ -429,17 +435,67 @@ class SignalMonitor:
                         condition_id=row[3],
                         condition_value=row[4],
                         current_price=row[5],
-                        status=SignalStatus(row[6]),
-                        executed_price=row[7],
-                        executed_quantity=row[8],
-                        profit_loss=row[9],
-                        created_at=datetime.fromisoformat(row[10]) if row[10] else None,
-                        executed_at=datetime.fromisoformat(row[11]) if row[11] else None,
-                        closed_at=datetime.fromisoformat(row[12]) if row[12] else None
+                        rsi_value=row[6],
+                        status=SignalStatus(row[7]),
+                        executed_price=row[8],
+                        executed_quantity=row[9],
+                        profit_loss=row[10],
+                        created_at=datetime.fromisoformat(row[11]) if row[11] else None,
+                        executed_at=datetime.fromisoformat(row[12]) if row[12] else None,
+                        closed_at=datetime.fromisoformat(row[13]) if row[13] else None
                     ))
                 
                 return signals
                 
         except Exception as e:
             logger.error(f"대기 중인 신호 조회 실패: {e}")
+            return []
+    
+    def get_executed_signals(self, days: int = 1) -> List[SignalRecord]:
+        """
+        실행된 신호 조회
+        
+        Args:
+            days: 조회 일수
+            
+        Returns:
+            List[SignalRecord]: 실행된 신호 목록
+        """
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                
+                cursor.execute("""
+                    SELECT id, symbol, signal_type, condition_id, condition_value, 
+                           current_price, rsi_value, status, executed_price, executed_quantity, 
+                           profit_loss, created_at, executed_at, closed_at
+                    FROM signal_history 
+                    WHERE status IN (?, ?, ?) 
+                    AND created_at >= datetime('now', '-{} days')
+                    ORDER BY executed_at DESC
+                """.format(days), (SignalStatus.EXECUTED.value, SignalStatus.SUCCESS.value, SignalStatus.FAILED.value))
+                
+                signals = []
+                for row in cursor.fetchall():
+                    signals.append(SignalRecord(
+                        id=row[0],
+                        symbol=row[1],
+                        signal_type=row[2],
+                        condition_id=row[3],
+                        condition_value=row[4],
+                        current_price=row[5],
+                        rsi_value=row[6],
+                        status=SignalStatus(row[7]),
+                        executed_price=row[8],
+                        executed_quantity=row[9],
+                        profit_loss=row[10],
+                        created_at=datetime.fromisoformat(row[11]) if row[11] else None,
+                        executed_at=datetime.fromisoformat(row[12]) if row[12] else None,
+                        closed_at=datetime.fromisoformat(row[13]) if row[13] else None
+                    ))
+                
+                return signals
+                
+        except Exception as e:
+            logger.error(f"실행된 신호 조회 실패: {e}")
             return [] 

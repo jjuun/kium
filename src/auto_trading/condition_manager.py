@@ -71,6 +71,10 @@ class ConditionManager:
     def __init__(self, db_path: str = "auto_trading.db"):
         self.db_path = db_path
         self._init_database()
+
+    def _normalize_symbol(self, symbol: str) -> str:
+        """종목코드에서 A 접두사 제거"""
+        return symbol[1:] if symbol and symbol.startswith('A') else symbol
     
     def _init_database(self):
         try:
@@ -141,6 +145,7 @@ class ConditionManager:
     
     def add_condition(self, symbol: str, condition_type: str, category: str, value: str, description: str = "") -> bool:
         try:
+            symbol = self._normalize_symbol(symbol)
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute("""
@@ -211,6 +216,7 @@ class ConditionManager:
                 query = "SELECT id, symbol, condition_type, category, value, description, success_rate, total_signals, successful_signals, avg_profit, is_active, created_at, updated_at FROM conditions WHERE 1=1"
                 params = []
                 if symbol:
+                    symbol = self._normalize_symbol(symbol)
                     query += " AND symbol = ?"
                     params.append(symbol)
                 if condition_type:

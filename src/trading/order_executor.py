@@ -46,6 +46,9 @@ class OrderRequest:
     def __post_init__(self):
         if self.order_time is None:
             self.order_time = datetime.now()
+        # 주문 가격을 정수로 변환 (키움 API 요구사항)
+        if self.price is not None:
+            self.price = int(self.price)
 
 @dataclass
 class OrderResult:
@@ -121,7 +124,7 @@ class OrderExecutor:
         """
         try:
             logger.info(f"=== 주문 실행 시작 ===")
-            logger.info(f"주문 요청: {order_request.symbol} {order_request.order_type.value} {order_request.quantity}주 @ {order_request.price:,}원")
+            logger.info(f"주문 요청: {order_request.symbol} {order_request.order_type.value} {order_request.quantity}주 @ {int(order_request.price):,}원")
             logger.info(f"가격 유형: {order_request.price_type.value} ({order_request.price_type.name})")
             logger.info(f"주문 시간: {order_request.order_time}")
             
@@ -180,7 +183,7 @@ class OrderExecutor:
                     success = True
                     order_id = api_result.get('ord_no', f"ORDER_{int(time.time())}")
                 # return_msg에 "완료"가 포함된 경우 (성공으로 처리)
-                elif api_result.get('return_msg') and '완료' in api_result.get('return_msg'):
+                elif api_result.get('return_msg') and ('완료' in api_result.get('return_msg') or '성공' in api_result.get('return_msg')):
                     success = True
                     order_id = api_result.get('ord_no', f"ORDER_{int(time.time())}")
                 # 모의 주문 성공 메시지 확인
@@ -196,7 +199,7 @@ class OrderExecutor:
             
             # 브라우저에서 볼 수 있도록 상세 로그 추가
             logger.info(f"🎯 주문 실행 결과: {'성공' if success else '실패'}")
-            logger.info(f"📋 주문 정보: {order_request.symbol} {order_request.order_type.value} {order_request.quantity}주 @ {order_request.price:,}원")
+            logger.info(f"📋 주문 정보: {order_request.symbol} {order_request.order_type.value} {order_request.quantity}주 @ {int(order_request.price):,}원")
             logger.info(f"🆔 주문 ID: {order_id}")
             logger.info(f"📝 응답 메시지: {api_result.get('return_msg', api_result.get('message', 'N/A'))}")
             logger.info(f"🔍 API 응답: {api_result}")
@@ -217,7 +220,7 @@ class OrderExecutor:
                 # 대기 주문 목록에 추가
                 self.pending_orders[order_id] = order_result
                 
-                logger.info(f"✅ 주문 접수 성공: {order_id} - {order_request.symbol} {order_request.order_type.value} {order_request.quantity}주 @ {order_request.price:,}원")
+                logger.info(f"✅ 주문 접수 성공: {order_id} - {order_request.symbol} {order_request.order_type.value} {order_request.quantity}주 @ {int(order_request.price):,}원")
                 logger.info(f"주문 ID: {order_id}")
                 logger.info(f"주문 상태: {order_result.status.value}")
                 logger.info(f"현재 대기 주문 수: {len(self.pending_orders)}")
@@ -255,27 +258,76 @@ class OrderExecutor:
             logger.info(f"=== 주문 취소 시작 ===")
             logger.info(f"취소 요청 주문 ID: {order_id}")
             
-            if order_id not in self.pending_orders:
-                logger.error(f"❌ 취소할 주문을 찾을 수 없습니다: {order_id}")
+            # 1. 로컬 pending_orders에서 주문 찾기
+            order = None
+            order_symbol = None
+            order_quantity = None
+            
+            if order_id in self.pending_orders:
+                order = self.pending_orders[order_id]
+                order_symbol = order.symbol
+                order_quantity = order.quantity
+                logger.info(f"로컬 주문 발견: {order.symbol} {order.order_type.value} {order.quantity}주 @ {order.price:,}원")
+                logger.info(f"현재 주문 상태: {order.status.value}")
+                
+                # 이미 체결된 주문은 취소 불가
+                if order.status in [OrderStatus.FILLED, OrderStatus.CANCELLED, OrderStatus.REJECTED]:
+                    logger.warning(f"⚠️ 이미 {order.status.value}된 주문은 취소할 수 없습니다: {order_id}")
+                    return False
+            else:
+                # 2. 키움 API에서 주문 조회
+                logger.info(f"로컬 주문 없음, 키움 API에서 주문 조회")
                 logger.info(f"현재 대기 중인 주문: {list(self.pending_orders.keys())}")
-                return False
-            
-            order = self.pending_orders[order_id]
-            logger.info(f"취소할 주문 정보: {order.symbol} {order.order_type.value} {order.quantity}주 @ {order.price:,}원")
-            logger.info(f"현재 주문 상태: {order.status.value}")
-            
-            # 이미 체결된 주문은 취소 불가
-            if order.status in [OrderStatus.FILLED, OrderStatus.CANCELLED, OrderStatus.REJECTED]:
-                logger.warning(f"⚠️ 이미 {order.status.value}된 주문은 취소할 수 없습니다: {order_id}")
-                return False
+                
+                # 키움 API에서 미체결 주문 조회하여 해당 주문 찾기
+                try:
+                    api_result = self.kiwoom_api.get_pending_orders_from_api()
+                    
+                    if api_result and api_result.get('return_code') == 0:
+                        oso_data = api_result.get('oso', [])
+                        
+                        # 해당 주문 ID 찾기
+                        found_order = None
+                        for order_data in oso_data:
+                            if order_data.get('ord_no') == order_id:
+                                found_order = order_data
+                                break
+                        
+                        if found_order:
+                            # 키움 API에서 찾은 주문 정보 추출
+                            order_symbol = found_order.get('stk_cd', '')
+                            order_quantity = int(found_order.get('ord_qty', 0))
+                            order_status = found_order.get('ord_sts_cd', '')
+                            
+                            # A 접두사 추가
+                            if order_symbol and not order_symbol.startswith('A'):
+                                order_symbol = 'A' + order_symbol
+                            
+                            logger.info(f"키움 API에서 주문 발견: {order_symbol} {order_quantity}주 (상태: {order_status})")
+                            
+                            # 이미 체결되거나 취소된 주문은 취소 불가
+                            if order_status in ['03', '04', '05']:  # 03:체결, 04:취소, 05:거부
+                                status_text = {'03': '체결', '04': '취소', '05': '거부'}.get(order_status, order_status)
+                                logger.warning(f"⚠️ 이미 {status_text}된 주문은 취소할 수 없습니다: {order_id}")
+                                return False
+                        else:
+                            logger.error(f"❌ 키움 API에서도 주문을 찾을 수 없습니다: {order_id}")
+                            return False
+                    else:
+                        logger.error(f"❌ 키움 API 주문 조회 실패")
+                        return False
+                        
+                except Exception as e:
+                    logger.error(f"❌ 키움 API 주문 조회 중 오류: {e}")
+                    return False
             
             logger.info(f"✅ 주문 취소 가능 - API 호출 시작")
             
             # API 호출하여 주문 취소
             api_result = self.kiwoom_api.cancel_order(
                 order_no=order_id,
-                symbol=order.symbol,
-                quantity=order.quantity
+                symbol=order_symbol or '',
+                quantity=order_quantity or 0
             )
             
             logger.info(f"=== 취소 API 응답 분석 ===")
@@ -286,21 +338,26 @@ class OrderExecutor:
             error_msg = '알 수 없는 오류'
             
             if api_result:
-                # 실제 API 응답의 경우
-                if api_result.get('rt_cd') == '0':
+                # 실제 API 응답의 경우 (return_code 0 또는 ord_no 존재)
+                if api_result.get('return_code') == 0:
+                    success = True
+                elif api_result.get('rt_cd') == '0':
                     success = True
                 # 모의 취소의 경우
                 elif api_result.get('success') or '모의 주문 취소 성공' in str(api_result):
                     success = True
-                # 주문번호가 응답에 있는 경우 (성공으로 처리)
+                # 주문번호가 루트 레벨에 있는 경우 (성공으로 처리)
+                elif api_result.get('ord_no'):
+                    success = True
+                # 주문번호가 output에 있는 경우
                 elif api_result.get('output') and isinstance(api_result['output'], dict):
                     output = api_result['output']
                     if output.get('ord_no') or output.get('KRX_FWDG_ORD_ORGNO'):
                         success = True
                     else:
-                        error_msg = api_result.get('msg1', api_result.get('message', '알 수 없는 오류'))
+                        error_msg = api_result.get('msg1', api_result.get('message', api_result.get('return_msg', '알 수 없는 오류')))
                 else:
-                    error_msg = api_result.get('msg1', api_result.get('message', '알 수 없는 오류'))
+                    error_msg = api_result.get('msg1', api_result.get('message', api_result.get('return_msg', '알 수 없는 오류')))
             else:
                 error_msg = 'API 응답 없음'
             
@@ -308,22 +365,31 @@ class OrderExecutor:
             
             # 브라우저에서 볼 수 있도록 상세 로그 추가
             logger.info(f"🎯 주문 취소 결과: {'성공' if success else '실패'}")
-            logger.info(f"📋 취소 주문: {order.symbol} {order.order_type.value} {order.quantity}주 @ {order.price:,}원")
+            if order:
+                logger.info(f"📋 취소 주문: {order.symbol} {order.order_type.value} {order.quantity}주 @ {order.price:,}원")
+            else:
+                logger.info(f"📋 취소 주문: {order_symbol} {order_quantity}주 (키움 API 조회)")
             logger.info(f"🆔 주문 ID: {order_id}")
             logger.info(f"📝 응답 메시지: {api_result.get('return_msg', api_result.get('message', 'N/A'))}")
             logger.info(f"🔍 API 응답: {api_result}")
             
             if success:
                 # 취소 성공
-                order.status = OrderStatus.CANCELLED
-                order.message = "주문 취소 완료"
-                
-                # 대기 목록에서 제거하고 히스토리에 추가
-                del self.pending_orders[order_id]
-                self.order_history.append(order)
-                
-                logger.info(f"✅ 주문 취소 성공: {order_id}")
-                logger.info(f"취소된 주문 정보: {order.symbol} {order.order_type.value} {order.quantity}주 @ {order.price:,}원")
+                if order:
+                    # 로컬 주문인 경우
+                    order.status = OrderStatus.CANCELLED
+                    order.message = "주문 취소 완료"
+                    
+                    # 대기 목록에서 제거하고 히스토리에 추가
+                    del self.pending_orders[order_id]
+                    self.order_history.append(order)
+                    
+                    logger.info(f"✅ 주문 취소 성공: {order_id}")
+                    logger.info(f"취소된 주문 정보: {order.symbol} {order.order_type.value} {order.quantity}주 @ {order.price:,}원")
+                else:
+                    # 키움 API 주문인 경우
+                    logger.info(f"✅ 주문 취소 성공: {order_id}")
+                    logger.info(f"취소된 주문 정보: {order_symbol} {order_quantity}주 (키움 API 취소)")
                 
                 # 브라우저 console 로그
                 logger.info(f"✅ 주문 취소 성공! ID: {order_id}")
@@ -418,6 +484,8 @@ class OrderExecutor:
                 logger.info(f"로컬 주문 처리: {order_id} - {order.symbol} {order.order_type.value} {order.quantity}주 @ {order.price:,}원")
                 order_dict = order.to_dict()
                 order_dict['source'] = 'local'  # 로컬에서 관리하는 주문임을 표시
+                # 종목명 추가 (종목코드로부터 추정)
+                order_dict['symbol_name'] = self._get_symbol_name(order.symbol)
                 local_pending_list.append(order_dict)
                 logger.info(f"로컬 주문 데이터 변환 완료: {order_dict}")
             
@@ -427,41 +495,57 @@ class OrderExecutor:
             try:
                 api_result = self.kiwoom_api.get_pending_orders_from_api()
                 
-                # API 응답 성공 여부 판단 개선
+                # API 응답 성공 여부 판단 개선 (실제 ka10075 API 응답 구조에 맞게)
                 api_success = False
                 if api_result:
                     if api_result.get('rt_cd') == '0':
                         api_success = True
                     elif api_result.get('status') == 'success':
                         api_success = True
-                    elif 'output' in api_result and 'oso' in api_result.get('output', {}):
-                        # oso 데이터가 있으면 성공으로 처리
+                    elif api_result.get('return_code') == 0:
+                        # ka10075 API는 return_code로 성공 여부 판단
+                        api_success = True
+                    elif 'oso' in api_result:
+                        # oso 데이터가 루트 레벨에 있으면 성공으로 처리
                         api_success = True
                 
                 if api_success:
-                    output = api_result.get('output', {})
-                    oso_data = output.get('oso', [])  # 미체결 주문 데이터
+                    # 실제 ka10075 API 응답 구조에 맞게 수정
+                    oso_data = api_result.get('oso', [])  # 미체결 주문 데이터 (루트 레벨)
                     
                     if isinstance(oso_data, list):
                         for order_data in oso_data:
-                            # ka10075 API 응답을 OrderResult 형식으로 변환
+                            # ka10075 API 응답을 OrderResult 형식으로 변환 (실제 필드명에 맞게)
+                            # 매수/매도 구분 수정: io_tp_nm에서 정확히 판단
+                            io_tp_nm = order_data.get('io_tp_nm', '')
+                            if io_tp_nm.startswith('+') or '매수' in io_tp_nm:
+                                order_type = '매수'
+                            elif io_tp_nm.startswith('-') or '매도' in io_tp_nm:
+                                order_type = '매도'
+                            else:
+                                # 기본값으로 매수로 설정 (안전한 기본값)
+                                order_type = '매수'
+                            
+                            symbol = f"A{order_data.get('stk_cd', '')}"  # A 접두사 추가
+                            
                             order_dict = {
                                 'order_id': order_data.get('ord_no', ''),
-                                'symbol': f"A{order_data.get('stk_cd', '')}",  # A 접두사 추가
-                                'order_type': '매수' if order_data.get('sll_buy_dvsn_cd') == '02' else '매도',
-                                'order_type_code': order_data.get('sll_buy_dvsn_cd', ''),
+                                'symbol': symbol,
+                                'order_type': order_type,
+                                'order_type_code': order_data.get('io_tp_nm', ''),
                                 'quantity': int(order_data.get('ord_qty', 0)),
-                                'price': float(order_data.get('ord_uv', 0)),
-                                'status': self._map_kiwoom_status(order_data.get('ord_sts_cd', '')),
-                                'status_code': order_data.get('ord_sts_cd', ''),
-                                'filled_quantity': int(order_data.get('exec_qty', 0)),
-                                'filled_price': float(order_data.get('exec_avg_prc', 0)),
-                                'order_time': order_data.get('ord_tmd', ''),
-                                'filled_time': order_data.get('exec_tmd', ''),
-                                'message': order_data.get('msg1', ''),
-                                'total_amount': int(order_data.get('ord_qty', 0)) * float(order_data.get('ord_uv', 0)),
-                                'filled_amount': int(order_data.get('exec_qty', 0)) * float(order_data.get('exec_avg_prc', 0)),
-                                'source': 'kiwoom_api_ka10075'  # ka10075 API에서 가져온 주문임을 표시
+                                'price': float(order_data.get('ord_pric', 0)),
+                                'status': self._map_kiwoom_status_ka10075(order_data.get('ord_stt', '')),
+                                'status_code': order_data.get('ord_stt', ''),
+                                'filled_quantity': int(order_data.get('cntr_qty', 0)),
+                                'filled_price': float(order_data.get('cntr_pric', 0)),
+                                'order_time': order_data.get('tm', ''),
+                                'filled_time': order_data.get('tm', ''),
+                                'message': order_data.get('stk_nm', ''),  # 종목명
+                                'symbol_name': order_data.get('stk_nm', ''),  # 종목명을 별도 필드로 추가
+                                'total_amount': int(order_data.get('ord_qty', 0)) * float(order_data.get('ord_pric', 0)),
+                                'filled_amount': int(order_data.get('cntr_qty', 0)) * float(order_data.get('cntr_pric', 0)),
+                                'source': 'kiwoom_api_ka10075'
                             }
                             api_pending_list.append(order_dict)
                             logger.info(f"키움 API 주문 데이터 변환 완료: {order_dict}")
@@ -605,4 +689,16 @@ class OrderExecutor:
             '06': '접수대기',  # 접수대기
             '07': '만료'       # 만료
         }
-        return status_mapping.get(kiwoom_status_code, '접수대기') 
+        return status_mapping.get(kiwoom_status_code, '접수대기')
+    
+    def _map_kiwoom_status_ka10075(self, kiwoom_status_text: str) -> str:
+        """키움 API ka10075 주문 상태 텍스트를 내부 상태로 매핑"""
+        status_mapping = {
+            '접수': '접수완료',
+            '부분체결': '부분체결',
+            '전체체결': '전체체결',
+            '체결': '전체체결',
+            '취소': '취소',
+            '거부': '거부',
+        }
+        return status_mapping.get(kiwoom_status_text, kiwoom_status_text) 

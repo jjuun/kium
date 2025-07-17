@@ -16,6 +16,8 @@ class KiwoomAPI:
         self.app_secret = self._load_app_secret()
         self.access_token = None
         self.token_expires_at = None
+        self.token_issued_at = None
+        self.token_duration = 86400  # 24시간 (초 단위)
         # 관심종목을 메모리에 저장
         self.watchlist = []
         self.is_simulation = Config.KIWOOM_IS_SIMULATION
@@ -94,6 +96,15 @@ class KiwoomAPI:
                     logger.error(f"응답 내용: {result}")
                     return None
                 
+                # 토큰 발급 시간 기록
+                self.token_issued_at = datetime.now()
+                self.token_expires_at = self.token_issued_at + timedelta(seconds=self.token_duration)
+                
+                logger.info(f"토큰 발급 완료: {self.access_token[:20]}...")
+                logger.info(f"토큰 만료 시간: {self.token_expires_at}")
+                
+                return self.access_token
+                
                 # 토큰 만료 시간 설정
                 # 키움 API는 expires_dt 형식으로 만료일시를 제공 (YYYYMMDDHHMMSS)
                 expires_dt = result.get('expires_dt')
@@ -152,7 +163,38 @@ class KiwoomAPI:
                 return None
             
             if response.status_code == 200:
-                return response.json()
+                result = response.json()
+                
+                # 토큰 에러 체크 (키움 API 응답에서 토큰 관련 에러 감지)
+                if isinstance(result, dict):
+                    return_code = result.get('return_code')
+                    return_msg = result.get('return_msg', '')
+                    
+                    # 토큰 관련 에러 코드들 체크
+                    if (return_code == 3 or 
+                        'Token' in return_msg or 
+                        '토큰' in return_msg or 
+                        '인증' in return_msg or
+                        '8005' in return_msg):
+                        
+                        logger.warning(f"토큰 에러 감지: {return_msg} (return_code: {return_code})")
+                        logger.warning("토큰을 무효화하고 강제 갱신을 시도합니다.")
+                        
+                        # 토큰 무효화
+                        self.access_token = None
+                        self.token_expires_at = None
+                        
+                        # 토큰 강제 갱신 시도
+                        new_token = self.get_access_token()
+                        if new_token:
+                            logger.info("토큰 갱신 성공 - 원래 요청을 재시도합니다.")
+                            # 재귀적으로 원래 요청 재시도 (무한 루프 방지를 위해 한 번만)
+                            return self.make_request(endpoint, method, data)
+                        else:
+                            logger.error("토큰 갱신 실패")
+                            return result  # 원래 에러 응답 반환
+                
+                return result
             else:
                 logger.error(f"API 요청 실패: {response.status_code} - {response.text}")
                 return None
@@ -216,13 +258,27 @@ class KiwoomAPI:
                 'api-id': api_id,
             }
             
-            # 요청 데이터 - 예제 코드와 동일한 파라미터 구조 사용
+            # 주문방식 코드 설정 (API 문서 기준)
+            # price_type: 00(보통), 03(시장가), 05(조건부지정가), 06(최유리지정가), 07(최우선지정가)
+            # trde_tp: 0(보통), 3(시장가), 5(조건부지정가), 6(최유리지정가), 7(최우선지정가)
+            trde_tp_map = {
+                '00': '0',   # 보통 (지정가)
+                '03': '3',   # 시장가  
+                '05': '5',   # 조건부지정가
+                '06': '6',   # 최유리지정가
+                '07': '7',   # 최우선지정가
+            }
+            
+            # 주문방식 결정
+            trade_type = trde_tp_map.get(price_type, '0')  # 기본값: 보통 (지정가)
+            
+            # 요청 데이터 - API 문서 기준으로 수정
             data = {
                 'dmst_stex_tp': 'KRX',  # 국내거래소구분 KRX,NXT,SOR
                 'stk_cd': normalized_symbol,  # 종목코드
                 'ord_qty': str(quantity),  # 주문수량
-                'ord_uv': str(price) if price_type != '03' else '',  # 주문단가 (시장가일 때는 빈 문자열)
-                'trde_tp': price_type,  # 매매구분 (예제 코드의 trde_tp 사용)
+                'ord_uv': str(int(price)) if price_type != '03' else '',  # 주문단가 (시장가일 때는 빈 문자열)
+                'trde_tp': trade_type,  # 주문방식 (0:보통, 3:시장가 등)
                 'cond_uv': '',  # 조건단가
             }
             
@@ -237,6 +293,7 @@ class KiwoomAPI:
             logger.info(f"주문유형: {order_type} ({'매수' if order_type == '01' else '매도'})")
             logger.info(f"가격유형: {price_type} ({'보통' if price_type == '00' else '시장가' if price_type == '03' else '기타'})")
             logger.info(f"API ID: {api_id}")
+            logger.info(f"주문방식: {trade_type} (API 문서 기준)")
             
             # API 요청
             response = requests.post(url, headers=headers, json=data, timeout=10)
@@ -251,13 +308,15 @@ class KiwoomAPI:
                 result = response.json()
                 logger.info(f"Parsed Response: {json.dumps(result, indent=2, ensure_ascii=False)}")
                 
-                # 응답 성공 여부 판단 개선
+                # 응답 성공 여부 판단
                 success = False
-                if result.get('rt_cd') == '0':
+                if result.get('return_code') == 0:  # return_code가 0이면 성공
+                    success = True
+                elif result.get('rt_cd') == '0':
                     success = True
                 elif result.get('status') == 'success':
                     success = True
-                elif 'ord_no' in result.get('output', {}):  # 주문번호가 있으면 성공
+                elif 'ord_no' in result:  # 주문번호가 있으면 성공
                     success = True
                 elif result.get('output') and isinstance(result['output'], dict) and result['output'].get('KRX_FWDG_ORD_ORGNO'):
                     success = True
@@ -265,31 +324,19 @@ class KiwoomAPI:
                 if success:
                     order_type_text = "매수" if order_type == "01" else "매도"
                     price_type_text = "시장가" if price_type == "03" else "지정가"
-                    logger.info(f"✅ 실제 주문 성공: {symbol} - {order_type_text} {quantity}주 @ {price:,}원 ({price_type_text})")
+                    logger.info(f"✅ 실제 주문 성공: {symbol} - {order_type_text} {quantity}주 @ {int(price):,}원 ({price_type_text})")
+                    logger.info(f"✅ 성공한 주문방식: {trade_type} (API 문서 기준)")
                     return result
                 else:
-                    error_msg = result.get('msg1', result.get('message', '알 수 없는 오류'))
+                    # 주문 실패인 경우
+                    error_msg = result.get('msg1', result.get('return_msg', '알 수 없는 오류'))
                     logger.error(f"❌ 주문 실패: {symbol} - {error_msg}")
                     logger.error(f"실패 응답: {json.dumps(result, indent=2, ensure_ascii=False)}")
                     return result
             else:
-                logger.error(f"❌ 주문 API 요청 실패: {symbol}")
-                logger.error(f"Status Code: {response.status_code}")
-                logger.error(f"Response Text: {response.text}")
-                
-                # API 호출 실패 시 모의 주문으로 처리
-                order_type_text = "매수" if order_type == "01" else "매도"
-                logger.info(f"모의 주문 실행: {symbol} - {order_type_text} {quantity}주 @ {price}원 (타입: {price_type})")
-                logger.info(f"모의 주문 성공: {symbol} - {order_type_text} {quantity}주 @ {price}원")
-                return {
-                    'success': True,
-                    'message': '모의 주문 성공',
-                    'rt_cd': '0',
-                    'output': {
-                        'KRX_FWDG_ORD_ORGNO': f"MOCK_ORDER_{int(time.time())}"
-                    }
-                }
-                
+                logger.error(f"❌ HTTP 오류: {response.status_code} - {response.text}")
+                return None
+            
         except Exception as e:
             logger.error(f"❌ 주문 실행 중 오류: {e}")
             logger.error(f"Exception Details: {type(e).__name__}: {str(e)}")
@@ -396,7 +443,7 @@ class KiwoomAPI:
                         logger.info(f"oso 길이: {len(oso_data) if isinstance(oso_data, list) else 'N/A'}")
                         logger.info(f"oso 데이터: {json.dumps(oso_data, indent=2, ensure_ascii=False)}")
                 
-                # 응답 성공 여부 판단 개선
+                # 응답 성공 여부 판단 개선 (실제 API 응답 구조에 맞게)
                 success = False
                 if result.get('rt_cd') == '0':
                     success = True
@@ -404,17 +451,29 @@ class KiwoomAPI:
                 elif result.get('status') == 'success':
                     success = True
                     logger.info("✅ status가 'success'로 성공 판단")
+                elif result.get('return_code') == 0:
+                    # ka10075 API는 return_code로 성공 여부 판단
+                    success = True
+                    logger.info("✅ return_code가 0으로 성공 판단")
                 elif 'output' in result and 'oso' in result.get('output', {}):
                     # oso 데이터가 있으면 성공으로 처리
                     success = True
                     logger.info("✅ output에 oso 데이터가 있어 성공 판단")
+                elif 'oso' in result:
+                    # oso 데이터가 루트 레벨에 있으면 성공으로 처리
+                    success = True
+                    logger.info("✅ 루트 레벨에 oso 데이터가 있어 성공 판단")
                 
                 if success:
                     logger.info(f"✅ 키움 API 미체결 주문 조회 성공 (ka10075)")
                     
-                    # oso (미체결) 데이터 확인
-                    output = result.get('output', {})
-                    oso_data = output.get('oso', [])
+                    # oso (미체결) 데이터 확인 (루트 레벨 또는 output 안에서 찾기)
+                    oso_data = result.get('oso', [])
+                    if not oso_data:
+                        # output 안에서 찾기
+                        output = result.get('output', {})
+                        oso_data = output.get('oso', [])
+                    
                     logger.info(f"미체결 주문 개수: {len(oso_data)}")
                     
                     if oso_data:
@@ -456,7 +515,7 @@ class KiwoomAPI:
             url = self.host + endpoint
             
             # 주문 취소용 api-id 설정
-            api_id = 'kt10002'  # 주문 취소용 TR
+            api_id = 'kt10003'  # 주문 취소 전용 TR
             
             # 헤더 설정
             headers = {
@@ -465,15 +524,12 @@ class KiwoomAPI:
                 'api-id': api_id,
             }
             
-            # 요청 데이터 - 주문 취소용 파라미터
+            # 요청 데이터 - 주문 취소용 파라미터 (실제 API 명세에 따라 수정)
             data = {
                 'dmst_stex_tp': 'KRX',  # 국내거래소구분
+                'orig_ord_no': order_no,  # 원주문번호 (취소할 주문번호)
                 'stk_cd': normalized_symbol,  # 종목코드
-                'ord_qty': str(quantity),  # 주문수량
-                'ord_uv': '',  # 주문단가 (취소시 빈 문자열)
-                'trde_tp': '01',  # 매매구분 (01: 취소)
-                'cond_uv': '',  # 조건단가
-                'ord_no': order_no,  # 주문번호
+                'cncl_qty': '0',  # 취소수량 ('0' 입력시 잔량 전부 취소)
             }
             
             # 상세 로그 출력
@@ -483,7 +539,7 @@ class KiwoomAPI:
             logger.info(f"Request Data: {json.dumps(data, indent=2, ensure_ascii=False)}")
             logger.info(f"주문번호: {order_no}")
             logger.info(f"종목코드: {symbol} -> {normalized_symbol}")
-            logger.info(f"취소수량: {quantity}")
+            logger.info(f"취소수량: 전량 취소 (0)")
             logger.info(f"API ID: {api_id}")
             
             # API 요청
@@ -501,18 +557,20 @@ class KiwoomAPI:
                 
                 # 응답 성공 여부 판단 개선
                 success = False
-                if result.get('rt_cd') == '0':
+                if result.get('return_code') == 0:  # return_code가 0이면 성공
+                    success = True
+                elif result.get('rt_cd') == '0':
                     success = True
                 elif result.get('status') == 'success':
                     success = True
-                elif 'ord_no' in result.get('output', {}):  # 주문번호가 있으면 성공
+                elif 'ord_no' in result:  # 루트 레벨에 ord_no가 있으면 성공
                     success = True
                 
                 if success:
-                    logger.info(f"✅ 실제 주문 취소 성공: {order_no} - {symbol} {quantity}주")
+                    logger.info(f"✅ 실제 주문 취소 성공: {order_no} - {symbol} 전량취소")
                     return result
                 else:
-                    error_msg = result.get('msg1', result.get('message', '알 수 없는 오류'))
+                    error_msg = result.get('msg1', result.get('message', result.get('return_msg', '알 수 없는 오류')))
                     logger.error(f"❌ 주문 취소 실패: {order_no} - {error_msg}")
                     logger.error(f"실패 응답: {json.dumps(result, indent=2, ensure_ascii=False)}")
                     return result
@@ -522,7 +580,7 @@ class KiwoomAPI:
                 logger.error(f"Response Text: {response.text}")
                 
                 # API 호출 실패 시 모의 취소로 처리
-                logger.info(f"모의 주문 취소 실행: {order_no} - {symbol} {quantity}주")
+                logger.info(f"모의 주문 취소 실행: {order_no} - {symbol} 전량취소")
                 logger.info(f"모의 주문 취소 성공: {order_no}")
                 return {
                     'success': True,
@@ -584,12 +642,21 @@ class KiwoomAPI:
                     
                     if response.status_code == 200:
                         result = response.json()
-                        if result.get('output') and len(result['output']) > 0:
-                            output = result['output'][0]
-                            current_price = output.get('prpr', 'N/A')
-                            change_rate = output.get('diff_rt', 'N/A')
+                        if result.get('return_code') == 0:
+                            # 실제 API 응답 형식에 맞게 수정
+                            current_price = result.get('cur_prc', 'N/A')
+                            change_rate = result.get('flu_rt', 'N/A')
                             logger.info(f"실시간 가격 수집: {symbol} - {current_price}원 ({change_rate}%)")
-                            return result
+                            
+                            # 호환성을 위해 기존 형식으로 변환
+                            return {
+                                'output': [{
+                                    'prpr': current_price.replace('+', '').replace('-', '') if current_price != 'N/A' else '0',
+                                    'diff_rt': change_rate.replace('+', '').replace('-', '') if change_rate != 'N/A' else '0',
+                                    'stk_cd': normalized_symbol
+                                }],
+                                'timestamp': datetime.now().isoformat()
+                            }
                         else:
                             logger.warning(f"현재가 데이터 없음: {symbol}")
                             # 데이터가 없어도 기본 응답 반환
@@ -1488,12 +1555,144 @@ class KiwoomAPI:
                 logger.error(f"체결잔고요청 실패: {response.status_code} - {response.text}")
                 return None
                 
-        except requests.exceptions.Timeout:
-            logger.error("체결잔고요청 시간 초과")
-            return None
-        except requests.exceptions.ConnectionError:
-            logger.error("체결잔고요청 연결 실패")
-            return None
         except Exception as e:
             logger.error(f"체결잔고요청 중 오류: {e}")
-            return None 
+            return None
+    
+    # ==============================================
+    # 토큰 관리 메서드들
+    # ==============================================
+    
+    def is_token_valid(self) -> bool:
+        """
+        토큰 유효성 검사 (실제 API 호출로 검증)
+        
+        Returns:
+            bool: 토큰이 유효한지 여부
+        """
+        if not self.access_token:
+            return False
+            
+        if not self.token_expires_at:
+            return False
+            
+        # 로컬 만료 시간 체크
+        now = datetime.now()
+        if now >= self.token_expires_at:
+            return False
+        
+        # 실제 API 호출로 토큰 유효성 검증
+        try:
+            # 간단한 API 호출로 토큰 검증 (계좌 잔고 조회)
+            test_result = self.get_account_balance_kt00018()
+            if test_result and isinstance(test_result, dict):
+                return_code = test_result.get('return_code')
+                return_msg = test_result.get('return_msg', '')
+                
+                # 토큰 관련 에러가 있으면 무효
+                if (return_code == 3 or 
+                    'Token' in return_msg or 
+                    '토큰' in return_msg or 
+                    '인증' in return_msg or
+                    '8005' in return_msg):
+                    logger.warning(f"토큰 유효성 검증 실패: {return_msg}")
+                    return False
+                
+                return True
+            else:
+                # API 응답이 없으면 토큰 문제로 간주
+                return False
+                
+        except Exception as e:
+            logger.error(f"토큰 유효성 검증 중 오류: {e}")
+            return False
+    
+    def get_token_status(self) -> Dict[str, Any]:
+        """
+        토큰 상태 정보 반환
+        
+        Returns:
+            Dict[str, Any]: 토큰 상태 정보
+        """
+        if not self.access_token:
+            return {
+                'has_token': False,
+                'is_valid': False,
+                'expires_at': None,
+                'expires_in_seconds': None,
+                'expires_in_minutes': None,
+                'status': 'no_token'
+            }
+        
+        if not self.token_expires_at:
+            return {
+                'has_token': True,
+                'is_valid': True,
+                'expires_at': None,
+                'expires_in_seconds': None,
+                'expires_in_minutes': None,
+                'status': 'valid_no_expiry'
+            }
+        
+        now = datetime.now()
+        is_valid = now < self.token_expires_at
+        expires_in = (self.token_expires_at - now).total_seconds()
+        
+        status = 'valid'
+        if expires_in < 0:
+            status = 'expired'
+        elif expires_in < 3600:  # 1시간 미만
+            status = 'expires_soon'
+        
+        return {
+            'has_token': True,
+            'is_valid': is_valid,
+            'expires_at': self.token_expires_at.isoformat(),
+            'expires_in_seconds': max(0, int(expires_in)),
+            'expires_in_minutes': max(0, int(expires_in / 60)),
+            'status': status
+        }
+    
+    def refresh_token_if_needed(self) -> bool:
+        """
+        토큰이 만료되었거나 곧 만료될 경우 자동 갱신
+        
+        Returns:
+            bool: 갱신 성공 여부
+        """
+        try:
+            if not self.access_token:
+                logger.info("토큰이 없어 새로 발급합니다.")
+                return self.get_access_token() is not None
+                
+            if not self.token_expires_at:
+                logger.info("토큰 만료 시간이 없어 새로 발급합니다.")
+                return self.get_access_token() is not None
+                
+            now = datetime.now()
+            time_until_expiry = (self.token_expires_at - now).total_seconds()
+            
+            # 토큰이 만료되었거나 30분 이내에 만료될 경우 갱신
+            if time_until_expiry <= 1800:  # 30분
+                logger.info(f"토큰이 {time_until_expiry/60:.1f}분 후 만료되어 갱신합니다.")
+                return self.get_access_token() is not None
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"토큰 갱신 중 오류: {e}")
+            return False
+    
+    def force_refresh_token(self) -> bool:
+        """
+        토큰 강제 갱신
+        
+        Returns:
+            bool: 갱신 성공 여부
+        """
+        try:
+            logger.info("토큰 강제 갱신 요청")
+            return self.get_access_token() is not None
+        except Exception as e:
+            logger.error(f"토큰 강제 갱신 중 오류: {e}")
+            return False 

@@ -79,6 +79,10 @@ class WatchlistManager:
             logger.error(f"데이터베이스 초기화 실패: {e}")
             raise
     
+    def _normalize_symbol(self, symbol: str) -> str:
+        """종목코드에서 A 접두사 제거"""
+        return symbol[1:] if symbol.startswith('A') else symbol
+    
     def add_symbol(self, symbol: str, symbol_name: str = None) -> bool:
         """
         감시 종목 추가
@@ -91,9 +95,8 @@ class WatchlistManager:
             bool: 추가 성공 여부
         """
         try:
-            # 종목코드 정규화 (A 접두사 추가)
-            if not symbol.startswith('A'):
-                symbol = f"A{symbol}"
+            # 종목코드 정규화 (A 접두사 제거)
+            symbol = self._normalize_symbol(symbol)
             
             # 종목명이 없으면 종목코드로 설정
             if not symbol_name:
@@ -133,9 +136,8 @@ class WatchlistManager:
             bool: 제거 성공 여부
         """
         try:
-            # 종목코드 정규화
-            if not symbol.startswith('A'):
-                symbol = f"A{symbol}"
+            # 종목코드 정규화 (A 접두사 제거)
+            symbol = self._normalize_symbol(symbol)
             
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -167,9 +169,8 @@ class WatchlistManager:
             bool: 수정 성공 여부
         """
         try:
-            # 종목코드 정규화
-            if not symbol.startswith('A'):
-                symbol = f"A{symbol}"
+            # 종목코드 정규화 (A 접두사 제거)
+            symbol = self._normalize_symbol(symbol)
             
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -267,9 +268,8 @@ class WatchlistManager:
             Optional[WatchlistItem]: 종목 정보
         """
         try:
-            # 종목코드 정규화
-            if not symbol.startswith('A'):
-                symbol = f"A{symbol}"
+            # 종목코드 정규화 (A 접두사 제거)
+            symbol = self._normalize_symbol(symbol)
             
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -308,9 +308,8 @@ class WatchlistManager:
             bool: 감시 목록 포함 여부
         """
         try:
-            # 종목코드 정규화
-            if not symbol.startswith('A'):
-                symbol = f"A{symbol}"
+            # 종목코드 정규화 (A 접두사 제거)
+            symbol = self._normalize_symbol(symbol)
             
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
