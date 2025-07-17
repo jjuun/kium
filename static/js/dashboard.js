@@ -1714,6 +1714,12 @@ async function refreshTokenStatus() {
             const tokenIndicator = document.getElementById('token-indicator');
             const status = data.token_status;
             
+            // 요소가 존재하는지 확인
+            if (!tokenIndicator) {
+                console.warn('token-indicator 요소를 찾을 수 없습니다.');
+                return;
+            }
+            
             let statusText = '';
             let statusClass = '';
             let borderColor = '#28a745';
@@ -1741,8 +1747,12 @@ async function refreshTokenStatus() {
             }
             
             tokenIndicator.textContent = statusText;
-            tokenDiv.style.borderColor = borderColor;
-            tokenDiv.className = statusClass;
+            
+            // tokenDiv가 존재하는 경우에만 스타일 적용
+            if (tokenDiv) {
+                tokenDiv.style.borderColor = borderColor;
+                tokenDiv.className = statusClass;
+            }
             
             // 토큰 만료 시 알림
             if (status.status === 'expired' || status.status === 'expires_soon') {
@@ -1751,8 +1761,15 @@ async function refreshTokenStatus() {
         }
     } catch (error) {
         console.error('토큰 상태 조회 실패:', error);
-        document.getElementById('token-indicator').textContent = '🔑 토큰 상태 확인 실패';
-        document.getElementById('token-status').style.borderColor = '#dc3545';
+        const tokenIndicator = document.getElementById('token-indicator');
+        const tokenDiv = document.getElementById('token-status');
+        
+        if (tokenIndicator) {
+            tokenIndicator.textContent = '🔑 토큰 상태 확인 실패';
+        }
+        if (tokenDiv) {
+            tokenDiv.style.borderColor = '#dc3545';
+        }
     }
 }
 
@@ -1779,14 +1796,18 @@ function showTokenAlert(tokenStatus) {
     
     // 자동매매 섹션 위에 알림 표시
     const autoTradingSection = document.getElementById('auto-trading-section');
-    autoTradingSection.insertBefore(alertDiv, autoTradingSection.firstChild);
-    
-    // 10초 후 자동 제거
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
-        }
-    }, 10000);
+    if (autoTradingSection) {
+        autoTradingSection.insertBefore(alertDiv, autoTradingSection.firstChild);
+        
+        // 10초 후 자동 제거
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 10000);
+    } else {
+        console.warn('auto-trading-section 요소를 찾을 수 없습니다.');
+    }
 }
 
 // 토큰 수동 갱신
