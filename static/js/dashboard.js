@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     refreshAll();
     setupAutoRefreshToggle();
     setupHoldingItemClickHandlers();
+    setupAutoTradingHandlers(); // 자동매매 버튼 이벤트 핸들러 추가
     
     // 기본적으로 자동 갱신 시작 (30초 주기)
     startAutoRefresh();
@@ -116,6 +117,20 @@ function setupAutoRefreshToggle() {
                 toggleBtn.className = 'btn btn-danger';
             }
         });
+    }
+}
+
+// 자동매매 버튼 이벤트 핸들러 설정
+function setupAutoTradingHandlers() {
+    const startBtn = document.getElementById('start-auto-trading');
+    const stopBtn = document.getElementById('stop-auto-trading');
+    
+    if (startBtn) {
+        startBtn.addEventListener('click', startAutoTrading);
+    }
+    
+    if (stopBtn) {
+        stopBtn.addEventListener('click', stopAutoTrading);
     }
 }
 
