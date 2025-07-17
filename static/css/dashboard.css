@@ -292,6 +292,49 @@ input[type="text"] {
     flex-wrap: wrap;
 }
 
+/* ===== COMPACT STATUS SUMMARY ===== */
+.status-summary {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 12px 20px;
+    border: 1px solid #e9ecef;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.status-item:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.status-icon {
+    font-size: 1rem;
+}
+
+.status-text {
+    font-weight: 500;
+}
+
+.status-text strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* ===== LEGACY STATS GRID (for other sections) ===== */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -597,6 +640,16 @@ input[type="text"] {
         justify-content: center;
     }
     
+    .status-summary {
+        gap: 15px;
+        padding: 10px 15px;
+    }
+    
+    .status-item {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+    
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -628,6 +681,17 @@ input[type="text"] {
     .btn {
         width: 100%;
         margin-bottom: 5px;
+    }
+    
+    .status-summary {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    .status-item {
+        justify-content: center;
+        text-align: center;
     }
     
     .stats-grid {

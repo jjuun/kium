@@ -45,24 +45,22 @@
                     </div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-item" id="watchlist-summary" onclick="showWatchlistDetails()">
-                        <div class="stat-label">감시 종목</div>
-                        <div class="stat-value" id="watchlist-count">0개</div>
+                <div class="status-summary">
+                    <div class="status-item" id="watchlist-summary" onclick="showWatchlistDetails()">
+                        <span class="status-icon">👁️</span>
+                        <span class="status-text">감시: <strong id="watchlist-count">0</strong></span>
                     </div>
-                    <div class="stat-item" id="active-conditions-summary" onclick="showActiveConditionsDetails()">
-                        <div class="stat-label">활성 조건</div>
-                        <div class="stat-value" id="active-conditions-count">0개</div>
+                    <div class="status-item" id="active-conditions-summary" onclick="showActiveConditionsDetails()">
+                        <span class="status-icon">⚙️</span>
+                        <span class="status-text">조건: <strong id="active-conditions-count">0</strong></span>
                     </div>
-                    <div class="stat-item" onclick="showExecutedOrdersDetails()">
-                        <div class="stat-label">일일 주문</div>
-                        <div class="stat-value" id="daily-orders">0/10</div>
+                    <div class="status-item" onclick="showExecutedOrdersDetails()">
+                        <span class="status-icon">📊</span>
+                        <span class="status-text">주문: <strong id="daily-orders">0/10</strong></span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-label">토큰 상태</div>
-                        <div class="stat-value" id="token-status">
-                            <span id="token-indicator">🔑 확인 중...</span>
-                        </div>
+                    <div class="status-item">
+                        <span class="status-icon">🔑</span>
+                        <span class="status-text" id="token-indicator">확인 중...</span>
                     </div>
                 </div>
 
