@@ -2092,12 +2092,8 @@ async function updateAutoTradingStats(status) {
         const isTestMode = status.test_mode;
         const currentCount = isTestMode ? (status.daily_order_count_test || 0) : (status.daily_order_count_real || 0);
         const maxCount = isTestMode ? (status.max_daily_orders_test || 50) : (status.max_daily_orders_real || 10);
-        const modeText = isTestMode ? '테스트' : '실제';
         
-        dailyOrdersDiv.innerHTML = `
-            <div>${currentCount}/${maxCount}</div>
-            <div style="font-size: 0.8em; color: #666; margin-top: 2px;">${modeText} 모드</div>
-        `;
+        dailyOrdersDiv.textContent = `${currentCount}/${maxCount}`;
     }
     
     // 감시 종목 정보 업데이트
