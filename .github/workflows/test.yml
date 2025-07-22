@@ -1,0 +1,161 @@
+name: A-ki 테스트 및 CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11, 3.12]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Python ${{ matrix.python-version }} 설정
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: 의존성 설치
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+    
+    - name: 코드 스타일 검사
+      run: |
+        black --check src/ tests/
+        flake8 src/ tests/ --max-line-length=88 --extend-ignore=E203,W503
+    
+    - name: 타입 검사
+      run: |
+        mypy src/ --ignore-missing-imports
+    
+    - name: 단위 테스트 실행
+      run: |
+        pytest tests/unit/ -v --cov=src --cov-report=xml --cov-report=html --cov-report=term-missing
+    
+    - name: 통합 테스트 실행
+      run: |
+        pytest tests/integration/ -v --cov=src --cov-report=xml --cov-report=html --cov-report=term-missing
+    
+    - name: E2E 테스트 실행 (헤드리스)
+      run: |
+        pytest tests/e2e/ -v -m "not slow" --cov=src --cov-report=xml --cov-report=html --cov-report=term-missing
+    
+    - name: 테스트 커버리지 업로드
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+    
+    - name: 테스트 결과 아티팩트 업로드
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-${{ matrix.python-version }}
+        path: |
+          htmlcov/
+          .coverage
+          coverage.xml
+          pytest-report.html
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Python 설정
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.12
+    
+    - name: 보안 검사
+      run: |
+        pip install bandit safety
+        bandit -r src/ -f json -o bandit-report.json || true
+        safety check --json --output safety-report.json || true
+    
+    - name: 보안 리포트 업로드
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+
+  performance:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Python 설정
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.12
+    
+    - name: 성능 테스트 실행
+      run: |
+        pip install -r requirements-dev.txt
+        pytest tests/e2e/ -v -m "slow" --durations=10
+    
+    - name: 성능 리포트 생성
+      run: |
+        echo "성능 테스트 완료" > performance-report.txt
+        echo "실행 시간: $(date)" >> performance-report.txt
+    
+    - name: 성능 리포트 업로드
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-report
+        path: performance-report.txt
+
+  build:
+    needs: [test, security]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Python 설정
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.12
+    
+    - name: 빌드 패키지 생성
+      run: |
+        pip install build
+        python -m build
+    
+    - name: 빌드 아티팩트 업로드
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-packages
+        path: dist/
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: 배포 준비
+      run: |
+        echo "배포 준비 완료"
+        echo "배포 시간: $(date)" > deploy-info.txt
+    
+    - name: 배포 정보 업로드
+      uses: actions/upload-artifact@v3
+      with:
+        name: deploy-info
+        path: deploy-info.txt 
