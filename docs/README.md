@@ -65,7 +65,11 @@ A-ki/
 │   ├── simple_backtest_demo.py
 │   └── advanced_backtest_demo.py
 ├── main.py                # 메인 실행 파일
-├── server.sh              # 서버 관리 스크립트
+├── start_server.py        # 통합 서버 시작 스크립트
+├── stop_server.py         # 서버 종료 스크립트
+├── start.sh               # 서버 시작 쉘 스크립트
+├── stop.sh                # 서버 종료 쉘 스크립트
+├── server.sh              # 레거시 서버 관리 스크립트
 ├── requirements.txt       # 의존성 패키지
 └── auto_trading.db        # SQLite 데이터베이스
 ```
@@ -95,7 +99,34 @@ export KIWOOM_SECRETKEY="your_secretkey_here"
 
 ### 3. 웹 대시보드 실행 및 관리
 
-#### 간단한 서버 관리 (권장)
+#### 🚀 통합 프로세스 관리 (권장)
+새로운 프로세스 관리 시스템으로 기존 프로세스를 자동으로 정리하고 새로운 서버를 시작합니다.
+
+```bash
+# 서버 시작 (기존 프로세스 자동 정리 후 시작)
+./start.sh
+
+# 또는 Python 스크립트 직접 실행
+python3 start_server.py
+
+# 서버 종료 (모든 관련 프로세스 안전 종료)
+./stop.sh
+
+# 또는 Python 스크립트 직접 실행
+python3 stop_server.py
+
+# 강제 종료 (필요한 경우)
+python3 stop_server.py --force
+```
+
+#### 📋 프로세스 관리 기능
+- **자동 프로세스 감지**: 실행 중인 A-ki 관련 프로세스 자동 발견
+- **안전한 종료**: 기존 프로세스를 안전하게 종료 후 새 서버 시작
+- **포트 충돌 해결**: 포트 8000 사용 중인 프로세스 자동 정리
+- **PID 파일 관리**: 서버 프로세스 ID 자동 관리
+- **로그 모니터링**: 실시간 서버 로그 출력
+
+#### 🔧 기존 서버 관리 (레거시)
 ```bash
 # 서버 시작
 ./server.sh start
@@ -110,7 +141,7 @@ export KIWOOM_SECRETKEY="your_secretkey_here"
 ./server.sh status
 ```
 
-#### 수동 서버 관리 (고급 사용자)
+#### 📝 수동 서버 관리 (고급 사용자)
 ```bash
 # 서버 시작
 PYTHONPATH=$(pwd) uvicorn src.web.web_dashboard:app --host 0.0.0.0 --port 8000 --reload

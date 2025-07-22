@@ -17,4 +17,7 @@ fastapi>=0.104.0
 uvicorn>=0.24.0
 jinja2>=3.1.0
 python-multipart>=0.0.6
-aiofiles>=23.0.0 
+aiofiles>=23.0.0
+
+# 프로세스 관리 관련 패키지
+psutil>=5.9.0 
