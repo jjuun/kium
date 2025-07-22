@@ -7,9 +7,4 @@ from .condition_manager import ConditionManager
 from .signal_monitor import SignalMonitor
 from .auto_trader import AutoTrader
 
-__all__ = [
-    'WatchlistManager',
-    'ConditionManager', 
-    'SignalMonitor',
-    'AutoTrader'
-] 
+__all__ = ["WatchlistManager", "ConditionManager", "SignalMonitor", "AutoTrader"]

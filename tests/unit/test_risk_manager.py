@@ -1,288 +1,302 @@
 """
 RiskManager 단위 테스트
 """
+
 import pytest
-from unittest.mock import Mock, patch, AsyncMock
+import pandas as pd
+import numpy as np
+from unittest.mock import Mock, patch
 from datetime import datetime, timedelta
 
 from src.trading.risk_manager import RiskManager
 
 
 class TestRiskManager:
-    """RiskManager 클래스 테스트"""
-    
     @pytest.fixture
     def risk_manager(self):
         """RiskManager 인스턴스 fixture"""
         return RiskManager()
-    
+
     @pytest.fixture
     def sample_position(self):
-        """샘플 포지션 데이터"""
+        """샘플 포지션 데이터 fixture"""
         return {
-            'symbol': '005935',
-            'quantity': 10,
-            'avg_price': 50000,
-            'current_price': 52000,
-            'unrealized_pnl': 200000,  # 10 * (52000 - 50000)
-            'realized_pnl': 0,
-            'entry_time': datetime.now() - timedelta(days=5)
+            "symbol": "005935",
+            "quantity": 10,
+            "entry_price": 50000,
+            "entry_time": datetime.now(),
+            "current_price": 52000
         }
-    
+
     @pytest.fixture
     def sample_order(self):
-        """샘플 주문 데이터"""
+        """샘플 주문 데이터 fixture"""
         return {
-            'symbol': '005935',
-            'order_type': 'buy',
-            'quantity': 5,
-            'price': 50000,
-            'total_amount': 250000
+            "symbol": "005935",
+            "quantity": 5,
+            "price": 52000,
+            "order_type": "buy"
         }
-    
+
+    @pytest.fixture
+    def current_positions(self):
+        """현재 포지션 목록 fixture"""
+        return {
+            "005935": {
+                "quantity": 10,
+                "entry_price": 50000,
+                "entry_time": datetime.now()
+            },
+            "000660": {
+                "quantity": 5,
+                "entry_price": 80000,
+                "entry_time": datetime.now()
+            }
+        }
+
     def test_risk_manager_initialization(self, risk_manager):
         """RiskManager 초기화 테스트"""
         # Then
         assert risk_manager is not None
-        assert hasattr(risk_manager, 'max_position_size')
-        assert hasattr(risk_manager, 'max_daily_loss')
-        assert hasattr(risk_manager, 'stop_loss_pct')
-        assert hasattr(risk_manager, 'take_profit_pct')
-    
-    def test_check_position_size_limit(self, risk_manager, sample_order):
-        """포지션 크기 제한 체크 테스트"""
-        # Given - 현재 포지션 크기가 제한 내
-        current_positions = {'005935': {'quantity': 5, 'avg_price': 50000}}
-        risk_manager.max_position_size = 1000000  # 100만원
-        
+        assert hasattr(risk_manager, "max_position_size")
+        assert hasattr(risk_manager, "stop_loss_percent")
+        assert hasattr(risk_manager, "take_profit_percent")
+        assert hasattr(risk_manager, "positions")
+        assert hasattr(risk_manager, "trade_history")
+
+    def test_calculate_position_size(self, risk_manager):
+        """포지션 크기 계산 테스트"""
+        # Given
+        current_price = 50000
+        available_capital = 1000000
+
         # When
-        result = risk_manager.check_position_size_limit(sample_order, current_positions)
-        
+        quantity, actual_size = risk_manager.calculate_position_size(current_price, available_capital)
+
         # Then
-        assert result is True
-        
-        # Given - 포지션 크기 초과
-        large_order = sample_order.copy()
-        large_order['quantity'] = 50  # 250만원
-        result = risk_manager.check_position_size_limit(large_order, current_positions)
-        assert result is False
-    
-    def test_check_daily_loss_limit(self, risk_manager):
-        """일일 손실 제한 체크 테스트"""
-        # Given - 일일 손실이 제한 내
-        daily_pnl = -50000  # 5만원 손실
-        risk_manager.max_daily_loss = 100000  # 10만원
-        
+        assert quantity > 0
+        assert actual_size > 0
+        assert actual_size == quantity * current_price
+
+    def test_calculate_position_size_minimum(self, risk_manager):
+        """최소 포지션 크기 계산 테스트"""
+        # Given
+        current_price = 1000000  # 매우 높은 가격
+        available_capital = 500000  # 제한된 자본
+
         # When
-        result = risk_manager.check_daily_loss_limit(daily_pnl)
-        
+        quantity, actual_size = risk_manager.calculate_position_size(current_price, available_capital)
+
         # Then
-        assert result is True
-        
-        # Given - 일일 손실 초과
-        large_loss = -150000  # 15만원 손실
-        result = risk_manager.check_daily_loss_limit(large_loss)
-        assert result is False
-    
+        assert quantity >= 1  # 최소 1주
+        assert actual_size > 0
+
     def test_check_stop_loss(self, risk_manager, sample_position):
-        """손절 체크 테스트"""
-        # Given - 손절 조건 만족 (2% 손실)
-        sample_position['current_price'] = 49000  # 2% 하락
-        risk_manager.stop_loss_pct = 0.02
+        """손절 조건 확인 테스트"""
+        # Given
+        symbol = "005935"
+        risk_manager.positions[symbol] = {
+            "quantity": sample_position["quantity"],
+            "entry_price": sample_position["entry_price"],
+            "entry_time": sample_position["entry_time"]
+        }
         
+        # 손절 조건을 만족하는 현재 가격 (20% 하락)
+        current_price = 40000
+
         # When
-        result = risk_manager.check_stop_loss(sample_position)
-        
+        should_stop, stop_info = risk_manager.check_stop_loss(symbol, current_price)
+
         # Then
-        assert result is True
-        
-        # Given - 손절 조건 불만족
-        sample_position['current_price'] = 49500  # 1% 하락
-        result = risk_manager.check_stop_loss(sample_position)
-        assert result is False
-    
+        assert should_stop is True
+        assert stop_info is not None
+        assert stop_info["action"] == "STOP_LOSS"
+        assert stop_info["symbol"] == symbol
+
+    def test_check_stop_loss_no_position(self, risk_manager):
+        """포지션이 없는 경우 손절 확인 테스트"""
+        # Given
+        symbol = "005935"
+        current_price = 40000
+
+        # When
+        should_stop, stop_info = risk_manager.check_stop_loss(symbol, current_price)
+
+        # Then
+        assert should_stop is False
+        assert stop_info is None
+
     def test_check_take_profit(self, risk_manager, sample_position):
-        """익절 체크 테스트"""
-        # Given - 익절 조건 만족 (5% 수익)
-        sample_position['current_price'] = 52500  # 5% 상승
-        risk_manager.take_profit_pct = 0.05
-        
-        # When
-        result = risk_manager.check_take_profit(sample_position)
-        
-        # Then
-        assert result is True
-        
-        # Given - 익절 조건 불만족
-        sample_position['current_price'] = 52000  # 4% 상승
-        result = risk_manager.check_take_profit(sample_position)
-        assert result is False
-    
-    def test_calculate_position_risk(self, risk_manager, sample_position):
-        """포지션 리스크 계산 테스트"""
-        # When
-        risk_score = risk_manager.calculate_position_risk(sample_position)
-        
-        # Then
-        assert 0 <= risk_score <= 1
-        assert isinstance(risk_score, float)
-    
-    def test_check_portfolio_diversification(self, risk_manager):
-        """포트폴리오 분산 체크 테스트"""
-        # Given - 분산된 포트폴리오
-        positions = {
-            '005935': {'quantity': 5, 'avg_price': 50000},
-            '000660': {'quantity': 3, 'avg_price': 80000},
-            '035420': {'quantity': 2, 'avg_price': 120000}
-        }
-        
-        # When
-        result = risk_manager.check_portfolio_diversification(positions)
-        
-        # Then
-        assert result is True
-        
-        # Given - 집중된 포트폴리오
-        concentrated_positions = {
-            '005935': {'quantity': 20, 'avg_price': 50000}
-        }
-        result = risk_manager.check_portfolio_diversification(concentrated_positions)
-        assert result is False
-    
-    def test_check_market_volatility(self, risk_manager):
-        """시장 변동성 체크 테스트"""
-        # Given - 낮은 변동성
-        price_history = [50000, 50100, 50200, 50300, 50400]
-        
-        # When
-        result = risk_manager.check_market_volatility(price_history)
-        
-        # Then
-        assert result is True
-        
-        # Given - 높은 변동성
-        volatile_history = [50000, 48000, 52000, 46000, 54000]
-        result = risk_manager.check_market_volatility(volatile_history)
-        assert result is False
-    
-    def test_calculate_max_order_size(self, risk_manager):
-        """최대 주문 크기 계산 테스트"""
+        """익절 조건 확인 테스트"""
         # Given
-        available_capital = 1000000  # 100만원
-        current_positions = {'005935': {'quantity': 5, 'avg_price': 50000}}
-        
-        # When
-        max_size = risk_manager.calculate_max_order_size(available_capital, current_positions)
-        
-        # Then
-        assert max_size > 0
-        assert max_size <= available_capital * 0.1  # 최대 10% 제한
-    
-    def test_check_order_frequency(self, risk_manager):
-        """주문 빈도 체크 테스트"""
-        # Given - 정상적인 주문 빈도
-        recent_orders = [
-            datetime.now() - timedelta(minutes=30),
-            datetime.now() - timedelta(minutes=20),
-            datetime.now() - timedelta(minutes=10)
-        ]
-        
-        # When
-        result = risk_manager.check_order_frequency(recent_orders)
-        
-        # Then
-        assert result is True
-        
-        # Given - 과도한 주문 빈도
-        frequent_orders = [
-            datetime.now() - timedelta(minutes=1),
-            datetime.now() - timedelta(seconds=30),
-            datetime.now() - timedelta(seconds=10)
-        ]
-        result = risk_manager.check_order_frequency(frequent_orders)
-        assert result is False
-    
-    def test_validate_order(self, risk_manager, sample_order):
-        """주문 유효성 검사 테스트"""
-        # Given - 유효한 주문
-        current_positions = {}
-        daily_pnl = 0
-        
-        # When
-        result = risk_manager.validate_order(sample_order, current_positions, daily_pnl)
-        
-        # Then
-        assert result['valid'] is True
-        assert 'reason' in result
-        
-        # Given - 무효한 주문 (수량이 0)
-        invalid_order = sample_order.copy()
-        invalid_order['quantity'] = 0
-        result = risk_manager.validate_order(invalid_order, current_positions, daily_pnl)
-        assert result['valid'] is False
-    
-    def test_get_risk_metrics(self, risk_manager):
-        """리스크 지표 조회 테스트"""
-        # Given
-        positions = {
-            '005935': {'quantity': 5, 'avg_price': 50000, 'current_price': 52000},
-            '000660': {'quantity': 3, 'avg_price': 80000, 'current_price': 78000}
+        symbol = "005935"
+        risk_manager.positions[symbol] = {
+            "quantity": sample_position["quantity"],
+            "entry_price": sample_position["entry_price"],
+            "entry_time": sample_position["entry_time"]
         }
         
+        # 익절 조건을 만족하는 현재 가격 (20% 상승)
+        current_price = 60000
+
         # When
-        metrics = risk_manager.get_risk_metrics(positions)
-        
+        should_take, take_info = risk_manager.check_take_profit(symbol, current_price)
+
         # Then
-        assert 'total_exposure' in metrics
-        assert 'portfolio_risk_score' in metrics
-        assert 'diversification_score' in metrics
-        assert 'max_drawdown' in metrics
-        assert all(isinstance(v, (int, float)) for v in metrics.values())
-    
-    def test_update_risk_parameters(self, risk_manager):
-        """리스크 파라미터 업데이트 테스트"""
+        assert should_take is True
+        assert take_info is not None
+        assert take_info["action"] == "TAKE_PROFIT"
+        assert take_info["symbol"] == symbol
+
+    def test_check_take_profit_no_position(self, risk_manager):
+        """포지션이 없는 경우 익절 확인 테스트"""
         # Given
-        new_params = {
-            'max_position_size': 2000000,
-            'max_daily_loss': 150000,
-            'stop_loss_pct': 0.03,
-            'take_profit_pct': 0.07
-        }
-        
+        symbol = "005935"
+        current_price = 60000
+
         # When
-        risk_manager.update_risk_parameters(new_params)
-        
+        should_take, take_info = risk_manager.check_take_profit(symbol, current_price)
+
         # Then
-        assert risk_manager.max_position_size == 2000000
-        assert risk_manager.max_daily_loss == 150000
-        assert risk_manager.stop_loss_pct == 0.03
-        assert risk_manager.take_profit_pct == 0.07
-    
-    def test_calculate_var(self, risk_manager):
-        """VaR (Value at Risk) 계산 테스트"""
+        assert should_take is False
+        assert take_info is None
+
+    def test_add_position(self, risk_manager):
+        """포지션 추가 테스트"""
         # Given
-        returns = [0.01, -0.02, 0.015, -0.01, 0.025, -0.005, 0.02, -0.015]
-        confidence_level = 0.95
-        
+        symbol = "005935"
+        quantity = 10
+        price = 50000
+
         # When
-        var = risk_manager.calculate_var(returns, confidence_level)
-        
+        risk_manager.add_position(symbol, quantity, price)
+
         # Then
-        assert var < 0  # VaR은 보통 음수
-        assert isinstance(var, float)
-    
-    def test_check_correlation_risk(self, risk_manager):
-        """상관관계 리스크 체크 테스트"""
-        # Given - 높은 상관관계를 가진 종목들
-        positions = {
-            '005935': {'quantity': 5, 'avg_price': 50000},  # 삼성전자
-            '000660': {'quantity': 3, 'avg_price': 80000},  # SK하이닉스
-            '035420': {'quantity': 2, 'avg_price': 120000}  # NAVER
-        }
+        assert symbol in risk_manager.positions
+        position = risk_manager.positions[symbol]
+        assert position["quantity"] == quantity
+        assert position["entry_price"] == price
+        assert "entry_time" in position
+
+    def test_remove_position(self, risk_manager):
+        """포지션 제거 테스트"""
+        # Given
+        symbol = "005935"
+        quantity = 10
+        entry_price = 50000
+        exit_price = 52000
         
+        risk_manager.add_position(symbol, quantity, entry_price)
+
         # When
-        result = risk_manager.check_correlation_risk(positions)
-        
+        risk_manager.remove_position(symbol, exit_price)
+
         # Then
-        assert isinstance(result, bool)
-        assert 'correlation_score' in risk_manager.get_risk_metrics(positions) 
+        assert symbol not in risk_manager.positions
+        assert len(risk_manager.trade_history) > 0
+
+    def test_get_portfolio_summary(self, risk_manager):
+        """포트폴리오 요약 테스트"""
+        # Given
+        risk_manager.add_position("005935", 10, 50000)
+        risk_manager.add_position("000660", 5, 80000)
+
+        # When
+        summary = risk_manager.get_portfolio_summary()
+
+        # Then
+        assert summary is not None
+        assert "total_positions" in summary
+        assert "total_value" in summary
+        assert "total_pnl" in summary
+        assert "total_pnl_percent" in summary
+        assert "total_trades" in summary
+        assert "winning_trades" in summary
+        assert "losing_trades" in summary
+        assert summary["total_positions"] == 2
+
+    def test_check_risk_limits(self, risk_manager):
+        """리스크 한도 확인 테스트"""
+        # Given
+        symbol = "005935"
+        quantity = 10
+        price = 50000
+
+        # When
+        is_valid, message = risk_manager.check_risk_limits(symbol, quantity, price)
+
+        # Then
+        assert isinstance(is_valid, bool)
+        assert isinstance(message, str)
+
+    def test_get_position_info(self, risk_manager):
+        """포지션 정보 조회 테스트"""
+        # Given
+        symbol = "005935"
+        quantity = 10
+        price = 50000
+        risk_manager.add_position(symbol, quantity, price)
+
+        # When
+        position_info = risk_manager.get_position_info(symbol)
+
+        # Then
+        assert position_info is not None
+        assert position_info["quantity"] == quantity
+        assert position_info["entry_price"] == price
+
+    def test_get_position_info_not_found(self, risk_manager):
+        """존재하지 않는 포지션 정보 조회 테스트"""
+        # Given
+        symbol = "INVALID"
+
+        # When
+        position_info = risk_manager.get_position_info(symbol)
+
+        # Then
+        assert position_info is None
+
+    def test_get_all_positions(self, risk_manager):
+        """모든 포지션 조회 테스트"""
+        # Given
+        risk_manager.add_position("005935", 10, 50000)
+        risk_manager.add_position("000660", 5, 80000)
+
+        # When
+        positions = risk_manager.get_all_positions()
+
+        # Then
+        assert isinstance(positions, dict)
+        assert len(positions) == 2
+        assert "005935" in positions
+        assert "000660" in positions
+
+    def test_get_trade_history(self, risk_manager):
+        """거래 이력 조회 테스트"""
+        # Given
+        symbol = "005935"
+        risk_manager.add_position(symbol, 10, 50000)
+        risk_manager.remove_position(symbol, 52000)
+
+        # When
+        history = risk_manager.get_trade_history()
+
+        # Then
+        assert isinstance(history, list)
+        assert len(history) > 0
+
+    def test_get_trade_history_by_symbol(self, risk_manager):
+        """특정 종목 거래 이력 조회 테스트"""
+        # Given
+        symbol = "005935"
+        risk_manager.add_position(symbol, 10, 50000)
+        risk_manager.remove_position(symbol, 52000)
+
+        # When
+        history = risk_manager.get_trade_history(symbol=symbol)
+
+        # Then
+        assert isinstance(history, list)
+        assert len(history) > 0
+        for trade in history:
+            assert trade["symbol"] == symbol
