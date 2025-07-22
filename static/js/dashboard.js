@@ -2728,17 +2728,7 @@ async function updateAutoTradingSettings() {
         
         const cooldownData = await cooldownResponse.json();
         
-        // 매매 수량 설정
-        const quantityResponse = await fetch(`/api/auto-trading/quantity?quantity=${quantity}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-        
-        const quantityData = await quantityResponse.json();
-        
-        // 결과 메시지 생성
+        // 매매 수량은 자동매매 시작 시에만 설정되므로, 여기서는 쿨다운만 설정
         let successCount = 0;
         let message = '';
         
@@ -2747,10 +2737,9 @@ async function updateAutoTradingSettings() {
             message += `쿨다운: ${cooldownMinutes}분, `;
         }
         
-        if (quantityData.success) {
-            successCount++;
-            message += `매매 수량: ${quantity}주`;
-        }
+        // 매매 수량은 입력 필드에 저장된 값으로 처리 (실제 적용은 자동매매 시작 시)
+        message += `매매 수량: ${quantity}주`;
+        successCount++;
         
         if (successCount === 2) {
             showAutoTradingMessage(`설정이 저장되었습니다. (${message})`, true);
@@ -2783,19 +2772,15 @@ async function loadCooldownSettings() {
 
 
 
-// 매매 수량 조회 함수
+// 매매 수량 조회 함수 (기본값 1로 설정)
 async function loadTradeQuantity() {
     try {
-        const response = await fetch('/api/auto-trading/quantity');
-        const data = await response.json();
-        
-        if (data.success) {
-            document.getElementById('trade-quantity').value = data.quantity;
-        } else {
-            console.error('매매 수량 로드 실패:', data.message);
-        }
+        // 매매 수량은 기본값 1로 설정 (실제 값은 자동매매 시작 시에만 적용됨)
+        document.getElementById('trade-quantity').value = 1;
     } catch (error) {
         console.error('매매 수량 로드 실패:', error);
+        // 에러 시에도 기본값 설정
+        document.getElementById('trade-quantity').value = 1;
     }
 }
 

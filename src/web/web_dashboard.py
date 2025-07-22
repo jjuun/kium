@@ -1408,6 +1408,7 @@ async def set_trade_quantity(quantity: int = Query(..., description="매매 수�
             }
         
         auto_trader.trade_quantity = quantity
+        logger.info(f"매매 수량 설정: {quantity}주")
         
         return {
             'success': True,
@@ -1427,7 +1428,8 @@ async def set_trade_quantity(quantity: int = Query(..., description="매매 수�
 async def get_trade_quantity():
     """매매 수량 조회"""
     try:
-        quantity = auto_trader.trade_quantity
+        quantity = getattr(auto_trader, 'trade_quantity', 1)
+        logger.info(f"매매 수량 조회: {quantity}주")
         return {
             'success': True,
             'quantity': quantity,
