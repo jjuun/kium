@@ -2737,7 +2737,8 @@ async function updateAutoTradingSettings() {
             message += `쿨다운: ${cooldownMinutes}분, `;
         }
         
-        // 매매 수량은 입력 필드에 저장된 값으로 처리 (실제 적용은 자동매매 시작 시)
+        // 매매 수량을 로컬 스토리지에 저장
+        localStorage.setItem('trade_quantity', quantity.toString());
         message += `매매 수량: ${quantity}주`;
         successCount++;
         
@@ -2772,11 +2773,19 @@ async function loadCooldownSettings() {
 
 
 
-// 매매 수량 조회 함수 (기본값 1로 설정)
+// 매매 수량 조회 함수 (로컬 스토리지에서 불러오기)
 async function loadTradeQuantity() {
     try {
-        // 매매 수량은 기본값 1로 설정 (실제 값은 자동매매 시작 시에만 적용됨)
-        document.getElementById('trade-quantity').value = 1;
+        // 로컬 스토리지에서 저장된 매매 수량 불러오기
+        const savedQuantity = localStorage.getItem('trade_quantity');
+        const quantity = savedQuantity ? parseInt(savedQuantity, 10) : 1;
+        
+        // 유효성 검사
+        if (isNaN(quantity) || quantity < 1) {
+            document.getElementById('trade-quantity').value = 1;
+        } else {
+            document.getElementById('trade-quantity').value = quantity;
+        }
     } catch (error) {
         console.error('매매 수량 로드 실패:', error);
         // 에러 시에도 기본값 설정
