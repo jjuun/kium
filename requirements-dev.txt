@@ -1,0 +1,23 @@
+# 개발 및 테스트용 의존성
+# 테스트 프레임워크
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+pytest-html>=3.2.0
+
+# 테스트 데이터 생성
+factory-boy>=3.3.0
+faker>=19.0.0
+
+# HTTP 테스트
+responses>=0.23.0
+httpx>=0.24.0
+
+# 코드 품질 도구
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0
+
+# 기존 프로덕션 의존성도 포함
+-r requirements.txt 
