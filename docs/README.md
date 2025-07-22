@@ -64,11 +64,13 @@ A-ki/
 │   ├── backtest_example.py
 │   ├── simple_backtest_demo.py
 │   └── advanced_backtest_demo.py
-├── main.py                # 메인 실행 파일
-├── start_server.py        # 통합 서버 시작 스크립트
-├── stop_server.py         # 서버 종료 스크립트
-├── start.sh               # 서버 시작 쉘 스크립트
-├── stop.sh                # 서버 종료 쉘 스크립트
+├── main.py                # 메인 실행 파일 (트레이딩 서버)
+├── aki_server_control.py  # 통합 서버 컨트롤 시스템
+├── aki_control.sh         # 통합 서버 컨트롤 쉘 스크립트
+├── web_server_control.py  # 웹 서버 전용 시작 스크립트
+├── web_server_stop.py     # 웹 서버 전용 종료 스크립트
+├── web_start.sh           # 웹 서버 시작 쉘 스크립트
+├── web_stop.sh            # 웹 서버 종료 쉘 스크립트
 ├── server.sh              # 레거시 서버 관리 스크립트
 ├── requirements.txt       # 의존성 패키지
 └── auto_trading.db        # SQLite 데이터베이스
@@ -97,34 +99,54 @@ export KIWOOM_APPKEY="your_appkey_here"
 export KIWOOM_SECRETKEY="your_secretkey_here"
 ```
 
-### 3. 웹 대시보드 실행 및 관리
+### 3. 서버 실행 및 관리
 
-#### 🚀 통합 프로세스 관리 (권장)
-새로운 프로세스 관리 시스템으로 기존 프로세스를 자동으로 정리하고 새로운 서버를 시작합니다.
+#### 🚀 통합 서버 컨트롤 시스템 (권장)
+웹 서버와 트레이딩 서버를 모두 관리하는 통합 컨트롤 시스템입니다.
 
 ```bash
-# 서버 시작 (기존 프로세스 자동 정리 후 시작)
-./start.sh
+# 모든 서버 시작 (웹 서버 + 트레이딩 서버)
+./aki_control.sh start
 
-# 또는 Python 스크립트 직접 실행
-python3 start_server.py
+# 모든 서버 중지
+./aki_control.sh stop
 
-# 서버 종료 (모든 관련 프로세스 안전 종료)
-./stop.sh
+# 모든 서버 재시작
+./aki_control.sh restart
 
-# 또는 Python 스크립트 직접 실행
-python3 stop_server.py
+# 서버 상태 확인
+./aki_control.sh status
 
-# 강제 종료 (필요한 경우)
-python3 stop_server.py --force
+# 강제 중지 (필요한 경우)
+./aki_control.sh stop --force
+
+# 도움말 표시
+./aki_control.sh help
 ```
 
-#### 📋 프로세스 관리 기능
+#### 🌐 웹 서버 전용 관리 (선택적)
+웹 서버만 별도로 관리하고 싶은 경우:
+
+```bash
+# 웹 서버 시작
+./web_start.sh
+
+# 웹 서버 종료
+./web_stop.sh
+
+# Python 스크립트 직접 실행
+python3 web_server_control.py
+python3 web_server_stop.py
+```
+
+#### 📋 통합 서버 컨트롤 기능
+- **웹 서버 + 트레이딩 서버 통합 관리**: 두 서버를 동시에 시작/중지/재시작
 - **자동 프로세스 감지**: 실행 중인 A-ki 관련 프로세스 자동 발견
 - **안전한 종료**: 기존 프로세스를 안전하게 종료 후 새 서버 시작
 - **포트 충돌 해결**: 포트 8000 사용 중인 프로세스 자동 정리
-- **PID 파일 관리**: 서버 프로세스 ID 자동 관리
-- **로그 모니터링**: 실시간 서버 로그 출력
+- **PID 파일 관리**: 웹 서버와 트레이딩 서버 PID 자동 관리
+- **실시간 로그 모니터링**: 두 서버의 출력을 실시간으로 확인
+- **강제 종료 옵션**: 응답하지 않는 프로세스 강제 종료
 
 #### 🔧 기존 서버 관리 (레거시)
 ```bash
