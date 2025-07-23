@@ -1,0 +1,27 @@
+[Unit]
+Description=A-ki Server Monitor
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=jun.lee
+WorkingDirectory=/Users/jun.lee/Documents/workspace/A-ki
+ExecStart=/Users/jun.lee/Documents/workspace/A-ki/venv/bin/python /Users/jun.lee/Documents/workspace/A-ki/monitor_server.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# 환경 변수
+Environment=PYTHONPATH=/Users/jun.lee/Documents/workspace/A-ki
+
+# 보안 설정
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/Users/jun.lee/Documents/workspace/A-ki/logs
+
+[Install]
+WantedBy=multi-user.target 
