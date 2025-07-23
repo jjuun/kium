@@ -10,6 +10,7 @@ import time
 import signal
 import subprocess
 import psutil
+import requests
 from pathlib import Path
 from typing import List, Dict, Optional
 
@@ -75,12 +76,16 @@ class AkiServerController:
                         
                     cmdline_str = ' '.join(str(arg) for arg in cmdline)
                     
-                    # 웹 서버 프로세스 확인
+                    # 현재 프로젝트 디렉토리에서 실행된 프로세스인지 확인
+                    if str(self.project_root) not in cmdline_str:
+                        continue
+                    
+                    # 웹 서버 프로세스 확인 (더 정확한 매칭)
                     if any(pattern in cmdline_str for pattern in self.web_patterns):
                         if proc not in web_processes:
                             web_processes.append(proc)
                             
-                    # 트레이딩 서버 프로세스 확인
+                    # 트레이딩 서버 프로세스 확인 (더 정확한 매칭)
                     if any(pattern in cmdline_str for pattern in self.trading_patterns):
                         if proc not in trading_processes:
                             trading_processes.append(proc)
@@ -227,6 +232,45 @@ class AkiServerController:
                     pid_file.unlink()
                 except:
                     pass
+        
+        # 좀비 프로세스 정리
+        try:
+            for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+                try:
+                    if proc.info['name'] == 'python' or proc.info['name'] == 'python3':
+                        cmdline = proc.info['cmdline']
+                        if cmdline and str(self.project_root) in ' '.join(str(arg) for arg in cmdline):
+                            # 프로젝트 관련 프로세스이지만 실제로는 동작하지 않는 경우
+                            if not self._is_process_healthy(proc):
+                                print(f"🧹 좀비 프로세스 정리: PID {proc.pid}")
+                                proc.terminate()
+                                try:
+                                    proc.wait(timeout=3)
+                                except psutil.TimeoutExpired:
+                                    proc.kill()
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    continue
+        except Exception as e:
+            print(f"⚠️ 프로세스 정리 중 오류: {e}")
+    
+    def _is_process_healthy(self, proc: psutil.Process) -> bool:
+        """프로세스가 정상적으로 동작하는지 확인합니다."""
+        try:
+            # 프로세스가 살아있는지 확인
+            if not proc.is_running():
+                return False
+            
+            # CPU 사용률이 0%인 경우 (좀비 프로세스 가능성)
+            cpu_percent = proc.cpu_percent(interval=0.1)
+            if cpu_percent == 0.0:
+                # 메모리 사용량도 확인
+                memory_info = proc.memory_info()
+                if memory_info.rss < 1024 * 1024:  # 1MB 미만
+                    return False
+            
+            return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            return False
     
     def stop_all(self, force: bool = False) -> bool:
         """모든 서버를 중지합니다."""
@@ -372,33 +416,70 @@ class AkiServerController:
         
         processes = self.find_processes()
         
-        # 웹 서버 상태
+        # 웹 서버 상태 확인
+        web_running = False
+        web_responding = False
+        
         if processes['web']:
             print("🌐 웹 서버: 실행 중")
             for proc in processes['web']:
                 try:
                     print(f"  - PID {proc.pid}: {proc.name()}")
+                    web_running = True
                 except psutil.NoSuchProcess:
                     continue
         else:
             print("🌐 웹 서버: 중지됨")
         
+        # 웹 서버 HTTP 응답 확인
+        if web_running:
+            try:
+                import requests
+                response = requests.get(f"http://localhost:{self.web_port}/api/test", timeout=3)
+                if response.status_code == 200:
+                    web_responding = True
+                    print(f"  ✅ HTTP 응답: 정상 ({response.status_code})")
+                else:
+                    print(f"  ⚠️ HTTP 응답: 비정상 ({response.status_code})")
+            except Exception as e:
+                print(f"  ❌ HTTP 응답: 실패 ({str(e)})")
+        else:
+            print("  ❌ HTTP 응답: 프로세스 없음")
+        
         # 트레이딩 서버 상태
+        trading_running = False
         if processes['trading']:
             print("📈 트레이딩 서버: 실행 중")
             for proc in processes['trading']:
                 try:
                     print(f"  - PID {proc.pid}: {proc.name()}")
+                    trading_running = True
                 except psutil.NoSuchProcess:
                     continue
         else:
             print("📈 트레이딩 서버: 중지됨")
         
         # 포트 상태
-        if self.wait_for_port(self.web_port, timeout=1):
+        port_available = self.wait_for_port(self.web_port, timeout=1)
+        if port_available:
             print(f"🔌 포트 {self.web_port}: 사용 가능")
         else:
             print(f"🔌 포트 {self.web_port}: 사용 중")
+        
+        # 전체 상태 요약
+        print("\n📋 상태 요약:")
+        if web_running and web_responding and trading_running:
+            print("✅ 모든 서비스 정상 동작")
+        elif web_running and web_responding:
+            print("⚠️ 웹 서버만 정상 동작 (트레이딩 서버 중지)")
+        elif web_running and trading_running:
+            print("⚠️ 프로세스는 실행 중이나 웹 서버 응답 없음")
+        elif web_running:
+            print("⚠️ 웹 서버 프로세스만 실행 중")
+        elif trading_running:
+            print("⚠️ 트레이딩 서버 프로세스만 실행 중")
+        else:
+            print("❌ 모든 서비스 중지됨")
 
 def signal_handler(signum, frame):
     """시그널 핸들러"""
