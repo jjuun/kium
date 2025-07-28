@@ -194,8 +194,8 @@ async function refreshAccountData() {
                     <small>총평가금액</small>
                 </div>
                 <div class="total-profit">
-                    <h4 class="${profitClass}">${profitSign}${formatCurrency(totalProfit)}</h4>
-                    <small class="${profitClass}">${profitSign}${profitRate.toFixed(2)}%</small>
+                    <h4>${formatCurrencyWithColor(totalProfit, totalProfit >= 0)}</h4>
+                    <small>${formatPercentWithColor(profitRate, totalProfit >= 0)}</small>
                 </div>
             </div>
         `;
@@ -219,8 +219,7 @@ async function refreshAccountData() {
                 
                 const evltvPrft = parseFloat(holding.evltv_prft || 0);
                 const prftRt = parseFloat(holding.prft_rt || 0);
-                const prftClass = evltvPrft >= 0 ? 'profit' : 'loss';
-                const prftSign = evltvPrft >= 0 ? '+' : '';
+                const isProfit = evltvPrft >= 0;
 
                 // 평단가 정보 추가
                 const avgPrice = holding.pur_pric ? parseInt(holding.pur_pric, 10) : 0;
@@ -234,7 +233,7 @@ async function refreshAccountData() {
                         <div class="stock-name">${holding.stk_nm || holding.stk_cd} ${holding.stk_cd} | ${parseInt(holding.rmnd_qty || 0).toLocaleString()}주 | ${avgPriceFormatted}</div>
                         <div class="stock-price">
                             <div class="current-price">${currentPrice}</div>
-                            <div class="profit-info ${prftClass}">${prftSign}${formatCurrency(evltvPrft)} (${prftSign}${prftRt.toFixed(2)}%)</div>
+                            <div class="profit-info">${formatCurrencyWithColor(evltvPrft, isProfit)} (${formatPercentWithColor(prftRt, isProfit)})</div>
                         </div>
                     </div>
                 `;
@@ -340,8 +339,8 @@ async function refreshStockPrice(symbol = null) {
 
             priceContent.innerHTML = `
                 <h4 class="mb-2">${formatCurrency(price)}</h4>
-                <div class="${changeClass}">
-                    ${changeSign}${formatCurrency(change)} (${changeSign}${changePercent.toFixed(2)}%)
+                <div>
+                    ${formatChangeWithColor(change, change >= 0)} (${formatPercentWithColor(changePercent, change >= 0)})
                 </div>
             `;
         } else {
@@ -361,6 +360,74 @@ function formatCurrency(amount) {
         style: 'currency',
         currency: 'KRW'
     }).format(amount);
+}
+
+// 상승/하락 색상을 적용한 숫자 포맷팅 함수들
+function formatCurrencyWithColor(amount, isPositive = null) {
+    if (amount === null || amount === undefined || isNaN(amount)) {
+        return '<span class="text-muted">0원</span>';
+    }
+    
+    const formatted = new Intl.NumberFormat('ko-KR', {
+        style: 'currency',
+        currency: 'KRW'
+    }).format(amount);
+    
+    if (isPositive === null) {
+        return formatted;
+    }
+    
+    const colorClass = isPositive ? 'text-danger' : 'text-primary';
+    return `<span class="${colorClass}">${formatted}</span>`;
+}
+
+function formatNumberWithColor(number, isPositive = null) {
+    if (number === null || number === undefined || isNaN(number)) {
+        return '<span class="text-muted">0</span>';
+    }
+    
+    const formatted = new Intl.NumberFormat('ko-KR').format(number);
+    
+    if (isPositive === null) {
+        return formatted;
+    }
+    
+    const colorClass = isPositive ? 'text-danger' : 'text-primary';
+    return `<span class="${colorClass}">${formatted}</span>`;
+}
+
+function formatPercentWithColor(percent, isPositive = null) {
+    if (percent === null || percent === undefined || isNaN(percent)) {
+        return '<span class="text-muted">0.00%</span>';
+    }
+    
+    const formatted = `${percent >= 0 ? '+' : ''}${percent.toFixed(2)}%`;
+    
+    if (isPositive === null) {
+        isPositive = percent >= 0;
+    }
+    
+    const colorClass = isPositive ? 'text-danger' : 'text-primary';
+    return `<span class="${colorClass}">${formatted}</span>`;
+}
+
+function formatChangeWithColor(change, isPositive = null) {
+    if (change === null || change === undefined || isNaN(change)) {
+        return '<span class="text-muted">0원</span>';
+    }
+    
+    const sign = change >= 0 ? '+' : '';
+    const formatted = `${sign}${new Intl.NumberFormat('ko-KR', {
+        style: 'currency',
+        currency: 'KRW'
+    }).format(change)}`;
+    
+    if (isPositive === null) {
+        isPositive = change >= 0;
+    }
+    
+    const colorClass = isPositive ? 'text-danger' : 'text-primary';
+    return `<span class="${colorClass}">${formatted}</span>`;
 }
 
 function formatDate(dateString) {
@@ -2525,7 +2592,7 @@ async function refreshSignalStatistics() {
                 실행: ${stats.executed_signals}개 | 
                 성공: ${stats.successful_signals}개 | 
                 성공률: ${stats.success_rate}% | 
-                총 수익: ${formatCurrency(stats.total_profit_loss)}
+                총 수익: ${formatCurrencyWithColor(stats.total_profit_loss, stats.total_profit_loss >= 0)}
             `;
         }
     } catch (e) {
@@ -2553,7 +2620,7 @@ async function refreshRecentSignals() {
                     <td>${signal.condition_value}</td>
                     <td>${signal.current_price ? formatCurrency(signal.current_price) : '-'}</td>
                     <td>${getSignalStatusBadge(signal.status)}</td>
-                    <td class="${signal.profit_loss >= 0 ? 'profit' : 'loss'}">${signal.profit_loss ? formatCurrency(signal.profit_loss) : '-'}</td>
+                    <td>${signal.profit_loss ? formatCurrencyWithColor(signal.profit_loss, signal.profit_loss >= 0) : '-'}</td>
                 </tr>
             `).join('');
         } else {
@@ -3539,9 +3606,9 @@ function displayMockRealTimeResults() {
                 <td><span class="badge bg-primary">${result.conditionName}</span></td>
                 <td><strong>${result.symbol}</strong></td>
                 <td>${result.symbolName}</td>
-                <td class="${priceChangeClass}">${result.currentPrice.toLocaleString()}원 ${priceChangeIcon}</td>
-                <td class="${priceChangeClass}">${result.priceChange >= 0 ? '+' : ''}${result.priceChange.toFixed(2)}%</td>
-                <td>${result.volume.toLocaleString()}</td>
+                <td>${formatCurrencyWithColor(result.currentPrice)} ${priceChangeIcon}</td>
+                <td>${formatPercentWithColor(result.priceChange, result.priceChange >= 0)}</td>
+                <td>${formatNumberWithColor(result.volume)}</td>
                 <td><span class="badge bg-success">매수신호</span></td>
             </tr>
         `;
@@ -3828,9 +3895,9 @@ function displayActualRealTimeResults() {
                 <td><span class="badge bg-primary">${result.condition_name}</span></td>
                 <td><strong>${result.symbol}</strong></td>
                 <td>${result.symbol_name}</td>
-                <td class="${priceChangeClass}">${result.current_price.toLocaleString()}원 ${priceChangeIcon}</td>
-                <td class="${priceChangeClass}">${result.price_change >= 0 ? '+' : ''}${result.price_change.toFixed(2)}%</td>
-                <td>${result.volume.toLocaleString()}</td>
+                <td>${formatCurrencyWithColor(result.current_price)} ${priceChangeIcon}</td>
+                <td>${formatPercentWithColor(result.price_change, result.price_change >= 0)}</td>
+                <td>${formatNumberWithColor(result.volume)}</td>
                 <td><span class="badge ${signalBadgeClass}">${signalText}</span></td>
             </tr>
         `;

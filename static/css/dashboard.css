@@ -101,12 +101,17 @@ header p {
     color: #6c757d;
 }
 
-.profit {
+/* 상승/하락 색상 시스템 */
+.text-danger {
     color: #dc3545 !important;
 }
 
-.loss {
+.text-primary {
     color: #007bff !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
 }
 
 .holdings-list {
