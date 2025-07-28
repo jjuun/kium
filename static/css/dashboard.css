@@ -751,11 +751,7 @@ input:focus, select:focus, textarea:focus {
     background-color: #e9ecef !important;
 }
 
-/* 갱신 주기 설정 스타일 */
-#refresh-interval {
-    width: 80px !important;
-    text-align: center;
-}
+
 
 /* 실시간 결과 섹션 스타일 */
 .real-time-results-section {

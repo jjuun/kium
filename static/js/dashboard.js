@@ -53,9 +53,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // 조건 검색 초기화 (목록 조회 및 자동 연결)
     initializeConditionSearch();
-    
-    // 실시간 갱신 주기 설정 불러오기
-    loadRefreshIntervalSettings();
 });
 
 // 모달들이 기본적으로 숨겨져 있는지 확인하는 함수
@@ -3349,8 +3346,6 @@ function setupConditionSearchHandlers() {
     const loadConditionsBtn = document.getElementById('loadConditions');
     const connectWebSocketBtn = document.getElementById('connectWebSocket');
     const disconnectWebSocketBtn = document.getElementById('disconnectWebSocket');
-    const updateRefreshIntervalBtn = document.getElementById('updateRefreshInterval');
-    
     if (loadConditionsBtn) {
         loadConditionsBtn.addEventListener('click', loadConditionSearchList);
     }
@@ -3363,9 +3358,7 @@ function setupConditionSearchHandlers() {
         disconnectWebSocketBtn.addEventListener('click', disconnectWebSocket);
     }
     
-    if (updateRefreshIntervalBtn) {
-        updateRefreshIntervalBtn.addEventListener('click', updateRefreshInterval);
-    }
+
 }
 
 // 조건 검색식 목록 로드
@@ -3526,17 +3519,8 @@ async function connectWebSocket() {
                 }
                 showConditionSearchMessage('실시간 연결이 성공했습니다.', true);
                 
-                // 실제 실시간 결과 표시 시작 (설정된 갱신 주기 적용)
+                // 실제 실시간 결과 표시 시작
                 startRealTimeResults();
-                
-                // 갱신 주기 설정 적용
-                const savedInterval = localStorage.getItem('conditionSearchRefreshInterval') || 1;
-                if (realTimeResultsInterval) {
-                    clearInterval(realTimeResultsInterval);
-                }
-                realTimeResultsInterval = setInterval(() => {
-                    displayRealTimeResults();
-                }, parseInt(savedInterval) * 60 * 1000);
             } else {
                 throw new Error(result.message || '연결 실패');
             }
@@ -3972,52 +3956,7 @@ function addRealTimeResult(result) {
     displayActualRealTimeResults();
 }
 
-// 갱신 주기 설정 관련 함수들
-async function updateRefreshInterval() {
-    const intervalInput = document.getElementById('refresh-interval');
-    const interval = parseInt(intervalInput.value);
-    
-    if (interval < 1 || interval > 60) {
-        showConditionSearchMessage('갱신 주기는 1-60분 사이로 설정해주세요.', false);
-        return;
-    }
-    
-    try {
-        // localStorage에 저장
-        localStorage.setItem('conditionSearchRefreshInterval', interval);
-        
-        // 실시간 결과 갱신 주기 업데이트
-        if (realTimeResultsInterval) {
-            clearInterval(realTimeResultsInterval);
-        }
-        
-        if (registeredConditions.size > 0) {
-            realTimeResultsInterval = setInterval(() => {
-                displayRealTimeResults();
-            }, interval * 60 * 1000); // 분을 밀리초로 변환
-        }
-        
-        showConditionSearchMessage(`실시간 갱신 주기가 ${interval}분으로 설정되었습니다.`, true);
-    } catch (error) {
-        console.error('갱신 주기 설정 실패:', error);
-        showConditionSearchMessage('갱신 주기 설정 중 오류가 발생했습니다.', false);
-    }
-}
 
-async function loadRefreshIntervalSettings() {
-    try {
-        const savedInterval = localStorage.getItem('conditionSearchRefreshInterval');
-        const intervalInput = document.getElementById('refresh-interval');
-        
-        if (savedInterval) {
-            intervalInput.value = parseInt(savedInterval);
-        } else {
-            intervalInput.value = 1; // 기본값 1분
-        }
-    } catch (error) {
-        console.error('갱신 주기 설정 로드 실패:', error);
-    }
-}
 
 // 실시간 결과 항목 클릭 핸들러 설정
 function setupRealTimeResultClickHandlers() {
