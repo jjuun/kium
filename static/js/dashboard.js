@@ -4043,6 +4043,22 @@ function handleResultItemClick() {
             orderSymbolInput.value = symbol;
             console.log('종목코드 입력란에 설정됨:', symbol); // 디버깅용
             
+            // 클릭된 행에서 가격 정보 추출
+            const priceCell = this.querySelector('td:nth-child(5)'); // 현재가 셀
+            if (priceCell) {
+                const priceText = priceCell.textContent.trim();
+                // 가격에서 숫자만 추출 (₩, 쉼표, 공백 제거)
+                const priceMatch = priceText.match(/[\d,]+/);
+                if (priceMatch) {
+                    const price = parseInt(priceMatch[0].replace(/,/g, ''));
+                    const orderPriceInput = document.getElementById('order-price');
+                    if (orderPriceInput) {
+                        orderPriceInput.value = price;
+                        console.log('가격 입력란에 설정됨:', price); // 디버깅용
+                    }
+                }
+            }
+            
             // 주문 실행 섹션으로 스크롤 이동 (CSS :has() 대신 다른 방법 사용)
             const orderForm = document.getElementById('order-form');
             if (orderForm) {
