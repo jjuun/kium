@@ -1,10 +1,12 @@
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, HTTPException, Query, Request, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from typing import Optional, List, Dict, Any
 import uvicorn
 import json
 from datetime import datetime, timedelta
+import pytz
+import asyncio
 
 # 기존 모듈들 import
 from src.api.kiwoom_api import KiwoomAPI
@@ -18,6 +20,7 @@ from src.auto_trading.watchlist_manager import WatchlistManager
 from src.auto_trading.condition_manager import ConditionManager
 from src.auto_trading.auto_trader import AutoTrader
 from src.auto_trading.signal_monitor import SignalMonitor, SignalStatus
+from src.auto_trading.symbol_selector import SymbolSelector
 
 app = FastAPI(title="A-ki Trading Dashboard", version="1.0.0")
 
@@ -33,27 +36,153 @@ watchlist_manager = WatchlistManager()
 condition_manager = ConditionManager()
 auto_trader = AutoTrader()
 signal_monitor = SignalMonitor()
+symbol_selector = SymbolSelector()
+
+# 조건 검색 클라이언트 초기화
+condition_search_client = None
+
+
+def is_market_open() -> dict:
+    """
+    현재 시간이 장 시간인지 확인
+    
+    Returns:
+        dict: 장 상태 정보
+    """
+    # 한국 시간대 설정
+    korea_tz = pytz.timezone('Asia/Seoul')
+    now = datetime.now(korea_tz)
+    
+    # 주말 확인
+    if now.weekday() >= 5:  # 토요일(5), 일요일(6)
+        return {
+            "is_open": False,
+            "reason": "주말",
+            "next_open": _get_next_market_open(now),
+            "current_time": now.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    
+    # 장 시간 확인 (9:00-15:30)
+    market_start = now.replace(hour=9, minute=0, second=0, microsecond=0)
+    market_end = now.replace(hour=15, minute=30, second=0, microsecond=0)
+    
+    if now < market_start:
+        return {
+            "is_open": False,
+            "reason": "장 시작 전",
+            "next_open": market_start.strftime("%Y-%m-%d %H:%M:%S"),
+            "current_time": now.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    elif now > market_end:
+        return {
+            "is_open": False,
+            "reason": "장 종료 후",
+            "next_open": _get_next_market_open(now),
+            "current_time": now.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    else:
+        return {
+            "is_open": True,
+            "reason": "장 운영 중",
+            "market_end": market_end.strftime("%Y-%m-%d %H:%M:%S"),
+            "current_time": now.strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+
+def _get_next_market_open(current_time: datetime) -> str:
+    """다음 장 시작 시간 계산"""
+    korea_tz = pytz.timezone('Asia/Seoul')
+    
+    # 다음 영업일 계산
+    next_day = current_time + timedelta(days=1)
+    while next_day.weekday() >= 5:  # 주말이면 다음 날로
+        next_day += timedelta(days=1)
+    
+    # 다음 장 시작 시간 (9:00)
+    next_market_open = next_day.replace(hour=9, minute=0, second=0, microsecond=0)
+    return next_market_open.strftime("%Y-%m-%d %H:%M:%S")
 
 
 @app.on_event("startup")
 async def startup_event():
-    """서버 시작 시 자동매매 시작"""
+    """서버 시작 시 초기화"""
     try:
         logger.info("=== 웹 서버 시작 ===")
 
-        # 토큰 발급 시도
-        token = kiwoom_api.get_access_token()
-        if token:
-            logger.info("키움 API 토큰 발급 성공")
-        else:
-            logger.warning("키움 API 토큰 발급 실패")
+        # 토큰 발급 시도 (선택사항)
+        try:
+            token = kiwoom_api.get_access_token()
+            if token:
+                logger.info("키움 API 토큰 발급 성공")
+            else:
+                logger.warning("키움 API 토큰 발급 실패")
+        except Exception as e:
+            logger.warning(f"키움 API 토큰 발급 시도 중 오류: {e}")
 
-        # 자동매매 시작 (기본 수량: 1주)
-        success = auto_trader.start(quantity=1)
-        if success:
-            logger.info("✅ 자동매매가 자동으로 시작되었습니다.")
-        else:
-            logger.warning("⚠️ 자동매매 시작에 실패했습니다.")
+        # 조건 검색 클라이언트 초기화 및 연결
+        global condition_search_client
+        try:
+            condition_search_client = kiwoom_api.condition_search_client
+            if condition_search_client and token:
+                # 조건 검색 클라이언트에 토큰 설정
+                condition_search_client.set_access_token(token)
+                
+                # 조건 검색 결과 콜백 설정
+                async def on_condition_result(result_data):
+                    try:
+                        # 구조화된 결과 데이터 처리
+                        condition_name = result_data.get('condition_name', '알 수 없는 조건')
+                        symbol = result_data.get('symbol', '')
+                        symbol_name = result_data.get('symbol_name', '')
+                        current_price = result_data.get('current_price', 0)
+                        price_change = result_data.get('price_change', 0)
+                        volume = result_data.get('volume', 0)
+                        signal_type = result_data.get('signal_type', 'UNKNOWN')
+                        timestamp = result_data.get('timestamp', '')
+                        
+                        # 상세 로그 기록
+                        logger.info(f"🔍 조건 검색 결과 수신:")
+                        logger.info(f"   - 조건식: {condition_name}")
+                        logger.info(f"   - 종목: {symbol_name} ({symbol})")
+                        logger.info(f"   - 현재가: {current_price:,}원")
+                        logger.info(f"   - 등락률: {price_change:+.2f}%")
+                        logger.info(f"   - 거래량: {volume:,}")
+                        logger.info(f"   - 신호: {signal_type}")
+                        logger.info(f"   - 시간: {timestamp}")
+                        
+                        # 여기서 조건 검색 결과를 추가로 처리할 수 있습니다
+                        # 예: 데이터베이스 저장, 알림 발송, 자동매매 신호 생성 등
+                        
+                    except Exception as e:
+                        logger.error(f"조건 검색 결과 처리 중 오류: {e}")
+                
+                condition_search_client.set_callback(on_condition_result)
+                
+                # WebSocket 연결 시도 (타임아웃 설정)
+                try:
+                    # 연결 시도 (최대 10초 대기)
+                    connect_task = asyncio.create_task(condition_search_client.connect())
+                    await asyncio.wait_for(connect_task, timeout=10.0)
+                    
+                    if condition_search_client.connected:
+                        # 백그라운드에서 메시지 수신 (중복 실행 방지)
+                        if not condition_search_client.receive_task or condition_search_client.receive_task.done():
+                            asyncio.create_task(condition_search_client.receive_messages())
+                        logger.info("조건 검색 클라이언트 초기화 및 연결 완료")
+                    else:
+                        logger.warning("조건 검색 WebSocket 연결 실패")
+                except asyncio.TimeoutError:
+                    logger.warning("조건 검색 WebSocket 연결 시간 초과")
+                except Exception as e:
+                    logger.warning(f"조건 검색 WebSocket 연결 중 오류: {e}")
+            else:
+                logger.warning("조건 검색 클라이언트 초기화 실패")
+        except Exception as e:
+            logger.warning(f"조건 검색 클라이언트 초기화 중 오류: {e}")
+
+        # 자동매매는 수동으로 시작하도록 변경
+        logger.info("✅ 웹 서버가 성공적으로 시작되었습니다.")
+        logger.info("📝 자동매매를 시작하려면 /api/auto-trading/start API를 호출하세요.")
 
     except Exception as e:
         logger.error(f"서버 시작 중 오류: {e}")
@@ -668,14 +797,16 @@ async def get_watchlist():
 async def add_to_watchlist(
     symbol: str = Query(..., description="종목코드"),
     symbol_name: str = Query(None, description="종목명"),
+    is_test: bool = Query(False, description="테스트 데이터 여부"),
 ):
     """감시 종목 추가"""
     try:
-        success = watchlist_manager.add_symbol(symbol, symbol_name)
+        success = watchlist_manager.add_symbol(symbol, symbol_name, is_test)
         if success:
+            test_flag = " (테스트)" if is_test else ""
             return {
                 "success": True,
-                "message": f"감시 종목 추가 완료: {symbol}",
+                "message": f"감시 종목 추가 완료: {symbol}{test_flag}",
                 "timestamp": datetime.now().isoformat(),
             }
         else:
@@ -760,6 +891,66 @@ async def get_watchlist_statistics():
         return {
             "statistics": {},
             "error": str(e),
+            "timestamp": datetime.now().isoformat(),
+        }
+
+
+@app.get("/api/auto-trading/watchlist/user-symbols")
+async def get_user_symbols():
+    """사용자가 직접 등록한 종목명 목록 조회"""
+    try:
+        user_symbols = watchlist_manager.get_user_symbols()
+        return {
+            "user_symbols": user_symbols,
+            "count": len(user_symbols),
+            "timestamp": datetime.now().isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"사용자 등록 종목 조회 실패: {str(e)}")
+        return {
+            "user_symbols": [],
+            "count": 0,
+            "error": str(e),
+            "timestamp": datetime.now().isoformat(),
+        }
+
+
+@app.get("/api/auto-trading/watchlist/test-symbols")
+async def get_test_symbols():
+    """테스트 종목명 목록 조회"""
+    try:
+        test_symbols = watchlist_manager.get_test_symbols()
+        return {
+            "test_symbols": test_symbols,
+            "count": len(test_symbols),
+            "timestamp": datetime.now().isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"테스트 종목 조회 실패: {str(e)}")
+        return {
+            "test_symbols": [],
+            "count": 0,
+            "error": str(e),
+            "timestamp": datetime.now().isoformat(),
+        }
+
+
+@app.post("/api/auto-trading/watchlist/cleanup-test")
+async def cleanup_test_data():
+    """테스트 데이터 정리"""
+    try:
+        deleted_count = watchlist_manager.cleanup_test_data()
+        return {
+            "success": True,
+            "message": f"테스트 데이터 정리 완료: {deleted_count}개 삭제",
+            "deleted_count": deleted_count,
+            "timestamp": datetime.now().isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"테스트 데이터 정리 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": str(e),
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -1159,6 +1350,16 @@ async def export_performance_report(symbol: str = Query(..., description="종목
 async def start_auto_trading(request: Request):
     """자동매매 시작"""
     try:
+        # 장 시간 확인
+        market_status = is_market_open()
+        if not market_status["is_open"]:
+            return {
+                "success": False,
+                "message": f"장이 열려있지 않습니다. ({market_status['reason']})",
+                "market_status": market_status,
+                "timestamp": datetime.now().isoformat(),
+            }
+
         # 요청 본문이 비어있을 경우 기본값 사용
         try:
             data = await request.json()
@@ -1171,12 +1372,14 @@ async def start_auto_trading(request: Request):
             return {
                 "success": True,
                 "message": f"자동매매가 시작되었습니다. (매매 수량: {quantity}주)",
+                "market_status": market_status,
                 "timestamp": datetime.now().isoformat(),
             }
         else:
             return {
                 "success": False,
                 "message": "자동매매 시작 실패",
+                "market_status": market_status,
                 "timestamp": datetime.now().isoformat(),
             }
     except Exception as e:
@@ -1219,7 +1422,19 @@ async def get_auto_trading_status():
     """자동매매 상태 조회"""
     try:
         status = auto_trader.get_status()
-        return {"status": status, "timestamp": datetime.now().isoformat()}
+        market_status = is_market_open()
+        
+        # 장이 닫혀있고 자동매매가 실행 중이면 자동으로 중지
+        if not market_status["is_open"] and status.get("is_running", False):
+            logger.info(f"장이 닫혀있어 자동매매를 자동으로 중지합니다. ({market_status['reason']})")
+            auto_trader.stop()
+            status = auto_trader.get_status()
+        
+        return {
+            "status": status, 
+            "market_status": market_status,
+            "timestamp": datetime.now().isoformat()
+        }
     except Exception as e:
         logger.error(f"자동매매 상태 조회 실패: {str(e)}")
         return {"status": {}, "error": str(e), "timestamp": datetime.now().isoformat()}
@@ -1549,21 +1764,144 @@ async def set_trade_quantity(quantity: int = Query(..., description="매매 수�
 
 @app.get("/api/auto-trading/quantity")
 async def get_trade_quantity():
-    """매매 수량 조회"""
+    """현재 매매 수량 조회"""
     try:
-        quantity = getattr(auto_trader, "trade_quantity", 1)
-        logger.info(f"매매 수량 조회: {quantity}주")
+        quantity = auto_trader.trade_quantity
         return {
-            "success": True,
             "quantity": quantity,
             "timestamp": datetime.now().isoformat(),
         }
     except Exception as e:
         logger.error(f"매매 수량 조회 실패: {str(e)}")
         return {
-            "success": False,
-            "quantity": 1,  # 기본값
+            "quantity": 1,
             "error": str(e),
+            "timestamp": datetime.now().isoformat(),
+        }
+
+
+# 자동 종목 선정 API
+@app.post("/api/auto-trading/symbol-selection/run")
+async def run_symbol_selection():
+    """자동 종목 선정 실행"""
+    try:
+        logger.info("자동 종목 선정 시작")
+        
+        # 종목 선정 실행
+        selected_symbols = symbol_selector.select_symbols()
+        
+        if not selected_symbols:
+            return {
+                "success": False,
+                "message": "선정 가능한 종목이 없습니다.",
+                "timestamp": datetime.now().isoformat(),
+            }
+        
+        # 감시 종목 업데이트
+        update_success = symbol_selector.update_watchlist(selected_symbols)
+        
+        if not update_success:
+            return {
+                "success": False,
+                "message": "감시 종목 업데이트 실패",
+                "timestamp": datetime.now().isoformat(),
+            }
+        
+        # 선정 결과 요약
+        summary = symbol_selector.get_selection_summary(selected_symbols)
+        
+        return {
+            "success": True,
+            "message": f"종목 선정 완료: {len(selected_symbols)}개 종목",
+            "selected_count": len(selected_symbols),
+            "summary": summary,
+            "selected_symbols": [
+                {
+                    "symbol": s.symbol,
+                    "symbol_name": s.symbol_name,
+                    "sector": s.sector,
+                    "score": round(s.score, 3),
+                    "selection_reason": s.selection_reason,
+                    "avg_volume": int(s.avg_volume),
+                    "avg_price": int(s.avg_price),
+                    "volatility": round(s.volatility * 100, 2),
+                    "rsi": round(s.rsi, 2)
+                }
+                for s in selected_symbols
+            ],
+            "timestamp": datetime.now().isoformat(),
+        }
+        
+    except Exception as e:
+        logger.error(f"자동 종목 선정 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": f"종목 선정 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat(),
+        }
+
+
+@app.get("/api/auto-trading/symbol-selection/criteria")
+async def get_selection_criteria():
+    """종목 선정 기준 조회"""
+    try:
+        criteria = {
+            "max_symbols": symbol_selector.max_symbols,
+            "min_volume": symbol_selector.min_volume,
+            "min_market_cap": symbol_selector.min_market_cap,
+            "max_volatility": symbol_selector.max_volatility,
+            "min_volatility": symbol_selector.min_volatility,
+            "volatility_range_percent": f"{symbol_selector.min_volatility*100:.1f}% - {symbol_selector.max_volatility*100:.1f}%",
+            "rsi_range": "20 - 80",
+            "timestamp": datetime.now().isoformat(),
+        }
+        return criteria
+        
+    except Exception as e:
+        logger.error(f"선정 기준 조회 실패: {str(e)}")
+        return {
+            "error": str(e),
+            "timestamp": datetime.now().isoformat(),
+        }
+
+
+@app.post("/api/auto-trading/symbol-selection/criteria")
+async def update_selection_criteria(
+    max_symbols: int = Query(15, description="최대 선정 종목 수"),
+    min_volume: int = Query(500000, description="최소 일평균 거래량"),
+    min_market_cap: int = Query(1000000000000, description="최소 시가총액"),
+    max_volatility: float = Query(0.15, description="최대 변동성"),
+    min_volatility: float = Query(0.02, description="최소 변동성"),
+):
+    """종목 선정 기준 업데이트"""
+    try:
+        # 기준 업데이트
+        symbol_selector.max_symbols = max_symbols
+        symbol_selector.min_volume = min_volume
+        symbol_selector.min_market_cap = min_market_cap
+        symbol_selector.max_volatility = max_volatility
+        symbol_selector.min_volatility = min_volatility
+        
+        logger.info(f"종목 선정 기준 업데이트: 최대 {max_symbols}개, 거래량 {min_volume:,}주 이상")
+        
+        return {
+            "success": True,
+            "message": "선정 기준이 업데이트되었습니다.",
+            "criteria": {
+                "max_symbols": max_symbols,
+                "min_volume": min_volume,
+                "min_market_cap": min_market_cap,
+                "max_volatility": max_volatility,
+                "min_volatility": min_volatility,
+            },
+            "timestamp": datetime.now().isoformat(),
+        }
+        
+    except Exception as e:
+        logger.error(f"선정 기준 업데이트 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": f"기준 업데이트 실패: {str(e)}",
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -1573,46 +1911,10 @@ async def get_trade_quantity():
 async def get_market_status():
     """시장 상태 확인"""
     try:
-        from datetime import datetime, time
-
-        # 현재 로컬 시간 사용 (시스템이 한국 시간으로 설정되어 있다고 가정)
-        now = datetime.now()
-        current_time = now.time()
-
-        # 평일 체크 (월~금)
-        is_weekday = now.weekday() < 5
-
-        # 시장 시간 (9:00 ~ 15:30)
-        market_open = time(9, 0)
-        market_close = time(15, 30)
-
-        # 시장 상태 판단
-        is_market_open = is_weekday and market_open <= current_time <= market_close
-
-        # 시장 상태 메시지
-        if not is_weekday:
-            status_message = "주말 또는 공휴일로 시장이 휴장입니다."
-        elif current_time < market_open:
-            status_message = (
-                f"시장 개장 전입니다. 개장 시간: {market_open.strftime('%H:%M')}"
-            )
-        elif current_time > market_close:
-            status_message = (
-                f"시장 종료되었습니다. 종료 시간: {market_close.strftime('%H:%M')}"
-            )
-        else:
-            status_message = "시장이 열려 있습니다."
-
+        market_status = is_market_open()
         return {
             "success": True,
-            "market_status": {
-                "is_open": is_market_open,
-                "is_weekday": is_weekday,
-                "current_time": current_time.strftime("%H:%M:%S"),
-                "market_open": market_open.strftime("%H:%M"),
-                "market_close": market_close.strftime("%H:%M"),
-                "status_message": status_message,
-            },
+            "market_status": market_status,
             "timestamp": datetime.now().isoformat(),
         }
     except Exception as e:
@@ -1714,6 +2016,197 @@ async def get_system_errors():
             "success": False,
             "error": str(e),
             "timestamp": datetime.now().isoformat(),
+        }
+
+
+# 조건 검색 API
+@app.get("/api/condition-search/list")
+async def get_condition_search_list():
+    """조건 검색식 목록 조회"""
+    try:
+        global condition_search_client
+        
+        if condition_search_client and condition_search_client.connected:
+            # WebSocket 클라이언트를 통한 조건 검색식 목록 조회
+            try:
+                conditions = await condition_search_client.get_condition_list()
+                
+                if conditions:
+                    return {
+                        "success": True,
+                        "conditions": conditions,
+                        "timestamp": datetime.now().isoformat(),
+                    }
+                else:
+                    logger.warning("WebSocket을 통한 조건 검색식 목록이 비어있습니다.")
+            except Exception as ws_error:
+                logger.warning(f"WebSocket 조건 검색식 목록 조회 실패: {ws_error}")
+        
+        # WebSocket 연결이 안 되었거나 실패한 경우 기존 API 방식으로 폴백
+        logger.info("기존 API 방식으로 조건 검색식 목록 조회 시도")
+        response = await kiwoom_api.get_condition_search_list()
+        
+        if response.get("success"):
+            return {
+                "success": True,
+                "conditions": response.get("data", []),
+                "timestamp": datetime.now().isoformat(),
+            }
+        else:
+            return {
+                "success": False,
+                "message": response.get("message", "조건 검색식 목록 조회 실패"),
+                "timestamp": datetime.now().isoformat(),
+            }
+    except Exception as e:
+        logger.error(f"조건 검색식 목록 조회 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": f"조건 검색식 목록 조회 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat(),
+        }
+
+
+@app.post("/api/condition-search/register")
+async def register_condition_search(condition_seq: str = Form(..., description="조건 검색식 일련번호")):
+    """조건 검색식 등록"""
+    try:
+        global condition_search_client
+        
+        if condition_search_client and condition_search_client.connected:
+            # WebSocket 클라이언트를 통한 조건 검색식 등록
+            try:
+                success = await condition_search_client.register_condition(condition_seq)
+                
+                if success:
+                    return {
+                        "success": True,
+                        "message": "조건 검색식이 등록되었습니다.",
+                        "timestamp": datetime.now().isoformat(),
+                    }
+                else:
+                    logger.warning(f"WebSocket을 통한 조건 검색식 등록 실패: {condition_seq}")
+            except Exception as ws_error:
+                logger.warning(f"WebSocket 조건 검색식 등록 오류: {ws_error}")
+        
+        # WebSocket 연결이 안 되었거나 실패한 경우 기존 API 방식으로 폴백
+        logger.info("기존 API 방식으로 조건 검색식 등록 시도")
+        response = await kiwoom_api.register_condition_search(condition_seq)
+        
+        if response.get("success"):
+            return {
+                "success": True,
+                "message": "조건 검색식이 등록되었습니다.",
+                "timestamp": datetime.now().isoformat(),
+            }
+        else:
+            return {
+                "success": False,
+                "message": response.get("message", "조건 검색식 등록 실패"),
+                "timestamp": datetime.now().isoformat(),
+            }
+    except Exception as e:
+        logger.error(f"조건 검색식 등록 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": str(e),
+            "timestamp": datetime.now().isoformat(),
+        }
+
+
+@app.delete("/api/condition-search/unregister")
+async def unregister_condition_search(condition_seq: str = Form(..., description="조건 검색식 일련번호")):
+    """조건 검색식 해제"""
+    try:
+        global condition_search_client
+        
+        if condition_search_client and condition_search_client.connected:
+            # WebSocket 클라이언트를 통한 조건 검색식 해제
+            try:
+                success = await condition_search_client.unregister_condition(condition_seq)
+                
+                if success:
+                    return {
+                        "success": True,
+                        "message": "조건 검색식이 해제되었습니다.",
+                        "timestamp": datetime.now().isoformat(),
+                    }
+                else:
+                    logger.warning(f"WebSocket을 통한 조건 검색식 해제 실패: {condition_seq}")
+            except Exception as ws_error:
+                logger.warning(f"WebSocket 조건 검색식 해제 오류: {ws_error}")
+        
+        # WebSocket 연결이 안 되었거나 실패한 경우 기존 API 방식으로 폴백
+        logger.info("기존 API 방식으로 조건 검색식 해제 시도")
+        response = await kiwoom_api.unregister_condition_search(condition_seq)
+        
+        if response.get("success"):
+            return {
+                "success": True,
+                "message": "조건 검색식이 해제되었습니다.",
+                "timestamp": datetime.now().isoformat(),
+            }
+        else:
+            return {
+                "success": False,
+                "message": response.get("message", "조건 검색식 해제 실패"),
+                "timestamp": datetime.now().isoformat(),
+            }
+    except Exception as e:
+        logger.error(f"조건 검색식 해제 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": str(e),
+            "timestamp": datetime.now().isoformat(),
+        }
+
+
+@app.post("/api/condition-search/connect")
+async def connect_condition_search():
+    """조건 검색 WebSocket 연결"""
+    try:
+        global condition_search_client
+        
+        if not condition_search_client:
+            return {
+                "success": False,
+                "message": "조건 검색 클라이언트가 초기화되지 않았습니다.",
+                "timestamp": datetime.now().isoformat()
+            }
+        
+        # 토큰 확인
+        token = kiwoom_api.get_access_token()
+        if not token:
+            return {
+                "success": False,
+                "message": "키움 API 토큰이 없습니다.",
+                "timestamp": datetime.now().isoformat()
+            }
+        
+        # WebSocket 연결 시도
+        if await condition_search_client.connect():
+            # 백그라운드에서 메시지 수신 시작 (중복 실행 방지)
+            if not condition_search_client.receive_task or condition_search_client.receive_task.done():
+                asyncio.create_task(condition_search_client.receive_messages())
+            
+            return {
+                "success": True,
+                "message": "조건 검색 WebSocket 연결 성공",
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            return {
+                "success": False,
+                "message": "조건 검색 WebSocket 연결 실패",
+                "timestamp": datetime.now().isoformat()
+            }
+            
+    except Exception as e:
+        logger.error(f"조건 검색 WebSocket 연결 실패: {e}")
+        return {
+            "success": False,
+            "message": f"연결 실패: {str(e)}",
+            "timestamp": datetime.now().isoformat()
         }
 
 

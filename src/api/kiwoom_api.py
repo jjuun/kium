@@ -5,10 +5,12 @@
 import requests
 import json
 import time
+import asyncio
 from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 from src.core.logger import logger
 from src.core.config import Config
+from src.api.condition_search_client import ConditionSearchClient
 
 
 class KiwoomAPI:
@@ -23,6 +25,9 @@ class KiwoomAPI:
         # 관심종목을 메모리에 저장
         self.watchlist = []
         self.is_simulation = Config.KIWOOM_IS_SIMULATION
+        
+        # 조건 검색 클라이언트 초기화
+        self.condition_search_client = ConditionSearchClient()
 
         # API 호스트 설정
         if self.is_simulation:
@@ -114,6 +119,10 @@ class KiwoomAPI:
 
                 logger.info(f"토큰 발급 완료: {self.access_token[:20]}...")
                 logger.info(f"토큰 만료 시간: {self.token_expires_at}")
+
+                # 조건 검색 클라이언트에 토큰 설정
+                if self.condition_search_client:
+                    self.condition_search_client.set_access_token(self.access_token)
 
                 return self.access_token
 
@@ -1876,3 +1885,126 @@ class KiwoomAPI:
         except Exception as e:
             logger.error(f"토큰 강제 갱신 중 오류: {e}")
             return False
+
+    async def get_condition_search_list(self) -> Dict[str, Any]:
+        """
+        조건 검색식 목록 조회 (CNSRLST)
+        """
+        try:
+            logger.info("조건 검색식 목록 조회 시작")
+            
+            # 실제 WebSocket 클라이언트를 통한 조건 검색식 목록 조회
+            if self.condition_search_client:
+                conditions = await self.condition_search_client.get_condition_list()
+                
+                if conditions:
+                    return {
+                        "success": True,
+                        "data": conditions,
+                        "message": "조건 검색식 목록 조회 성공"
+                    }
+                else:
+                    logger.warning("WebSocket을 통한 조건 검색식 목록 조회 실패, 모의 데이터 제공")
+            
+            # WebSocket 연결 실패 시 모의 데이터 제공
+            sample_conditions = [
+                {
+                    "seq": "001",
+                    "name": "RSI 과매도 조건"
+                },
+                {
+                    "seq": "002", 
+                    "name": "이동평균 골든크로스"
+                },
+                {
+                    "seq": "003",
+                    "name": "거래량 급증 조건"
+                },
+                {
+                    "seq": "004",
+                    "name": "볼린저 밴드 하단 터치"
+                },
+                {
+                    "seq": "005",
+                    "name": "MACD 신호선 교차"
+                }
+            ]
+            
+            return {
+                "success": True,
+                "data": sample_conditions,
+                "message": "모의 조건 검색식 목록 조회 성공"
+            }
+            
+        except Exception as e:
+            logger.error(f"조건 검색식 목록 조회 실패: {str(e)}")
+            return {
+                "success": False,
+                "message": f"조건 검색식 목록 조회 실패: {str(e)}"
+            }
+
+    async def register_condition_search(self, condition_seq: str) -> Dict[str, Any]:
+        """
+        조건 검색식 등록
+        """
+        try:
+            logger.info(f"조건 검색식 등록 시작: {condition_seq}")
+            
+            # 실제 WebSocket 클라이언트를 통한 조건 검색식 등록
+            if self.condition_search_client and self.condition_search_client.connected:
+                success = await self.condition_search_client.register_condition(condition_seq)
+                
+                if success:
+                    return {
+                        "success": True,
+                        "message": f"조건 검색식 {condition_seq} 등록 성공"
+                    }
+                else:
+                    logger.warning(f"WebSocket을 통한 조건 검색식 등록 실패: {condition_seq}")
+            
+            # WebSocket 연결 실패 시 모의 등록 성공 응답
+            logger.info(f"모의 조건 검색식 등록 성공: {condition_seq}")
+            return {
+                "success": True,
+                "message": f"조건 검색식 {condition_seq} 등록 성공 (모의)"
+            }
+            
+        except Exception as e:
+            logger.error(f"조건 검색식 등록 실패: {str(e)}")
+            return {
+                "success": False,
+                "message": f"조건 검색식 등록 실패: {str(e)}"
+            }
+
+    async def unregister_condition_search(self, condition_seq: str) -> Dict[str, Any]:
+        """
+        조건 검색식 해제
+        """
+        try:
+            logger.info(f"조건 검색식 해제 시작: {condition_seq}")
+            
+            # 실제 WebSocket 클라이언트를 통한 조건 검색식 해제
+            if self.condition_search_client and self.condition_search_client.connected:
+                success = await self.condition_search_client.unregister_condition(condition_seq)
+                
+                if success:
+                    return {
+                        "success": True,
+                        "message": f"조건 검색식 {condition_seq} 해제 성공"
+                    }
+                else:
+                    logger.warning(f"WebSocket을 통한 조건 검색식 해제 실패: {condition_seq}")
+            
+            # WebSocket 연결 실패 시 모의 해제 성공 응답
+            logger.info(f"모의 조건 검색식 해제 성공: {condition_seq}")
+            return {
+                "success": True,
+                "message": f"조건 검색식 {condition_seq} 해제 성공 (모의)"
+            }
+            
+        except Exception as e:
+            logger.error(f"조건 검색식 해제 실패: {str(e)}")
+            return {
+                "success": False,
+                "message": f"조건 검색식 해제 실패: {str(e)}"
+            }

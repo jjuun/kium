@@ -50,8 +50,8 @@ class TestDatabaseIntegration:
         auto_trader = AutoTrader()
         symbol = "TEST001"  # 테스트용 고유한 종목코드 사용
 
-        # When - 감시종목 추가
-        result = auto_trader.watchlist_manager.add_symbol(symbol)
+        # When - 감시종목 추가 (테스트 플래그 사용)
+        result = auto_trader.watchlist_manager.add_symbol(symbol, is_test=True)
 
         # Then
         assert result is True
@@ -101,25 +101,37 @@ class TestDatabaseIntegration:
             assert result is True
 
     def test_execution_history_persistence(self, temp_db_path):
-        """실행 이력 영속성 테스트"""
+        """실행 내역 영속성 테스트"""
         # Given - 독립적인 AutoTrader 인스턴스 생성
         auto_trader = AutoTrader()
         symbol = "TEST003"  # 테스트용 고유한 종목코드 사용
-        signal_type = "buy"
-        condition_id = 1
-        condition_value = "RSI < 30"
-        current_price = 50000.0
 
-        # When - 신호 기록 (올바른 메서드명 사용)
+        # When - 신호 기록 (올바른 파라미터 사용)
         signal_id = auto_trader.signal_monitor.record_signal(
-            symbol, signal_type, condition_id, condition_value, current_price
+            symbol, "buy", 1, "현재가 > 50000", 50000.0
         )
 
         # Then
         assert signal_id > 0
 
+        # When - 신호 실행 정보 업데이트
+        result = auto_trader.signal_monitor.update_signal_execution(
+            signal_id, 50000.0, 1000
+        )
+
+        # Then
+        assert result is True
+
+        # When - 신호 완료
+        result = auto_trader.signal_monitor.close_signal(
+            signal_id, 1000.0
+        )
+
+        # Then
+        assert result is True
+
         # 신호 목록에서 확인
-        signals = auto_trader.signal_monitor.get_recent_signals(limit=10)
+        signals = auto_trader.signal_monitor.get_signals()
         assert len(signals) > 0
 
     def test_multiple_symbols_management(self, temp_db_path):
@@ -128,9 +140,9 @@ class TestDatabaseIntegration:
         auto_trader = AutoTrader()
         symbols = ["TEST004", "TEST005", "TEST006"]  # 테스트용 고유한 종목코드 사용
 
-        # When - 여러 종목 추가
+        # When - 여러 종목 추가 (테스트 플래그 사용)
         for symbol in symbols:
-            result = auto_trader.watchlist_manager.add_symbol(symbol)
+            result = auto_trader.watchlist_manager.add_symbol(symbol, is_test=True)
             # 중복 추가는 실패할 수 있으므로 결과를 확인하지 않음
             # assert result is True
 
@@ -179,9 +191,9 @@ class TestDatabaseIntegration:
         auto_trader1 = AutoTrader()
         auto_trader2 = AutoTrader()
 
-        # When - 두 인스턴스에서 동시에 작업
-        auto_trader1.watchlist_manager.add_symbol("TEST009")
-        auto_trader2.watchlist_manager.add_symbol("TEST010")
+        # When - 두 인스턴스에서 동시에 작업 (테스트 플래그 사용)
+        auto_trader1.watchlist_manager.add_symbol("TEST009", is_test=True)
+        auto_trader2.watchlist_manager.add_symbol("TEST010", is_test=True)
 
         # Then
         symbols1 = auto_trader1.watchlist_manager.get_active_symbols()
@@ -197,8 +209,8 @@ class TestDatabaseIntegration:
         auto_trader = AutoTrader()
         symbol = "TEST011"  # 테스트용 고유한 종목코드 사용
 
-        # When - 정상적인 추가
-        result = auto_trader.watchlist_manager.add_symbol(symbol)
+        # When - 정상적인 추가 (테스트 플래그 사용)
+        result = auto_trader.watchlist_manager.add_symbol(symbol, is_test=True)
         # 중복 추가는 실패할 수 있으므로 결과를 확인하지 않음
         # assert result is True
 
@@ -207,7 +219,7 @@ class TestDatabaseIntegration:
         assert symbol in symbols
 
         # When - 중복 추가 시도 (실패해야 함)
-        result = auto_trader.watchlist_manager.add_symbol(symbol)
+        result = auto_trader.watchlist_manager.add_symbol(symbol, is_test=True)
         
         # Then - 중복 추가는 실패하거나 무시됨
         # 실제 구현에 따라 다를 수 있음
@@ -220,8 +232,8 @@ class TestDatabaseIntegration:
         # Given
         auto_trader1 = AutoTrader()
         
-        # When - 데이터 추가
-        auto_trader1.watchlist_manager.add_symbol("TEST012")
+        # When - 데이터 추가 (테스트 플래그 사용)
+        auto_trader1.watchlist_manager.add_symbol("TEST012", is_test=True)
         auto_trader1.condition_manager.add_condition("TEST012", "buy", "rsi", "RSI < 30")
 
         # Then - 새로운 인스턴스에서도 데이터 접근 가능

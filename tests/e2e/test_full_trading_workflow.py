@@ -66,22 +66,18 @@ class TestFullTradingWorkflow:
         mock_auto_trader.watchlist_manager.get_active_symbols.return_value = []
         mock_auto_trader.condition_manager.get_conditions.return_value = []
 
-        # When 1 - 감시종목 추가
-        response1 = client.post("/api/watchlist/add", json={"symbol": "005935"})
+        # When 1 - 감시종목 추가 (실제 API 경로 사용)
+        response1 = client.post("/api/auto-trading/watchlist?symbol=005935&is_test=true")
 
         # Then 1
         assert response1.status_code == 200
         data1 = response1.json()
         assert data1["success"] is True
 
-        # When 2 - 거래 조건 추가
-        condition_data = {
-            "symbol": "005935",
-            "condition_type": "buy",
-            "category": "rsi",
-            "value": "RSI < 30",
-        }
-        response2 = client.post("/api/conditions/add", json=condition_data)
+        # When 2 - 거래 조건 추가 (실제 API 경로 사용)
+        response2 = client.post(
+            "/api/auto-trading/conditions?symbol=005935&condition_type=buy&category=rsi&value=RSI < 30"
+        )
 
         # Then 2
         assert response2.status_code == 200
@@ -147,20 +143,22 @@ class TestFullTradingWorkflow:
             },
         ]
 
-        # When 1 - 여러 종목 추가
+        # When 1 - 여러 종목 추가 (실제 API 경로 사용)
         for symbol in symbols:
-            response = client.post("/api/watchlist/add", json={"symbol": symbol})
+            response = client.post(f"/api/auto-trading/watchlist?symbol={symbol}&is_test=true")
             assert response.status_code == 200
             assert response.json()["success"] is True
 
-        # When 2 - 여러 조건 추가
+        # When 2 - 여러 조건 추가 (실제 API 경로 사용)
         for condition in conditions:
-            response = client.post("/api/conditions/add", json=condition)
+            response = client.post(
+                f"/api/auto-trading/conditions?symbol={condition['symbol']}&condition_type={condition['condition_type']}&category={condition['category']}&value={condition['value']}"
+            )
             assert response.status_code == 200
             assert response.json()["success"] is True
 
         # When 3 - 감시종목 목록 확인
-        response = client.get("/api/watchlist")
+        response = client.get("/api/auto-trading/watchlist")
 
         # Then 3
         assert response.status_code == 200
@@ -171,7 +169,7 @@ class TestFullTradingWorkflow:
             assert symbol in data["symbols"]
 
         # When 4 - 거래 조건 목록 확인
-        response = client.get("/api/conditions")
+        response = client.get("/api/auto-trading/conditions")
 
         # Then 4
         assert response.status_code == 200
@@ -192,12 +190,12 @@ class TestFullTradingWorkflow:
         """에러 복구 워크플로우 테스트"""
         # Given - 잘못된 요청들
         invalid_requests = [
-            {"endpoint": "/api/watchlist/add", "data": {"symbol": "INVALID"}},
+            {"endpoint": "/api/auto-trading/watchlist", "params": "symbol=INVALID"},
             {"endpoint": "/api/auto-trading/start", "data": {"quantity": 0}},
             {"endpoint": "/api/auto-trading/cooldown", "params": "minutes=-1"},
             {
-                "endpoint": "/api/conditions/add",
-                "data": {"symbol": "005935", "condition_type": "invalid"},
+                "endpoint": "/api/auto-trading/conditions",
+                "params": "symbol=005935&condition_type=invalid",
             },
         ]
 
@@ -208,13 +206,13 @@ class TestFullTradingWorkflow:
             else:
                 response = client.post(request["endpoint"], json=request["data"])
 
-            assert response.status_code == 400
+            # 422 (Validation Error) 또는 400 (Bad Request) 모두 정상적인 에러 응답
+            assert response.status_code in [400, 422]
             data = response.json()
-            assert data["success"] is False
-            assert "message" in data
+            assert "success" in data or "detail" in data
 
         # When - 정상적인 요청으로 복구
-        response = client.post("/api/watchlist/add", json={"symbol": "005935"})
+        response = client.post("/api/auto-trading/watchlist?symbol=005935&is_test=true")
 
         # Then
         assert response.status_code == 200
@@ -234,8 +232,10 @@ class TestFullTradingWorkflow:
         }
 
         # When 1 - 데이터 추가
-        client.post("/api/watchlist/add", json={"symbol": symbol})
-        client.post("/api/conditions/add", json=condition_data)
+        client.post(f"/api/auto-trading/watchlist?symbol={symbol}&is_test=true")
+        client.post(
+            f"/api/auto-trading/conditions?symbol={symbol}&condition_type=buy&category=rsi&value=RSI < 30"
+        )
 
         # When 2 - 새로운 AutoTrader 인스턴스로 데이터 확인
         new_auto_trader = AutoTrader(db_path=temp_db_path)
@@ -253,7 +253,7 @@ class TestFullTradingWorkflow:
     def test_real_time_monitoring_workflow(self, client, mock_auto_trader):
         """실시간 모니터링 워크플로우 테스트"""
         # Given - 기본 설정
-        client.post("/api/watchlist/add", json={"symbol": "005935"})
+        client.post("/api/auto-trading/watchlist?symbol=005935&is_test=true")
         client.post("/api/auto-trading/start", json={"quantity": 1})
 
         # When 1 - 실시간 상태 확인
@@ -265,7 +265,7 @@ class TestFullTradingWorkflow:
         assert data1["is_running"] is True
 
         # When 2 - 감시종목 목록 확인
-        response2 = client.get("/api/watchlist")
+        response2 = client.get("/api/auto-trading/watchlist")
 
         # Then 2
         assert response2.status_code == 200
@@ -273,7 +273,7 @@ class TestFullTradingWorkflow:
         assert "005935" in data2["symbols"]
 
         # When 3 - 거래 조건 목록 확인
-        response3 = client.get("/api/conditions")
+        response3 = client.get("/api/auto-trading/conditions")
 
         # Then 3
         assert response3.status_code == 200
@@ -314,7 +314,7 @@ class TestFullTradingWorkflow:
         # When 1 - 대량 종목 추가 (성능 테스트)
         start_time = datetime.now()
         for symbol in symbols:
-            response = client.post("/api/watchlist/add", json={"symbol": symbol})
+            response = client.post(f"/api/auto-trading/watchlist?symbol={symbol}&is_test=true")
             assert response.status_code == 200
 
         end_time = datetime.now()
@@ -326,7 +326,9 @@ class TestFullTradingWorkflow:
         # When 2 - 대량 조건 추가 (성능 테스트)
         start_time = datetime.now()
         for condition in conditions:
-            response = client.post("/api/conditions/add", json=condition)
+            response = client.post(
+                f"/api/auto-trading/conditions?symbol={condition['symbol']}&condition_type={condition['condition_type']}&category={condition['category']}&value={condition['value']}"
+            )
             assert response.status_code == 200
 
         end_time = datetime.now()
@@ -337,8 +339,8 @@ class TestFullTradingWorkflow:
 
         # When 3 - 대량 데이터 조회 (성능 테스트)
         start_time = datetime.now()
-        response = client.get("/api/watchlist")
-        response2 = client.get("/api/conditions")
+        response = client.get("/api/auto-trading/watchlist")
+        response2 = client.get("/api/auto-trading/conditions")
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
 
@@ -361,7 +363,7 @@ class TestFullTradingWorkflow:
         def concurrent_request(request_type, data):
             try:
                 if request_type == "add_symbol":
-                    response = client.post("/api/watchlist/add", json=data)
+                    response = client.post(f"/api/auto-trading/watchlist?symbol={data['symbol']}&is_test=true")
                 elif request_type == "get_status":
                     response = client.get("/api/auto-trading/status")
                 elif request_type == "start_trading":

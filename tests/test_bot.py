@@ -2,6 +2,7 @@
 주식자동매매프로그램 테스트 파일
 """
 
+import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -10,6 +11,27 @@ from src.core.data_collector import DataCollector
 from src.trading.trading_strategy import TradingStrategy
 from src.trading.risk_manager import RiskManager
 from src.trading.trading_executor import TradingExecutor
+
+
+@pytest.fixture
+def sample_data():
+    """테스트용 샘플 데이터 생성"""
+    dates = pd.date_range(start='2024-01-01', end='2024-01-31', freq='D')
+    data = pd.DataFrame({
+        '종가': np.random.uniform(50000, 80000, len(dates)),
+        '시가': np.random.uniform(50000, 80000, len(dates)),
+        '고가': np.random.uniform(50000, 80000, len(dates)),
+        '저가': np.random.uniform(50000, 80000, len(dates)),
+        '거래량': np.random.uniform(1000000, 5000000, len(dates))
+    }, index=dates)
+    
+    # 기술적 지표 계산
+    data['SMA_5'] = data['종가'].rolling(window=5).mean()
+    data['SMA_20'] = data['종가'].rolling(window=20).mean()
+    data['RSI'] = 50 + np.random.uniform(-20, 20, len(dates))  # 30-70 범위
+    data['MACD'] = np.random.uniform(-1000, 1000, len(dates))
+    
+    return data
 
 
 def test_data_collection():
@@ -55,15 +77,14 @@ def test_data_collection():
     return None
 
 
-def test_trading_strategy(data):
+def test_trading_strategy(sample_data):
     """
     매매 전략 테스트
     """
     print("\n=== 매매 전략 테스트 ===")
 
-    if data is None:
-        print("데이터가 없어 전략 테스트를 건너뜁니다.")
-        return
+    if sample_data is None:
+        pytest.skip("데이터가 없어 전략 테스트를 건너뜁니다.")
 
     strategy = TradingStrategy()
 
@@ -83,7 +104,7 @@ def test_trading_strategy(data):
         strategy.strategy_name = strategy_name
 
         # 신호 생성
-        signal = strategy.generate_signal(data)
+        signal = strategy.generate_signal(sample_data)
 
         if signal:
             print(f"   ✓ 신호 생성 성공")
@@ -187,7 +208,7 @@ def test_trading_executor():
 
 def run_all_tests():
     """
-    모든 테스트 실행
+    모든 테스트 실행 (기존 호환성을 위한 함수)
     """
     print("🚀 주식자동매매프로그램 테스트 시작")
     print("=" * 50)

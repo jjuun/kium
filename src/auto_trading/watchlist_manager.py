@@ -61,6 +61,7 @@ class WatchlistManager:
                         symbol TEXT NOT NULL UNIQUE,
                         symbol_name TEXT,
                         is_active BOOLEAN DEFAULT 1,
+                        is_test BOOLEAN DEFAULT 0,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
@@ -93,13 +94,14 @@ class WatchlistManager:
         """종목코드에서 A 접두사 제거"""
         return symbol[1:] if symbol.startswith("A") else symbol
 
-    def add_symbol(self, symbol: str, symbol_name: str = None) -> bool:
+    def add_symbol(self, symbol: str, symbol_name: str = None, is_test: bool = False) -> bool:
         """
         감시 종목 추가
 
         Args:
             symbol: 종목코드
             symbol_name: 종목명 (선택사항)
+            is_test: 테스트 데이터 여부 (기본값: False)
 
         Returns:
             bool: 추가 성공 여부
@@ -112,6 +114,15 @@ class WatchlistManager:
             if not symbol_name:
                 symbol_name = symbol
 
+            # 유효성 검사: 테스트 데이터 방지
+            if not is_test:
+                # 1. 종목명이 종목코드와 동일한 경우 거부 (테스트 데이터 감지)
+                if symbol == symbol_name:
+                    logger.warning(f"테스트 데이터 감지: 종목명이 종목코드와 동일 - {symbol}")
+                    return False
+                
+                # 2. 새로운 종목 등록 시 로그 기록 (동적 관리)
+
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
@@ -121,17 +132,18 @@ class WatchlistManager:
                     logger.warning(f"이미 등록된 종목입니다: {symbol}")
                     return False
 
-                # 종목 추가
+                # 종목 추가 (is_test 플래그 포함)
                 cursor.execute(
                     """
-                    INSERT INTO watchlist (symbol, symbol_name, is_active, created_at, updated_at)
-                    VALUES (?, ?, 1, ?, ?)
+                    INSERT INTO watchlist (symbol, symbol_name, is_active, is_test, created_at, updated_at)
+                    VALUES (?, ?, 1, ?, ?, ?)
                 """,
-                    (symbol, symbol_name, datetime.now(), datetime.now()),
+                    (symbol, symbol_name, is_test, datetime.now(), datetime.now()),
                 )
 
                 conn.commit()
-                logger.info(f"감시 종목 추가 완료: {symbol} ({symbol_name})")
+                test_flag = "[TEST]" if is_test else ""
+                logger.info(f"감시 종목 추가 완료: {symbol} ({symbol_name}) {test_flag}")
                 return True
 
         except Exception as e:
@@ -436,3 +448,90 @@ class WatchlistManager:
         except Exception as e:
             logger.error(f"감시 종목 전체 삭제 실패: {e}")
             return False
+
+    def get_user_symbols(self) -> List[str]:
+        """
+        사용자가 직접 등록한 종목명 목록 조회 (is_test=False인 종목들)
+
+        Returns:
+            List[str]: 사용자 등록 종목명 목록
+        """
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+
+                cursor.execute(
+                    """
+                    SELECT DISTINCT symbol_name 
+                    FROM watchlist 
+                    WHERE is_test = 0 AND is_active = 1
+                    ORDER BY symbol_name
+                """
+                )
+
+                user_symbols = [row[0] for row in cursor.fetchall()]
+                logger.info(f"사용자 등록 종목 수: {len(user_symbols)}")
+                return user_symbols
+
+        except Exception as e:
+            logger.error(f"사용자 등록 종목 조회 실패: {e}")
+            return []
+
+    def get_test_symbols(self) -> List[str]:
+        """
+        테스트 종목명 목록 조회 (is_test=True인 종목들)
+
+        Returns:
+            List[str]: 테스트 종목명 목록
+        """
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+
+                cursor.execute(
+                    """
+                    SELECT DISTINCT symbol_name 
+                    FROM watchlist 
+                    WHERE is_test = 1
+                    ORDER BY symbol_name
+                """
+                )
+
+                test_symbols = [row[0] for row in cursor.fetchall()]
+                logger.info(f"테스트 종목 수: {len(test_symbols)}")
+                return test_symbols
+
+        except Exception as e:
+            logger.error(f"테스트 종목 조회 실패: {e}")
+            return []
+
+    def cleanup_test_data(self) -> int:
+        """
+        테스트 데이터 정리 (is_test=True인 종목들 삭제)
+
+        Returns:
+            int: 삭제된 종목 수
+        """
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+
+                # 삭제할 테스트 종목 수 확인
+                cursor.execute("SELECT COUNT(*) FROM watchlist WHERE is_test = 1")
+                test_count = cursor.fetchone()[0]
+
+                if test_count == 0:
+                    logger.info("삭제할 테스트 데이터가 없습니다.")
+                    return 0
+
+                # 테스트 종목 삭제
+                cursor.execute("DELETE FROM watchlist WHERE is_test = 1")
+                deleted_count = cursor.rowcount
+
+                conn.commit()
+                logger.info(f"테스트 데이터 정리 완료: {deleted_count}개 삭제")
+                return deleted_count
+
+        except Exception as e:
+            logger.error(f"테스트 데이터 정리 실패: {e}")
+            return 0

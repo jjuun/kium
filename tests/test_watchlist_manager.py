@@ -68,8 +68,8 @@ class TestWatchlistManager(unittest.TestCase):
         self.assertEqual(len(items), 2)
 
         symbols = [item.symbol for item in items]
-        self.assertIn("A005935", symbols)
-        self.assertIn("A000660", symbols)
+        self.assertIn("005935", symbols)
+        self.assertIn("000660", symbols)
 
     def test_remove_symbol(self):
         """종목 제거 테스트"""
@@ -137,7 +137,7 @@ class TestWatchlistManager(unittest.TestCase):
         # 존재하는 종목 조회
         item = self.watchlist_manager.get_symbol("005935")
         self.assertIsNotNone(item)
-        self.assertEqual(item.symbol, "A005935")
+        self.assertEqual(item.symbol, "005935")
         self.assertEqual(item.symbol_name, "삼성전자")
 
         # 존재하지 않는 종목 조회
@@ -175,9 +175,9 @@ class TestWatchlistManager(unittest.TestCase):
         # 활성화된 종목 코드 목록 조회
         active_symbols = self.watchlist_manager.get_active_symbols()
         self.assertEqual(len(active_symbols), 2)
-        self.assertIn("A000660", active_symbols)
-        self.assertIn("A035420", active_symbols)
-        self.assertNotIn("A005935", active_symbols)
+        self.assertIn("000660", active_symbols)
+        self.assertIn("035420", active_symbols)
+        self.assertNotIn("005935", active_symbols)
 
     def test_get_statistics(self):
         """통계 정보 조회 테스트"""
@@ -215,7 +215,7 @@ class TestWatchlistManager(unittest.TestCase):
         """WatchlistItem to_dict 메서드 테스트"""
         item = WatchlistItem(
             id=1,
-            symbol="A005935",
+            symbol="005935",
             symbol_name="삼성전자",
             is_active=True,
             created_at=datetime.now(),
@@ -225,7 +225,7 @@ class TestWatchlistManager(unittest.TestCase):
         item_dict = item.to_dict()
 
         self.assertEqual(item_dict["id"], 1)
-        self.assertEqual(item_dict["symbol"], "A005935")
+        self.assertEqual(item_dict["symbol"], "005935")
         self.assertEqual(item_dict["symbol_name"], "삼성전자")
         self.assertTrue(item_dict["is_active"])
         self.assertIsNotNone(item_dict["created_at"])

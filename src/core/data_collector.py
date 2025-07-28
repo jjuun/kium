@@ -155,11 +155,16 @@ class DataCollector:
             data["SMA_5"] = data["종가"].rolling(window=Config.SHORT_PERIOD).mean()
             data["SMA_20"] = data["종가"].rolling(window=Config.LONG_PERIOD).mean()
 
-            # RSI (상대강도지수)
+            # RSI (상대강도지수) - 표준 방식으로 개선
             delta = data["종가"].diff()
-            gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-            loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-            rs = gain / loss
+            gain = delta.where(delta > 0, 0)
+            loss = -delta.where(delta < 0, 0)
+            
+            # 지수이동평균 사용 (표준 RSI 계산 방식)
+            avg_gain = gain.ewm(span=14, adjust=False).mean()
+            avg_loss = loss.ewm(span=14, adjust=False).mean()
+            
+            rs = avg_gain / avg_loss
             data["RSI"] = 100 - (100 / (1 + rs))
 
             # MACD

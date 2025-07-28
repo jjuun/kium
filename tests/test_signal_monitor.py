@@ -233,6 +233,7 @@ class TestSignalMonitor(unittest.TestCase):
             condition_id=1,
             condition_value="RSI < 30",
             current_price=70000.0,
+            rsi_value=25.5,
             status=SignalStatus.PENDING,
             executed_price=None,
             executed_quantity=None,
