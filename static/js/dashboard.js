@@ -3618,7 +3618,7 @@ function displayMockRealTimeResults() {
         const priceChangeIcon = result.priceChange >= 0 ? '▲' : '▼';
         
         html += `
-            <tr>
+            <tr class="result-item" data-symbol="${result.symbol}" style="cursor: pointer;">
                 <td>${result.time}</td>
                 <td><span class="badge bg-primary">${result.conditionName}</span></td>
                 <td><strong>${result.symbol}</strong></td>
@@ -3646,6 +3646,9 @@ function displayMockRealTimeResults() {
     `;
     
     resultsDiv.innerHTML = html;
+    
+    // 모의 결과 항목에도 클릭 이벤트 추가
+    setupRealTimeResultClickHandlers();
 }
 
 function generateMockRealTimeResults() {
@@ -4021,31 +4024,44 @@ function setupRealTimeResultClickHandlers() {
     const resultItems = document.querySelectorAll('.result-item');
     
     resultItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const symbol = this.getAttribute('data-symbol');
-            if (symbol) {
-                // 주문 실행 섹션의 종목코드 입력란에 설정
-                const orderSymbolInput = document.getElementById('order-symbol');
-                if (orderSymbolInput) {
-                    orderSymbolInput.value = symbol;
+        // 기존 이벤트 리스너 제거 (중복 방지)
+        item.removeEventListener('click', handleResultItemClick);
+        // 새로운 이벤트 리스너 추가
+        item.addEventListener('click', handleResultItemClick);
+    });
+}
+
+// 결과 항목 클릭 핸들러 함수
+function handleResultItemClick() {
+    const symbol = this.getAttribute('data-symbol');
+    console.log('클릭된 종목코드:', symbol); // 디버깅용
+    
+    if (symbol) {
+        // 주문 실행 섹션의 종목코드 입력란에 설정
+        const orderSymbolInput = document.getElementById('order-symbol');
+        if (orderSymbolInput) {
+            orderSymbolInput.value = symbol;
+            console.log('종목코드 입력란에 설정됨:', symbol); // 디버깅용
+            
+            // 주문 실행 섹션으로 스크롤 이동 (CSS :has() 대신 다른 방법 사용)
+            const orderForm = document.getElementById('order-form');
+            if (orderForm) {
+                const orderCard = orderForm.closest('.card');
+                if (orderCard) {
+                    orderCard.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
                     
-                    // 주문 실행 섹션으로 스크롤 이동
-                    const orderSection = document.querySelector('.card:has(#order-form)');
-                    if (orderSection) {
-                        orderSection.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'start' 
-                        });
-                        
-                        // 종목코드 입력란에 포커스
-                        setTimeout(() => {
-                            orderSymbolInput.focus();
-                        }, 500);
-                    }
+                    // 종목코드 입력란에 포커스
+                    setTimeout(() => {
+                        orderSymbolInput.focus();
+                        console.log('주문 실행 섹션으로 이동 완료'); // 디버깅용
+                    }, 500);
                 }
             }
-        });
-    });
+        }
+    }
 }
 
 // 자동 연결 기능 강화
