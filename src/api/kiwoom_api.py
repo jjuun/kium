@@ -2,6 +2,7 @@
 키움증권 API 연동 모듈
 """
 
+import os
 import requests
 import json
 import time
@@ -37,10 +38,18 @@ class KiwoomAPI:
 
     def _load_app_key(self):
         """
-        앱 키 로드
+        앱 키 로드 (환경변수 우선, 파일 fallback)
         """
+        # 환경변수에서 먼저 확인
+        app_key = os.getenv("KIWOOM_APPKEY")
+        if app_key:
+            logger.info("환경변수에서 앱 키를 로드했습니다.")
+            return app_key
+        
+        # 환경변수가 없으면 파일에서 로드 (fallback)
         try:
             with open("config/64339425_appkey.txt", "r") as f:
+                logger.info("파일에서 앱 키를 로드했습니다.")
                 return f.read().strip()
         except FileNotFoundError:
             logger.warning("앱 키 파일을 찾을 수 없습니다: config/64339425_appkey.txt")
@@ -51,10 +60,18 @@ class KiwoomAPI:
 
     def _load_app_secret(self):
         """
-        앱 시크릿 로드
+        앱 시크릿 로드 (환경변수 우선, 파일 fallback)
         """
+        # 환경변수에서 먼저 확인
+        app_secret = os.getenv("KIWOOM_SECRETKEY")
+        if app_secret:
+            logger.info("환경변수에서 앱 시크릿을 로드했습니다.")
+            return app_secret
+        
+        # 환경변수가 없으면 파일에서 로드 (fallback)
         try:
             with open("config/64339425_secretkey.txt", "r") as f:
+                logger.info("파일에서 앱 시크릿을 로드했습니다.")
                 return f.read().strip()
         except FileNotFoundError:
             logger.warning(

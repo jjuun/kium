@@ -55,9 +55,7 @@ A-ki/
 │   │   ├── test_full_trading_workflow.py
 │   │   └── test_web_dashboard_workflow.py
 │   └── fixtures/          # 테스트 데이터
-├── config/                # 설정 파일들
-│   ├── 64339425_appkey.txt
-│   └── 64339425_secretkey.txt
+├── config/                # 설정 파일들 (보안상 비어있음)
 ├── logs/                  # 로그 파일들
 │   ├── server.log
 │   ├── trading.log
@@ -115,14 +113,33 @@ pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```
 
-### 2. API 키 설정
+### 2. API 키 설정 (보안 권장 방식)
 
-`config/` 폴더에 키움증권 API 키 파일을 설정하거나 환경변수로 설정:
+#### 🔐 방법 1: .env 파일 사용 (권장)
+프로젝트 루트에 `.env` 파일을 생성하고 API 키를 설정:
 
+```bash
+# .env 파일 생성
+cat > .env << EOF
+# 키움증권 API 설정
+KIWOOM_APPKEY=your_appkey_here
+KIWOOM_SECRETKEY=your_secretkey_here
+
+# 시뮬레이션 모드 (true: 모의투자, false: 실거래)
+KIWOOM_IS_SIMULATION=false
+EOF
+```
+
+#### 🔐 방법 2: 환경변수 직접 설정
 ```bash
 export KIWOOM_APPKEY="your_appkey_here"
 export KIWOOM_SECRETKEY="your_secretkey_here"
 ```
+
+#### ⚠️ 보안 주의사항
+- `.env` 파일은 자동으로 `.gitignore`에 포함되어 Git에 커밋되지 않습니다
+- API 키는 절대 공개 저장소에 업로드하지 마세요
+- 운영 환경에서는 환경변수 사용을 권장합니다
 
 ### 3. 서버 실행 및 관리
 
