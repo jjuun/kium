@@ -647,7 +647,7 @@ input:focus, select:focus, textarea:focus {
     }
 }
 
-/* ===== 조건 검색 섹션 스타일 ===== */
+/* ===== 조건 검색 관련 스타일 ===== */
 .condition-search-controls {
     margin-bottom: 20px;
 }
@@ -659,10 +659,9 @@ input:focus, select:focus, textarea:focus {
 
 .condition-list-section h6,
 .real-time-results-section h6 {
-    color: #495057;
-    font-weight: 600;
     margin-bottom: 15px;
-    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
 }
 
 #condition-list {
@@ -670,44 +669,39 @@ input:focus, select:focus, textarea:focus {
 }
 
 #real-time-results {
-    min-height: 150px;
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
-    padding: 15px;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 #websocket-status {
     font-size: 0.8rem;
-    padding: 4px 8px;
 }
 
 .condition-search-controls .btn {
-    font-size: 0.85rem;
-    padding: 6px 12px;
+    margin-right: 10px;
 }
 
 #condition-search-message {
-    margin-top: 15px;
-    padding: 10px 15px;
-    border-radius: 6px;
-    font-size: 0.9rem;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
     display: none;
 }
 
 #condition-search-message.success {
-    background: #d4edda;
+    background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
 }
 
 #condition-search-message.error {
-    background: #f8d7da;
+    background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
 
-/* 조건식 등록 상태 스타일 */
+/* 등록된 조건식 스타일 */
 .condition-item.registered {
     background-color: #d4edda;
 }
@@ -717,16 +711,16 @@ input:focus, select:focus, textarea:focus {
 }
 
 .table-success {
-    background-color: #d1e7dd !important;
+    background-color: #d4edda !important;
 }
 
 .table-success td {
-    border-color: #badbcc;
+    border-color: #c3e6cb;
 }
 
-/* 조건식 목록 테이블 스타일 */
+/* 조건 검색 테이블 스타일 */
 .condition-list-section .table {
-    font-size: 0.9rem;
+    margin-bottom: 0;
 }
 
 .condition-list-section .table th {
@@ -741,4 +735,70 @@ input:focus, select:focus, textarea:focus {
 
 .condition-list-section .badge {
     font-size: 0.75rem;
+}
+
+/* 실시간 결과 항목 클릭 스타일 */
+.result-item {
+    transition: background-color 0.2s ease;
+}
+
+.result-item:hover {
+    background-color: #f8f9fa !important;
+    cursor: pointer;
+}
+
+.result-item:active {
+    background-color: #e9ecef !important;
+}
+
+/* 갱신 주기 설정 스타일 */
+#refresh-interval {
+    width: 80px !important;
+    text-align: center;
+}
+
+/* 실시간 결과 섹션 스타일 */
+.real-time-results-section {
+    border-top: 1px solid #e9ecef;
+    padding-top: 20px;
+}
+
+.real-time-results-section h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* 실시간 결과 테이블 스타일 */
+#real-time-results .table {
+    margin-bottom: 0;
+}
+
+#real-time-results .table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+#real-time-results .table td {
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+/* 실시간 결과 항목 강조 */
+.result-item td {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.result-item:last-child td {
+    border-bottom: none;
+}
+
+/* 실시간 결과 업데이트 정보 */
+#real-time-results .text-muted {
+    font-size: 0.8rem;
+    border-top: 1px solid #e9ecef;
+    padding-top: 10px;
+    margin-top: 10px;
 }

@@ -51,8 +51,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // 조건 검색 핸들러 설정
     setupConditionSearchHandlers();
     
-    // 조건 검색 초기화 (목록 조회 및 연결)
+    // 조건 검색 초기화 (목록 조회 및 자동 연결)
     initializeConditionSearch();
+    
+    // 실시간 갱신 주기 설정 불러오기
+    loadRefreshIntervalSettings();
 });
 
 // 모달들이 기본적으로 숨겨져 있는지 확인하는 함수
@@ -3346,6 +3349,7 @@ function setupConditionSearchHandlers() {
     const loadConditionsBtn = document.getElementById('loadConditions');
     const connectWebSocketBtn = document.getElementById('connectWebSocket');
     const disconnectWebSocketBtn = document.getElementById('disconnectWebSocket');
+    const updateRefreshIntervalBtn = document.getElementById('updateRefreshInterval');
     
     if (loadConditionsBtn) {
         loadConditionsBtn.addEventListener('click', loadConditionSearchList);
@@ -3357,6 +3361,10 @@ function setupConditionSearchHandlers() {
     
     if (disconnectWebSocketBtn) {
         disconnectWebSocketBtn.addEventListener('click', disconnectWebSocket);
+    }
+    
+    if (updateRefreshIntervalBtn) {
+        updateRefreshIntervalBtn.addEventListener('click', updateRefreshInterval);
     }
 }
 
@@ -3518,8 +3526,17 @@ async function connectWebSocket() {
                 }
                 showConditionSearchMessage('실시간 연결이 성공했습니다.', true);
                 
-                // 실제 실시간 결과 표시 시작
+                // 실제 실시간 결과 표시 시작 (설정된 갱신 주기 적용)
                 startRealTimeResults();
+                
+                // 갱신 주기 설정 적용
+                const savedInterval = localStorage.getItem('conditionSearchRefreshInterval') || 1;
+                if (realTimeResultsInterval) {
+                    clearInterval(realTimeResultsInterval);
+                }
+                realTimeResultsInterval = setInterval(() => {
+                    displayRealTimeResults();
+                }, parseInt(savedInterval) * 60 * 1000);
             } else {
                 throw new Error(result.message || '연결 실패');
             }
@@ -3829,6 +3846,12 @@ async function disconnectWebSocket() {
         // 모의 실시간 결과 중지
         stopMockRealTimeResults();
         
+        // 갱신 주기 인터벌 정리
+        if (realTimeResultsInterval) {
+            clearInterval(realTimeResultsInterval);
+            realTimeResultsInterval = null;
+        }
+        
         showConditionSearchMessage('실시간 연결이 해제되었습니다.', true);
         
     } catch (error) {
@@ -3890,7 +3913,7 @@ function displayActualRealTimeResults() {
         const signalText = result.signal_type === 'BUY' ? '매수신호' : '매도신호';
         
         html += `
-            <tr>
+            <tr class="result-item" data-symbol="${result.symbol}" style="cursor: pointer;">
                 <td>${formatTime(result.timestamp)}</td>
                 <td><span class="badge bg-primary">${result.condition_name}</span></td>
                 <td><strong>${result.symbol}</strong></td>
@@ -3918,6 +3941,9 @@ function displayActualRealTimeResults() {
     `;
     
     resultsDiv.innerHTML = html;
+    
+    // 결과 항목 클릭 이벤트 추가
+    setupRealTimeResultClickHandlers();
 }
 
 function formatTime(timestamp) {
@@ -3942,4 +3968,110 @@ function addRealTimeResult(result) {
     // UI 업데이트
     displayActualRealTimeResults();
 }
+
+// 갱신 주기 설정 관련 함수들
+async function updateRefreshInterval() {
+    const intervalInput = document.getElementById('refresh-interval');
+    const interval = parseInt(intervalInput.value);
+    
+    if (interval < 1 || interval > 60) {
+        showConditionSearchMessage('갱신 주기는 1-60분 사이로 설정해주세요.', false);
+        return;
+    }
+    
+    try {
+        // localStorage에 저장
+        localStorage.setItem('conditionSearchRefreshInterval', interval);
+        
+        // 실시간 결과 갱신 주기 업데이트
+        if (realTimeResultsInterval) {
+            clearInterval(realTimeResultsInterval);
+        }
+        
+        if (registeredConditions.size > 0) {
+            realTimeResultsInterval = setInterval(() => {
+                displayRealTimeResults();
+            }, interval * 60 * 1000); // 분을 밀리초로 변환
+        }
+        
+        showConditionSearchMessage(`실시간 갱신 주기가 ${interval}분으로 설정되었습니다.`, true);
+    } catch (error) {
+        console.error('갱신 주기 설정 실패:', error);
+        showConditionSearchMessage('갱신 주기 설정 중 오류가 발생했습니다.', false);
+    }
+}
+
+async function loadRefreshIntervalSettings() {
+    try {
+        const savedInterval = localStorage.getItem('conditionSearchRefreshInterval');
+        const intervalInput = document.getElementById('refresh-interval');
+        
+        if (savedInterval) {
+            intervalInput.value = parseInt(savedInterval);
+        } else {
+            intervalInput.value = 1; // 기본값 1분
+        }
+    } catch (error) {
+        console.error('갱신 주기 설정 로드 실패:', error);
+    }
+}
+
+// 실시간 결과 항목 클릭 핸들러 설정
+function setupRealTimeResultClickHandlers() {
+    const resultItems = document.querySelectorAll('.result-item');
+    
+    resultItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const symbol = this.getAttribute('data-symbol');
+            if (symbol) {
+                // 주문 실행 섹션의 종목코드 입력란에 설정
+                const orderSymbolInput = document.getElementById('order-symbol');
+                if (orderSymbolInput) {
+                    orderSymbolInput.value = symbol;
+                    
+                    // 주문 실행 섹션으로 스크롤 이동
+                    const orderSection = document.querySelector('.card:has(#order-form)');
+                    if (orderSection) {
+                        orderSection.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'start' 
+                        });
+                        
+                        // 종목코드 입력란에 포커스
+                        setTimeout(() => {
+                            orderSymbolInput.focus();
+                        }, 500);
+                    }
+                }
+            }
+        });
+    });
+}
+
+// 자동 연결 기능 강화
+async function initializeConditionSearch() {
+    try {
+        // 등록된 조건식 불러오기
+        loadRegisteredConditionsFromStorage();
+        
+        // 조건식 목록 자동 로드
+        await loadConditionSearchList();
+        
+        // 등록된 조건식이 있으면 자동으로 연결
+        if (registeredConditions.size > 0) {
+            setTimeout(() => {
+                connectWebSocket();
+            }, 1000); // 1초 후 자동 연결
+        }
+        
+        // 갱신 주기 설정 로드
+        await loadRefreshIntervalSettings();
+        
+    } catch (error) {
+        console.error('조건 검색 초기화 실패:', error);
+    }
+}
+
+// 전역 변수 추가
+let realTimeResultsInterval = null;
 
